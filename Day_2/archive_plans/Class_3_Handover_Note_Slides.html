@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Class 2.1 · Writing the Handover Note</title><style>:root{--panel:var(--card);--bar:var(--seg);--line:var(--hair);--bg:#fbfbfd;--card:#ffffff;--chrome:#f5f5f7;--seg:#f0f0f3;--hair:rgba(0,0,0,.07);--text:#1d1d1f;--muted:#6e6e73;--muted2:#aeaeb2;
+--accent:#0071e3;--acc-s:rgba(0,113,227,.08);--grad:linear-gradient(90deg,#0071e3 0%,#6e5bff 55%,#bf4fd6 100%);
+--ok:#1a8f43;--ok-s:rgba(52,199,89,.12);--bad:#d70015;--bad-s:rgba(255,59,48,.09);--warn:#b25e00;--warn-s:rgba(255,149,0,.12);
+--codebg:#1d1d1f;--code:#f5f5f7;--shadow:0 1px 2px rgba(0,0,0,.03),0 10px 30px rgba(0,0,0,.055);--winsh:0 1px 2px rgba(0,0,0,.04),0 28px 60px rgba(0,0,0,.13);
+--pill:rgba(255,255,255,.75);--pillfg:#1d1d1f;--pillsh:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.07);--live:#0071e3;--live-s:rgba(0,113,227,.16);
+--divbg:radial-gradient(900px 600px at 82% 18%,rgba(110,91,255,.30),transparent 62%),radial-gradient(800px 520px at 8% 100%,rgba(0,113,227,.22),transparent 60%),#000;
+--titlebg:radial-gradient(1100px 600px at 85% -12%,rgba(110,91,255,.11),transparent 62%),radial-gradient(900px 520px at -5% 112%,rgba(0,113,227,.09),transparent 60%),#fbfbfd}
+html[data-theme="dark"]{--bg:#000;--card:#1c1c1e;--chrome:#2c2c2e;--seg:#2c2c2e;--hair:rgba(255,255,255,.08);--text:#f5f5f7;--muted:#a1a1a6;--muted2:#636366;
+--accent:#2997ff;--acc-s:rgba(41,151,255,.14);--grad:linear-gradient(90deg,#2997ff 0%,#9d8cff 55%,#f472b6 100%);
+--ok:#30d158;--ok-s:rgba(48,209,88,.14);--bad:#ff453a;--bad-s:rgba(255,69,58,.15);--warn:#ff9f0a;--warn-s:rgba(255,159,10,.14);
+--codebg:#111113;--shadow:0 0 0 1px rgba(255,255,255,.03),0 18px 40px rgba(0,0,0,.55);--winsh:0 0 0 1px rgba(255,255,255,.05),0 30px 80px rgba(0,0,0,.75);
+--pill:rgba(44,44,46,.72);--pillfg:#f5f5f7;--pillsh:0 8px 24px rgba(0,0,0,.45);--live:#2997ff;--live-s:rgba(41,151,255,.25);
+--titlebg:radial-gradient(1100px 600px at 85% -12%,rgba(110,91,255,.20),transparent 62%),radial-gradient(900px 520px at -5% 112%,rgba(41,151,255,.14),transparent 60%),#000}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+#deck{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:center;background:var(--bg);overflow:hidden}
+.slide{position:absolute;inset:0;padding:126px 120px 92px;display:none;flex-direction:column}
+.slide.active{display:flex;animation:enter .6s cubic-bezier(.2,.7,.2,1)}
+@keyframes enter{from{opacity:0;transform:scale(.988)}to{opacity:1;transform:none}}
+.f{opacity:0;transform:translateY(18px);transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .55s cubic-bezier(.2,.7,.2,1)}.f.on{opacity:1;transform:none}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center}
+.center{align-items:center;text-align:center}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:28px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+p,li{font-size:25px;line-height:1.5;letter-spacing:-.005em;margin:0 0 12px}
+b{font-weight:600}
+.mono{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;letter-spacing:-.01em}
+h1,h2,h3{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;color:var(--text)}
+h1{font-size:92px;line-height:1.02;font-weight:700;letter-spacing:-.04em;margin-bottom:24px}
+h2{font-size:54px;line-height:1.06;font-weight:700;letter-spacing:-.03em;margin-bottom:36px;max-width:1300px}
+h3{font-size:25px;font-weight:600;letter-spacing:-.018em;margin-bottom:8px}
+h1 .mono,.big .mono{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-weight:600;letter-spacing:-.045em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .mono{font-weight:600;color:var(--accent)}
+.muted{color:var(--muted)}
+.lead{font-size:29px;color:var(--muted);max-width:1160px;margin-top:18px;line-height:1.42;letter-spacing:-.012em;font-weight:400}
+.lead b{color:var(--text)}
+.big{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;font-size:78px;font-weight:700;line-height:1.05;letter-spacing:-.04em;max-width:1300px;color:var(--text)}
+.big em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.label{font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+/* minimal header */
+.shell{position:absolute;top:46px;left:120px;right:120px;display:flex;align-items:center;gap:12px;font:500 16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);z-index:4;letter-spacing:-.005em}
+.shell .obj{font:600 15px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--text);letter-spacing:0}
+.shell .sep{opacity:.35}
+.shell .cmd{margin-left:auto;display:flex;align-items:center}
+.shell .cmd .box{display:inline-flex;align-items:center;gap:10px;padding:10px 20px 10px 16px;border-radius:999px;background:var(--pill);color:var(--pillfg);font:600 16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;
+ -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);box-shadow:var(--pillsh);border:1px solid var(--hair)}
+.shell .cmd .box::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--live);box-shadow:0 0 0 4px var(--live-s)}
+.shell .cmd .box small{font:500 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);margin-right:2px}
+.shell .tc{font:500 14px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--muted2)}
+/* cards */
+.card{background:var(--card);border-radius:28px;padding:30px 32px;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.card p{font-size:20px;margin:8px 0 0;color:var(--muted);line-height:1.45}
+.card.acc{box-shadow:inset 0 4px 0 var(--accent),var(--shadow)} .card.ok{box-shadow:inset 0 4px 0 var(--ok),var(--shadow)}
+.card.bad{box-shadow:inset 0 4px 0 var(--bad),var(--shadow)} .card.warn{box-shadow:inset 0 4px 0 var(--warn),var(--shadow)}
+.tcode{display:inline-block;font:600 13px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--accent);background:var(--acc-s);border-radius:999px;padding:5px 12px;margin-bottom:14px;letter-spacing:.02em}
+.num{font:700 60px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.05;margin-bottom:10px}
+/* macOS-window panels */
+.se37{background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--winsh);border:1px solid var(--hair)}
+.se37 .title{display:flex;align-items:center;gap:8px;padding:15px 22px;font:500 15px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);border-bottom:1px solid var(--hair);background:var(--chrome)}
+.se37 .title::before{content:"";flex:0 0 12px;height:12px;border-radius:50%;background:#ff5f57;box-shadow:20px 0 0 #febc2e,40px 0 0 #28c840;margin-right:46px}
+.se37 .title span{font:600 15px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--text)}
+.se37 .tabs{display:inline-flex;margin:16px 22px 4px;padding:3px;border-radius:11px;background:var(--seg);gap:2px}
+.se37 .tabs div{padding:6px 13px;border-radius:8px;font:500 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted)}
+.se37 .tabs div.on{background:var(--card);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06)}
+.se37 table{border:0;box-shadow:none;background:transparent;border-radius:0}
+/* code */
+.abap{background:var(--codebg);color:var(--code);border-radius:22px;padding:28px 32px;font:19px/1.68 "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;white-space:pre-wrap;margin:0;box-shadow:var(--winsh);letter-spacing:0}
+.abap .kw{color:#fc5fa3;font-weight:600} .abap .st{color:#fdb877} .abap .cm{color:#7f8c98;font-style:italic} .abap .nu{color:#d0bf69}
+.abap .hl{background:rgba(255,255,255,.07);border-radius:6px;display:inline-block;width:100%;padding:0 6px;margin-left:-6px}
+.json .k{color:#5dd8ff} .json .s{color:#fdb877} .json .n{color:#d0bf69} .json .x{color:#ff6961;font-weight:700}
+/* output */
+.out{background:var(--card);border-radius:22px;padding:22px 26px;font-size:20px;line-height:1.55;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.out .who{display:flex;align-items:center;gap:8px;font:600 12px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.out .who::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.out.bad .who{color:var(--bad)} .out.ok .who{color:var(--ok)}
+.msg{display:flex;gap:14px;align-items:flex-start;padding:17px 22px;border-radius:18px;font-size:21px;line-height:1.45}
+.msg .i{flex:0 0 26px;height:26px;margin-top:1px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font:700 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif}
+.msg.e{background:var(--bad-s)} .msg.e .i{background:var(--bad)}
+.msg.w{background:var(--warn-s)} .msg.w .i{background:var(--warn)}
+.msg.s{background:var(--ok-s)} .msg.s .i{background:var(--ok)}
+.msg.n{background:var(--acc-s)} .msg.n .i{background:var(--accent)}
+/* tables */
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--hair)}
+th{text-align:left;padding:18px 26px 12px;font:600 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:transparent;border-bottom:1px solid var(--hair)}
+td{padding:15px 26px;font-size:21px;border-bottom:1px solid var(--hair);vertical-align:top;letter-spacing:-.006em}
+tr:last-child td{border-bottom:0}
+td.m{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-size:19px;letter-spacing:0}
+.pass{color:var(--ok);font-weight:600}.fail{color:var(--bad);font-weight:600}.warnc{color:var(--warn);font-weight:600}
+.chip{display:inline-block;padding:4px 12px;border-radius:999px;font:600 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.04em}
+.chip.ok{background:var(--ok-s);color:var(--ok)}.chip.bad{background:var(--bad-s);color:var(--bad)}.chip.warn{background:var(--warn-s);color:var(--warn)}.chip.acc{background:var(--acc-s);color:var(--accent)}
+.idoc{display:inline-flex;align-items:center;gap:9px;font:600 16px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace}
+.idoc i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.idoc.g i{background:var(--ok);box-shadow:0 0 0 4px var(--ok-s)}.idoc.r i{background:var(--bad);box-shadow:0 0 0 4px var(--bad-s)}.idoc.y i{background:var(--warn);box-shadow:0 0 0 4px var(--warn-s)}
+/* bars */
+.bar{display:grid;grid-template-columns:240px 1fr 150px;align-items:center;gap:22px;font-size:22px;font-weight:500;margin:14px 0;letter-spacing:-.01em}
+.bar .tr{height:12px;border-radius:999px;background:var(--seg)}
+.bar .tr i{display:block;height:100%;border-radius:999px;background:var(--grad)}
+.bar .tr i.low{background:var(--bad)}
+.bar .v{font:500 17px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--muted)}
+/* flow */
+.flow{display:flex;align-items:stretch;gap:12px}
+.flow .st{flex:1;background:var(--card);border-radius:24px;padding:26px 24px;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.flow .st h3{font-size:22px}.flow .st p{font-size:18px;margin:8px 0 0;color:var(--muted);line-height:1.4}
+.flow .ar{align-self:center;font-size:24px;color:var(--muted2);font-weight:300}
+.callout{padding:22px 28px;border-radius:20px;font-size:23px;line-height:1.5;background:var(--seg);letter-spacing:-.006em}
+.callout.acc{background:var(--acc-s)}.callout.ok{background:var(--ok-s)}.callout.bad{background:var(--bad-s)}.callout.warn{background:var(--warn-s)}
+/* debugger window */
+.dbg{position:relative;display:grid;grid-template-columns:1.25fr 1fr;border-radius:22px;overflow:hidden;box-shadow:var(--winsh);border:1px solid var(--hair);background:var(--codebg);padding-top:46px}
+.dbg::before{content:"";position:absolute;top:17px;left:20px;width:12px;height:12px;border-radius:50%;background:#ff5f57;box-shadow:20px 0 0 #febc2e,40px 0 0 #28c840}
+.dbg .src{color:var(--code);font:19px/1.8 "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;padding:6px 0 20px}
+.dbg .src div{padding:0 22px;white-space:pre}
+.dbg .src .cur{background:rgba(10,132,255,.22);box-shadow:inset 3px 0 0 #0a84ff}
+.dbg .src .ln{color:#5f6670;display:inline-block;width:40px}
+.dbg .vars{background:var(--card)}
+.dbg .vars table{border:0;box-shadow:none;border-radius:0}
+/* section divider */
+.slide.div{background:var(--divbg)}
+.slide.div .shell{color:rgba(255,255,255,.45)} .slide.div .shell .obj{color:#fff} .slide.div .shell .tc{color:rgba(255,255,255,.4)}
+.divgrid{display:flex;flex-direction:column;justify-content:center;flex:1;max-width:1240px}
+.divtc{align-self:flex-start;font:600 17px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 18px;margin-bottom:34px;letter-spacing:.04em}
+.divk{font:600 24px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.01em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;display:inline-block}
+.slide.div h1{color:#fff;font-size:118px;letter-spacing:-.045em}
+.slide.div .lead{color:rgba(255,255,255,.6);font-size:31px}
+.slide.div .lead .mono{color:#fff}
+.slide.title{background:var(--titlebg)}
+.pill{display:inline-block;padding:9px 18px;border-radius:999px;background:var(--seg);font-size:17px;font-weight:500;margin:6px 8px 0 0;color:var(--text);letter-spacing:-.005em}
+.ex{display:flex;gap:16px;align-items:flex-start}
+.ex .n{flex:0 0 44px;height:44px;border-radius:50%;background:var(--grad);color:#fff;font:700 20px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+.ex h3{font-size:22px}.ex p{font-size:18px}
+.timer{display:inline-block;padding:6px 16px;border-radius:999px;background:var(--acc-s);color:var(--accent);font:600 18px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;vertical-align:middle;margin-left:14px;letter-spacing:0}
+.wall{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.wall span{padding:11px 20px;border-radius:999px;background:var(--seg);font-size:19px;font-weight:500;letter-spacing:-.005em}
+#progress{position:absolute;left:0;bottom:0;height:3px;background:var(--grad);transition:width .4s cubic-bezier(.2,.7,.2,1);z-index:5}
+.foot{position:absolute;left:120px;right:120px;bottom:30px;display:flex;justify-content:space-between;font-size:14px;color:var(--muted2);z-index:5;letter-spacing:.01em}
+.notes{display:none}
+#notesPanel{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:rgba(22,22,24,.94);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);color:#f5f5f7;padding:22px 32px;font:17px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;display:none;z-index:20;border-top:1px solid rgba(255,255,255,.1)}
+#notesPanel b{color:#2997ff}
+#help{position:fixed;inset:0;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;z-index:30}
+#help div{background:rgba(28,28,30,.96);color:#f5f5f7;padding:36px 46px;border-radius:24px;font:17px/2 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;min-width:440px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+#help kbd{background:#3a3a3c;padding:3px 10px;border-radius:6px;font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;margin-right:10px}
+#blank{position:fixed;inset:0;background:#000;display:none;z-index:25}
+.hint{position:absolute;bottom:70px;left:120px;font-size:15px;color:var(--muted2)}
+.hint kbd{border:1px solid var(--hair);background:var(--seg);border-radius:6px;padding:2px 8px;margin:0 3px;font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-size:13px;color:var(--muted)}
+
+.note{position:relative;background:#fffdf3;color:#2b2b2b;border-radius:16px;padding:30px 34px 28px;box-shadow:0 2px 6px rgba(0,0,0,.05),0 24px 50px rgba(0,0,0,.10);font-size:24px;line-height:1.55;border:1px solid rgba(0,0,0,.06)}
+html[data-theme="dark"] .note{background:#26241e;color:#f1ede2;border-color:rgba(255,255,255,.06)}
+.note .hd{font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#a07a12;margin-bottom:12px}
+.note .ln{display:flex;gap:14px;padding:7px 0;border-bottom:1px dashed rgba(0,0,0,.10)} .note .ln:last-child{border-bottom:0}
+html[data-theme="dark"] .note .ln{border-color:rgba(255,255,255,.10)}
+.note .tag{flex:0 0 110px;font:700 15px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding-top:5px}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.side{border-radius:28px;padding:30px 32px;background:var(--card);box-shadow:var(--shadow);border:1px solid var(--hair)}
+.side .k{font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;margin-bottom:14px}
+.side.life .k{color:var(--muted)} .side.ai .k{color:var(--accent)}
+.side p{font-size:23px}
+.emoji{font-size:54px;line-height:1;margin-bottom:16px}
+.sheet{width:100%;border-collapse:collapse;background:var(--card);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.sheet th{background:var(--seg);text-align:left;padding:14px 20px;font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sheet td{padding:13px 20px;font-size:21px;border-top:1px solid var(--hair)}
+.sheet .blank{background:var(--bad-s);color:var(--bad);font-weight:600}
+.stepbig{display:flex;gap:18px;align-items:stretch}
+.stepbig .s{flex:1;border-radius:26px;padding:30px;background:var(--card);box-shadow:var(--shadow);border:1px solid var(--hair)}
+.stepbig .s .n{font:700 48px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stepbig .s h3{font-size:26px;margin-top:6px} .stepbig .s p{font-size:20px;color:var(--muted);margin-top:8px}
+</style></head><body>
+<div id="deck">
+<div id="progress"></div>
+<section class="slide title" data-section="Start"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · Start</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="body"><div class="label" style="color:var(--accent)">Day 2 · Class 2.1 · Prompt Engineering</div>
+<h1>Writing the<br><span class="mono">handover note</span></h1>
+<p class="lead" style="margin-top:0">You're going on leave. A colleague will cover your work.<br>How good your note is decides how good their work is.</p>
+<div><span class="pill">One everyday example</span><span class="pill">5 parts of a good prompt</span><span class="pill">Live demos</span><span class="pill">Runs on your laptop</span></div></div>
+<div class="hint">Press <kbd>→</kbd> next <kbd>F</kbd> fullscreen <kbd>T</kbd> theme <kbd>P</kbd> presenter <kbd>?</kbd> help</div>
+<aside class="notes">Before class: open notebooks/Class_3_Handover_Note.ipynb, choose the .venv kernel, run CELL S. Only one example all day: the leave handover. Everyone has written one.</aside>
+</section>
+<section class="slide " data-section="Start"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · Start</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>Yesterday in one line</h2><div class="body center"><div class="big">The AI <em>guesses</em> the next word.<br>So what you give it decides what you get.</div>
+<p class="lead f">Today: how to give it the right input. That's all prompt engineering is.</p></div>
+<aside class="notes">Quick link to Day 1.</aside>
+</section>
+<section class="slide " data-section="The story"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · The story</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>Picture this</h2><div class="body"><div class="g3">
+<div class="card f"><div class="emoji">🏖️</div><h3>You go on leave</h3><p>One week. Your inbox doesn't stop.</p></div>
+<div class="card f"><div class="emoji">🧑‍💼</div><h3>Ravi covers for you</h3><p>Smart, quick, eager to help. But new to your work.</p></div>
+<div class="card f"><div class="emoji">📝</div><h3>You leave a note</h3><p>Ravi will do <b>exactly</b> what the note says, no more and no less.</p></div></div></div>
+<aside class="notes">Make it personal: 'Who here has had a bad handover?' Hands always go up.</aside>
+</section>
+<section class="slide " data-section="The story"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · The story</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="body center"><div class="big">The AI is <em>Ravi</em>.<br>Your prompt is the <em>handover note</em>.</div>
+<p class="lead f">Everything today is about writing a better note.</p></div>
+<aside class="notes">The one idea to remember. Pause here.</aside>
+</section>
+<section class="slide " data-section="The story"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · The story</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>Today's plan</h2><div class="body"><table>
+<tr><th>#</th><th>Topic</th><th>The question</th><th>Notebook</th></tr>
+<tr><td>1</td><td>The one-line note</td><td>What happens if I write too little?</td><td class="m">Cell 1</td></tr>
+<tr><td>2</td><td>The 5 parts</td><td>What should every note contain?</td><td class="m">Cells 2–5</td></tr>
+<tr><td>3</td><td>What matters most</td><td>Which part can I not skip?</td><td class="m">Cell 6</td></tr>
+<tr><td>4</td><td>Examples and readers</td><td>How do I get consistent, well-pitched answers?</td><td class="m">Cells 7–10</td></tr>
+<tr><td>5</td><td>Your turn</td><td>Write and test your own note</td><td class="m">Cells 11–14</td></tr></table></div>
+<aside class="notes">The pill at the top right of each demo slide shows which notebook cell to run.</aside>
+</section>
+<section class="slide " data-section="Setup"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · Setup</span><span class="cmd"><span class="box" data-cell="S"><small>Notebook</small>Cell S</span></span></div>
+<h2>First, check the AI is running</h2><div class="body"><div class="g2" style="align-items:center">
+<div class="card"><div class="emoji">💻</div><h3>It runs on this laptop</h3><p>The AI model is served by <b>Ollama</b>, locally. Nothing goes to the internet.</p><p>The model name is in <span class="mono">bootcamp_config.json</span>.</p></div>
+<div class="f"><div class="msg s"><span class="i">✓</span><span>Ollama is running · model found · <b>Connection OK</b></span></div></div></div></div>
+<aside class="notes"><b>▶ Run CELL S</b> · Run CELL S. You should see three green ticks and 'Connection OK'. The answers on these slides come from a test run on gemma4:e2b, so your wording will differ.</aside>
+</section>
+<section class="slide div" data-section="1 · One-liner"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 1 · One-liner</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="divgrid"><div class="divtc">Part 1</div><div><div class="divk">The one-line note</div><h1>Too little</h1><p class="lead" style="margin-top:0"><span class='mono'>"Please handle my emails."</span></p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="1 · One-liner"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 1 · One-liner</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="vs"><div class="side life f"><div class="k">In real life</div><div class='emoji'>🙃</div><p>You write: <b>"Please handle my emails."</b></p><p>Ravi tries his best, but replies to the wrong people, promises a payment date and misses the urgent one.</p></div><div class="side ai f"><div class="k">With the AI</div><div class='emoji'>🤖</div><p>You type: <b>"Summarise this email."</b></p><p>The AI tries its best, but gives a nice paragraph that leaves out what you actually need.</p></div></div>
+<aside class="notes">Same problem in both worlds.</aside>
+</section>
+<section class="slide " data-section="1 · One-liner"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 1 · One-liner</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>The email we'll use all day</h2><div class="body"><div class="g2" style="align-items:center">
+<div class="card"><div class="label">From: Rahul, Bharat Logistics</div><p style="font-size:22px">"We sent invoice <b>INV-77821</b> for PO <b>4500012346</b> for <b>₹7,80,000</b>. Your team says the price is wrong, but we followed the agreed rate card. Payment is <b>20 days overdue</b>. Otherwise we may <b>stop deliveries</b>."</p></div>
+<div class="f"><p>An everyday vendor email. A price dispute, an overdue payment, a threat to stop deliveries.</p><p><b>What would you want Ravi to tell you about it?</b></p></div></div></div>
+<aside class="notes">Ask the room what they would need to know.</aside>
+</section>
+<section class="slide " data-section="1 · One-liner"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 1 · One-liner</span><span class="cmd"><span class="box" data-cell="1"><small>Notebook</small>Cell 1</span></span></div>
+<h2>"Summarise this email."</h2><div class="body"><div class="out "><div class="who">AI answer · test run · 82 words</div>Rahul Verma from Bharat Logistics is urgently requesting payment for invoice INV-77821 amounting to ₹7,80,000, which is now 20 days overdue… [he] threatens to <b>halt further deliveries</b> if payment is not resolved immediately.</div>
+<p class="lead f">Nice to read. But <b>can you act on it?</b></p></div>
+<aside class="notes"><b>▶ Run CELL 1</b> · Run CELL 1. Real answer, shortened. Let the room answer before the next slide.</aside>
+</section>
+<section class="slide " data-section="1 · One-liner"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 1 · One-liner</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>What's missing?</h2><div class="body"><div class="g4">
+<div class="card bad f"><h3>PO number</h3><p>Not mentioned</p></div>
+<div class="card bad f"><h3>Escalate?</h3><p>No decision</p></div>
+<div class="card bad f"><h3>Who acts?</h3><p>No owner</p></div>
+<div class="card bad f"><h3>Next step</h3><p>None</p></div></div>
+<p class="lead f">The AI did fine. <b>The note didn't tell it what you needed.</b></p></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide div" data-section="2 · Five parts"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 2 · Five parts</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="divgrid"><div class="divtc">Part 2</div><div><div class="divk">The 5 parts</div><h1>What a good note contains</h1><p class="lead" style="margin-top:0">Role · Task · Context · Format · Rules</p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="2 · Five parts"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 2 · Five parts</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>A good handover note</h2><div class="body"><div class="g2" style="align-items:center">
+<div class="note"><div class="hd">✎ Handover note</div><div class="ln"><span class="tag">Role</span><span>You're covering for me as <b>AP lead</b>.</span></div><div class="ln"><span class="tag">Task</span><span><b>Summarise</b> every vendor dispute email.</span></div><div class="ln"><span class="tag">Context</span><span>Anything above <b>₹5,00,000</b> goes to <b>Meera</b> (Finance Controller).</span></div><div class="ln"><span class="tag">Format</span><span>Vendor · Invoice · PO · Amount · Escalate? · Next step</span></div><div class="ln"><span class="tag">Rules</span><span>Never promise a payment date. If something isn't in the email, write <b>"Not stated"</b>.</span></div></div>
+<p class="lead f" style="margin:0">Five short lines. Ravi now knows <b>who he is, what to do, the rules, how to report and what never to do</b>.</p></div></div>
+<aside class="notes">Read the note aloud. Everyone has written one like this.</aside>
+</section>
+<section class="slide " data-section="2 · Five parts"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 2 · Five parts</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>The 5 parts: R-T-C-F-R</h2><div class="body"><table>
+<tr><th>Part</th><th>Question it answers</th><th>Forget it and…</th></tr>
+<tr class="f"><td><b>R</b>ole</td><td>Who are you while I'm away?</td><td>The tone and level of detail are off</td></tr>
+<tr class="f"><td><b>T</b>ask</td><td>What exactly should you do?</td><td>Ravi does something "helpful", but not that</td></tr>
+<tr class="f"><td><b>C</b>ontext</td><td>What rules apply here?</td><td>He guesses your company's rules</td></tr>
+<tr class="f"><td><b>F</b>ormat</td><td>How should the result look?</td><td>Every answer looks different</td></tr>
+<tr class="f"><td><b>R</b>ules</td><td>What must you never do?</td><td>He promises things or makes things up</td></tr></table></div>
+<aside class="notes">Reveal row by row.</aside>
+</section>
+<section class="slide " data-section="2 · Five parts"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 2 · Five parts</span><span class="cmd"><span class="box" data-cell="2"><small>Notebook</small>Cell 2</span></span></div>
+<h2>The same note, written for the AI</h2><div class="body"><pre class="abap"><span class="kw">ROLE</span>     <span class="st">You are an SAP procurement analyst.</span>
+<span class="kw">TASK</span>     <span class="st">Summarise this invoice dispute email.</span>
+<span class="kw">CONTEXT</span>  <span class="st">₹5 lakh = ₹5,00,000. ABOVE ₹5,00,000 → escalate to the Finance Controller. Otherwise → AP team.</span>
+<span class="kw">FORMAT</span>   <span class="st">Vendor · Invoice number · PO number · Invoice amount · Issue · Escalate? (Yes/No + reason) · Next action</span>
+<span class="kw">RULES</span>    <span class="st">If a value is not in the email, write "Not stated". Do not guess. Max 20 words per line.</span>
+<span class="kw">EMAIL</span>    &lt;&lt;&lt; <span class="cm">…Rahul's email…</span> &gt;&gt;&gt;</pre>
+<p class="lead f">The <span class="mono">&lt;&lt;&lt; &gt;&gt;&gt;</span> marks show where <b>your note ends</b> and <b>the email begins</b>. That matters after lunch.</p></div>
+<aside class="notes"><b>▶ Run CELL 2</b> · CELL 2 prints exactly this prompt.</aside>
+</section>
+<section class="slide " data-section="2 · Five parts"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 2 · Five parts</span><span class="cmd"><span class="box" data-cell="3"><small>Notebook</small>Cell 3</span></span></div>
+<h2>Watch the answer improve</h2><div class="body"><div class="g3" style="align-items:start">
+<div class="f"><div class="out bad"><div class="who">Note v1 · Role + Task</div>A long report: subject, sender, details, urgency. <b>No escalation decision.</b></div></div>
+<div class="f"><div class="out "><div class="who">Note v2 · + Format</div>Neat fields ✓<br>Escalate? <b>“Yes, due to disruption of deliveries”</b>: right answer, <b>wrong reason</b></div></div>
+<div class="f"><div class="out ok"><div class="who">Note v3 · + Context + Rules</div>Escalate to Finance Controller? <b>Yes (Amount &gt; ₹5,00,000)</b><br>Next action: <b>Finance Controller review</b></div></div></div>
+<p class="muted f" style="font-size:18px">Test run · 4.1 s → 2.4 s → 1.7 s: a clearer note also gives a shorter, faster answer</p></div>
+<aside class="notes"><b>▶ Run CELL 3</b> · Real answers. In v2 the decision was right for the wrong reason: only the Context line gave the real reason.</aside>
+</section>
+<section class="slide " data-section="2 · Five parts"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 2 · Five parts</span><span class="cmd"><span class="box" data-cell="4"><small>Notebook</small>Cell 4</span></span></div>
+<h2>Checklist: did we get what we need?</h2><div class="body"><table>
+<tr><th>Must have</th><th>One-line note</th><th>Full note</th></tr>
+<tr><td>Invoice number</td><td class="pass">✓</td><td class="pass">✓</td></tr>
+<tr><td>PO number</td><td class="fail">✗</td><td class="pass">✓</td></tr>
+<tr><td>Amount</td><td class="pass">✓</td><td class="pass">✓</td></tr>
+<tr><td>Escalate?</td><td class="fail">✗</td><td class="pass">✓</td></tr>
+<tr><td>Next step</td><td class="fail">✗</td><td class="pass">✓</td></tr>
+<tr><td><b>Score</b></td><td class="fail">2 / 5</td><td class="pass">5 / 5</td></tr></table></div>
+<aside class="notes"><b>▶ Run CELL 4</b> · Real result.</aside>
+</section>
+<section class="slide " data-section="2 · Five parts"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 2 · Five parts</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="vs"><div class="side life f"><div class="k">Vague</div><div class='emoji'>🤷</div><p>You tell Ravi: <b>"big invoices go to Meera"</b>.</p><p>What's big? ₹1 lakh? ₹50 lakh? He'll guess.</p></div><div class="side ai f"><div class="k">Exact</div><div class='emoji'>🎯</div><p>You tell Ravi: <b>"above ₹5,00,000 → Meera"</b>.</p><p>No guessing. Same answer every time.</p></div></div>
+<aside class="notes">Set up the next demo.</aside>
+</section>
+<section class="slide " data-section="2 · Five parts"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 2 · Five parts</span><span class="cmd"><span class="box" data-cell="5"><small>Notebook</small>Cell 5</span></span></div>
+<h2>Vague rule vs exact rule: real results</h2><div class="body"><div class="g2" style="align-items:start">
+<div><div class="label">Vague: "above ₹5 lakh"</div><div class="msg e"><span class="i">!</span><span>Run A: Escalate? <b>No: “below ₹5 lakh”</b></span></div><div style='height:10px'></div><div class="msg w"><span class="i">!</span><span>Run B: Escalate? <b>Yes: “price dispute”</b> (wrong reason)</span></div></div>
+<div><div class="label">Exact: "₹5 lakh = ₹5,00,000. Above it → Meera"</div><div class="msg s"><span class="i">✓</span><span>Escalate? <b>Yes (Amount &gt; ₹5,00,000)</b>, on every run</span></div></div></div>
+<p class="lead f">₹7,80,000 <b>is</b> above ₹5 lakh. With the vague rule, the small AI got the comparison <b>wrong</b>.</p></div>
+<aside class="notes"><b>▶ Run CELL 5</b> · Both vague results are real, from two runs of the same AI.</aside>
+</section>
+<section class="slide " data-section="2 · Five parts"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 2 · Five parts</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="body center"><div class="big">Write rules like you'd brief<br>a <em>new joiner</em>.</div>
+<p class="lead f">Exact numbers. Exact names. No "you know what I mean".</p></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide div" data-section="3 · What matters"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 3 · What matters</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="divgrid"><div class="divtc">Part 3</div><div><div class="divk">What matters most</div><h1>Leave one out</h1><p class="lead" style="margin-top:0">If you only had time for four lines, which one would you drop?</p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="3 · What matters"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 3 · What matters</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>The experiment</h2><div class="body"><div class="g5">
+<div class="card f"><h3>No Role</h3></div><div class="card f"><h3>No Task</h3></div><div class="card f"><h3>No Context</h3></div><div class="card f"><h3>No Format</h3></div><div class="card f"><h3>No Rules</h3></div></div>
+<p class="lead f">Each time we remove one line and check the answer against the checklist. <b>Vote first: which one hurts most?</b></p></div>
+<aside class="notes">Quick show of hands, then run CELL 6.</aside>
+</section>
+<section class="slide " data-section="3 · What matters"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 3 · What matters</span><span class="cmd"><span class="box" data-cell="6"><small>Notebook</small>Cell 6</span></span></div>
+<h2>Results: must-haves found (out of 5)</h2><div class="body">
+<div class="bar f"><span>No Role</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 42 words</span></div>
+<div class="bar f"><span>No Task</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 37 words</span></div>
+<div class="bar f"><span>No Context</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 47 words</span></div>
+<div class="bar f"><span>No Format</span><div class="tr"><i class="low" style="width:60%"></i></div><span class="v">3/5 · 44 words</span></div>
+<div class="bar f"><span>No Rules</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 71 words</span></div></div>
+<aside class="notes"><b>▶ Run CELL 6</b> · Real results.</aside>
+</section>
+<section class="slide " data-section="3 · What matters"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 3 · What matters</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>What it tells us</h2><div class="body"><div class="g3">
+<div class="card bad f"><div class="emoji">📋</div><h3>Format keeps things complete</h3><p>Without it, details fall out (3/5).</p></div>
+<div class="card warn f"><div class="emoji">✂️</div><h3>Rules keep it short</h3><p>Without them: 71 words instead of ~45.</p></div>
+<div class="card acc f"><div class="emoji">🎯</div><h3>Context keeps it right</h3><p>Everything can be there and the <b>decision</b> still wrong (Part 2).</p></div></div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide div" data-section="4 · Examples"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 4 · Examples</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="divgrid"><div class="divtc">Part 4</div><div><div class="divk">Examples and readers</div><h1>Show, and aim</h1><p class="lead" style="margin-top:0">Examples teach faster than instructions. Say who will read it.</p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="4 · Examples"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 4 · Examples</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="vs"><div class="side life f"><div class="k">In real life</div><div class='emoji'>📎</div><p>Instead of explaining your filing system, you show Ravi <b>three emails you already filed</b>.</p><p>He gets it instantly.</p></div><div class="side ai f"><div class="k">With the AI</div><div class='emoji'>🧩</div><p>Give the AI <b>three examples</b> with the right label.</p><p>This is called <b>few-shot</b>. Zero examples is <b>zero-shot</b>.</p></div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="4 · Examples"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 4 · Examples</span><span class="cmd"><span class="box" data-cell="7"><small>Notebook</small>Cell 7</span></span></div>
+<h2>No examples (zero-shot)</h2><div class="body"><div class="card" style="margin-bottom:18px"><p style="font-size:22px;color:var(--text)">"Classify this email: <b>Could you confirm the unit price for M-200 Copper Wire for Q4?</b>"</p></div>
+<div class="f"><div class="out bad"><div class="who">AI answer · test run</div>This email can be classified as <b>Informational Request</b> or <b>Business Inquiry</b>. Here's a breakdown of why… Primary classification… Secondary classifications…</div></div>
+<p class="lead f">Its own labels, plus an essay. <b>You can't sort a mailbox with that.</b></p></div>
+<aside class="notes"><b>▶ Run CELL 7</b> · Real answer, shortened.</aside>
+</section>
+<section class="slide " data-section="4 · Examples"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 4 · Examples</span><span class="cmd"><span class="box" data-cell="8"><small>Notebook</small>Cell 8</span></span></div>
+<h2>Three examples (few-shot)</h2><div class="body"><div class="g2" style="align-items:center">
+<pre class="abap"><span class="cm">Labels: INVOICE_ISSUE · DELIVERY_DELAY · PRICE_QUERY · OTHER</span>
+
+<span class="st">"…haven't arrived yet."</span>      → DELIVERY_DELAY
+<span class="st">"…higher price than agreed."</span> → INVOICE_ISSUE
+<span class="st">"…your price for 500 units?"</span> → PRICE_QUERY
+
+<span class="st">"…confirm the unit price…"</span>   → ?</pre>
+<div><div class="out ok"><div class="who">AI answer · test run</div><span class='mono' style='font-size:38px;font-weight:700'>PRICE_QUERY</span></div>
+<p class="f" style="margin-top:16px">One word. <b>Your</b> label.</p></div></div></div>
+<aside class="notes"><b>▶ Run CELL 8</b> · Real answer.</aside>
+</section>
+<section class="slide " data-section="4 · Examples"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 4 · Examples</span><span class="cmd"><span class="box" data-cell="9"><small>Notebook</small>Cell 9</span></span></div>
+<h2>Five emails, scored</h2><div class="body"><table>
+<tr><th></th><th>Email (short)</th><th>Right label</th><th>AI</th></tr>
+<tr><td>A</td><td>Goods haven't arrived at plant 2000</td><td class="m">DELIVERY_DELAY</td><td class="pass">✓</td></tr>
+<tr><td>B</td><td>Invoice says ₹520, PO says ₹500</td><td class="m">INVOICE_ISSUE</td><td class="pass">✓</td></tr>
+<tr><td>C</td><td>Confirm the unit price for Q4</td><td class="m">PRICE_QUERY</td><td class="pass">✓</td></tr>
+<tr><td>D</td><td>Please update our bank details</td><td class="m">OTHER</td><td class="pass">✓</td></tr>
+<tr><td>E</td><td>Truck broke down, 3 days late</td><td class="m">DELIVERY_DELAY</td><td class="pass">✓</td></tr></table>
+<p class="lead f"><b>5 out of 5</b>, from just three examples.</p></div>
+<aside class="notes"><b>▶ Run CELL 9</b> · Real result.</aside>
+</section>
+<section class="slide " data-section="4 · Examples"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 4 · Examples</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>Careful with email D</h2><div class="body"><div class="g2" style="align-items:center">
+<div><div class="msg w"><span class="i">!</span><span>"Please update our <b>bank details</b> for future payments; new letter attached."</span></div></div>
+<div class="f"><p>The label is right. But this is the <b>most common payment scam</b>.</p><p>Ravi should <b>call the vendor back on a known number</b>, never change bank details from an email. <b>Same for the AI.</b></p></div></div></div>
+<aside class="notes">Ask the room first. Bridge to the scam section in the afternoon.</aside>
+</section>
+<section class="slide " data-section="4 · Examples"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 4 · Examples</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="vs"><div class="side life f"><div class="k">In real life</div><div class='emoji'>👥</div><p>Same news, different reader:</p><p>the <b>vendor</b> gets a polite reply, your <b>boss</b> gets one line.</p></div><div class="side ai f"><div class="k">With the AI</div><div class='emoji'>🎭</div><p>Tell the AI <b>who will read it</b>.</p><p>That's the <b>Role</b> part at work. It changes tone, length and detail.</p></div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="4 · Examples"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 4 · Examples</span><span class="cmd"><span class="box" data-cell="10"><small>Notebook</small>Cell 10</span></span></div>
+<h2>Same email, three readers</h2><div class="body"><div class="g3" style="align-items:start">
+<div class="f"><div class="out "><div class="who">For your team</div>• <b>Invoice blocked:</b> INV-55190, ₹12,00,000<br>• <b>Reason:</b> price difference (steel surcharge)<br>• <b>Action:</b> procurement to confirm the new price</div></div>
+<div class="f"><div class="out "><div class="who">For the vendor</div>Dear Lakshmi, thank you for reaching out regarding PO 4500012348. I will immediately check with our procurement team… I will update you shortly.</div></div>
+<div class="f"><div class="out "><div class="who">For the CFO</div><b>Invoice for Gearbox order is blocked pending procurement confirmation on the revised price due to steel surcharge.</b></div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 10</b> · Real answers, shortened.</aside>
+</section>
+<section class="slide div" data-section="5 · Your turn"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 5 · Your turn</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="divgrid"><div class="divtc">Part 5</div><div><div class="divk">Your turn</div><h1>Write your own note</h1><p class="lead" style="margin-top:0">Change only the lines marked ← change me</p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="5 · Your turn"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 5 · Your turn</span><span class="cmd"><span class="box" data-cell="11–14"><small>Notebook</small>Cell 11–14</span></span></div>
+<h2>Four tasks <span class="timer">40 min</span></h2><div class="body"><div class="g2">
+<div class="card ex f"><div class="n">1</div><div><h3>A full note for Email 3 · Cell 11</h3><p>400 billed, 380 accepted. Is a credit note needed?</p></div></div>
+<div class="card ex f"><div class="n">2</div><div><h3>Your own labels · Cell 12</h3><p>Sort SAP support tickets with 2 examples</p></div></div>
+<div class="card ex f"><div class="n">3</div><div><h3>A different reader · Cell 13</h3><p>An auditor, a buyer or a plant head</p></div></div>
+<div class="card ex f"><div class="n">4</div><div><h3>The AI rates your note · Cell 14</h3><p>0–2 points for each of the 5 parts</p></div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 11–14</b> · Work in pairs.</aside>
+</section>
+<section class="slide " data-section="5 · Your turn"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 5 · Your turn</span><span class="cmd"><span class="box" data-cell="11"><small>Notebook</small>Cell 11</span></span></div>
+<h2>Task 1: right decision, wrong maths</h2><div class="body"><div class="g2" style="align-items:start">
+<div class="out "><div class="who">AI answer · test run</div>– Vendor: Delta Plastics<br>– Invoice: INV-30117<br>– Difference: <b>20 housings (approx 1.67%)</b><br>– Credit note needed: <b>Yes</b></div>
+<div class="f"><div class="card"><div class="label">Python check</div><p class="mono" style="font-size:28px;color:var(--text)">20 ÷ 400 = <b>5%</b></p><p>5% is above 2% → credit note: <b>Yes</b></p></div>
+<div style="height:12px"></div><div class="msg w"><span class="i">!</span><span>Right decision, <b>wrong maths</b>. Never trust the AI's arithmetic.</span></div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 11</b> · Real answer.</aside>
+</section>
+<section class="slide " data-section="5 · Your turn"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 5 · Your turn</span><span class="cmd"><span class="box" data-cell="12–14"><small>Notebook</small>Cell 12–14</span></span></div>
+<h2>Tasks 2–4: sample results</h2><div class="body"><div class="g3">
+<div class="card f"><div class="label">Ticket labels</div><p class="mono" style="color:var(--text);font-size:17px">PERFORMANCE ← slow report<br>AUTHORISATION ← need access<br>MASTER_DATA ← change bank key 🚩</p></div>
+<div class="card f"><div class="label">Reader: auditor</div><p style="color:var(--text)">1. Payment blocked<br>2. Price change not confirmed<br>3. No clear owner</p></div>
+<div class="card f"><div class="label">Rating of "Summarise this email."</div><p style="color:var(--text)">Role 1 · Task 2 · Context 0<br>Format 1 · Rules 1</p><p><b>5 / 10</b></p></div></div></div>
+<aside class="notes"><b>▶ Run CELL 12–14</b> · Real answers.</aside>
+</section>
+<section class="slide " data-section="5 · Your turn"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · 5 · Your turn</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>Keep this template</h2><div class="body"><div class="note"><div class="hd">✎ Prompt template</div><div class="ln"><span class="tag">Role</span><span>You are a ______________.</span></div><div class="ln"><span class="tag">Task</span><span>______________ (one verb: summarise / sort / extract / draft).</span></div><div class="ln"><span class="tag">Context</span><span>The rules, with exact numbers and names: ______________</span></div><div class="ln"><span class="tag">Format</span><span>Answer as: – Field 1  – Field 2  – Field 3</span></div><div class="ln"><span class="tag">Rules</span><span>If something is missing, write "Not stated". Never guess. Max __ words.</span></div></div></div>
+<aside class="notes">Ask them to copy or photograph it.</aside>
+</section>
+<section class="slide " data-section="Wrap-up"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · Wrap-up</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<h2>Remember three things</h2><div class="body"><div class="g3">
+<div class="card acc f"><div class="num">1</div><h3>Prompt = handover note</h3><p>Role · Task · Context · Format · Rules</p></div>
+<div class="card acc f"><div class="num">2</div><h3>Exact numbers</h3><p>Brief it like a new joiner.</p></div>
+<div class="card acc f"><div class="num">3</div><h3>Show and aim</h3><p>Examples for labels, a named reader for tone.</p></div></div></div>
+<aside class="notes">Checkpoint: ask someone to recite the 5 parts.</aside>
+</section>
+<section class="slide title" data-section="Wrap-up"><div class="shell"><span class="obj">Handover note</span><span class="sep">›</span><span class="sec">Class 2.1 · Wrap-up</span><span class="cmd"><span class="tc">Day 2 · Morning</span></span></div>
+<div class="body center"><div class="label" style="color:var(--accent)">After lunch · Class 2.2</div>
+<div class="big">Ravi goes <em>live</em>.</div>
+<p class="lead">300 emails a day. The answers go straight into a tracker sheet. <b>And some emails are scams.</b></p></div>
+<aside class="notes">Bridge.</aside>
+</section>
+<div class="foot"><span id="sec"></span><span id="num"></span></div>
+</div>
+
+<div id="notesPanel"></div>
+<div id="blank"></div>
+<div id="help"><div>
+  <b style="font-size:22px">Keyboard shortcuts</b><br>
+  <kbd>→</kbd><kbd>Space</kbd> Next step / slide<br>
+  <kbd>←</kbd> Previous<br>
+  <kbd>Home</kbd><kbd>End</kbd> First / last slide<br>
+  <kbd>F</kbd> Fullscreen<br>
+  <kbd>T</kbd> Light / dark theme<br>
+  <kbd>P</kbd> Presenter window (notes, next slide, timer)<br>
+  <kbd>N</kbd> Show notes on this screen<br>
+  <kbd>B</kbd> Black screen (pause)<br>
+  <kbd>?</kbd> Toggle this help
+</div></div>
+
+<script>
+const deck=document.getElementById('deck');
+const slides=[...document.querySelectorAll('.slide')];
+const root=document.documentElement;
+let cur=0, pw=null, t0=null;
+
+// theme
+root.dataset.theme=localStorage.getItem('deckTheme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900);deck.style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+
+const frags=s=>[...s.querySelectorAll('.f')];
+const titleOf=s=>(s.querySelector('h1,h2,.quote,.statement')||{}).textContent?.trim().replace(/\s+/g,' ')||'';
+
+function go(i,allOn=false){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  slides[cur].classList.remove('active');
+  cur=i;
+  frags(slides[cur]).forEach(f=>f.classList.toggle('on',allOn));
+  slides[cur].classList.add('active');
+  history.replaceState(null,'','#'+(cur+1));
+  render();
+}
+function next(){
+  const hidden=frags(slides[cur]).filter(f=>!f.classList.contains('on'));
+  if(hidden.length){hidden[0].classList.add('on');render();}
+  else if(cur<slides.length-1) go(cur+1);
+}
+function prev(){
+  const on=frags(slides[cur]).filter(f=>f.classList.contains('on'));
+  if(on.length){on[on.length-1].classList.remove('on');render();}
+  else if(cur>0) go(cur-1,true);
+}
+function render(){
+  document.getElementById('progress').style.width=((cur+1)/slides.length*100)+'%';
+  document.getElementById('num').textContent=`${cur+1} / ${slides.length}`;
+  document.getElementById('sec').textContent='Class 2.1 · '+(slides[cur].dataset.section||'');
+  const n=slides[cur].querySelector('.notes');
+  document.getElementById('notesPanel').innerHTML=`<b>Slide ${cur+1}: ${titleOf(slides[cur])}</b><br>${n?n.innerHTML:'(no notes)'}`;
+  syncPresenter();
+}
+
+// presenter window
+function openPresenter(){
+  pw=window.open('','deckPresenter','width=1200,height=760');
+  if(!pw){alert('Please allow pop-ups to open the presenter view.');return;}
+  const css=document.querySelector('style').textContent;
+  pw.document.open();
+  pw.document.write(`<!DOCTYPE html><html data-theme="${root.dataset.theme}"><head><title>Presenter · Class 2.1</title><style>${css}
+  html,body{overflow:auto;background:#0c0e13;color:#eef0f5}
+  .pv{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto 1fr;gap:20px;padding:20px;height:100vh;box-sizing:border-box}
+  .box2{background:#151922;border-radius:16px;padding:16px;overflow:hidden}
+  .lab{font:700 13px -apple-system,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#5aa9ff;margin-bottom:10px}
+  .mini{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:10px}
+  .mini .stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;background:var(--bg);color:var(--text)}
+  .mini .slide{display:flex!important;animation:none}
+  #pnotes{font:20px/1.6 -apple-system,sans-serif;grid-column:1/3;overflow:auto}
+  #pnotes b{color:#5aa9ff}
+  .top{display:flex;justify-content:space-between;align-items:center;font:600 22px -apple-system,sans-serif}
+  #ptimer{font:800 40px Menlo,monospace;color:#4fd1a1}
+  button{background:#2a3142;color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:16px;margin-left:8px;cursor:pointer}
+  </style></head><body><div class="pv">
+   <div class="box2"><div class="top"><span class="lab">Now · <span id="pnum"></span></span><span><button id="bp">◀ Prev</button><button id="bn">Next ▶</button></span></div><div class="mini"><div class="stage" id="pcur"></div></div></div>
+   <div class="box2"><div class="top"><span class="lab">Next</span><span id="ptimer">00:00</span></div><div class="mini"><div class="stage" id="pnext"></div></div><button id="br" style="margin:12px 0 0">Reset timer</button></div>
+   <div class="box2" id="pnotes"></div>
+  </div></body></html>`);
+  pw.document.close();
+  t0=Date.now();
+  pw.document.addEventListener('keydown',onKey);
+  pw.document.getElementById('bn').onclick=()=>next();
+  pw.document.getElementById('bp').onclick=()=>prev();
+  pw.document.getElementById('br').onclick=()=>{t0=Date.now();};
+  pw.addEventListener('resize',syncPresenter);
+  syncPresenter();
+}
+function syncPresenter(){
+  if(!pw||pw.closed) return;
+  const d=pw.document; d.documentElement.dataset.theme=root.dataset.theme;
+  const put=(id,s)=>{const st=d.getElementById(id); if(!st) return; st.innerHTML=''; if(!s){st.innerHTML='<div style="padding:60px;font-size:60px">End of deck</div>';} else {const c=s.cloneNode(true);c.classList.add('active');st.appendChild(c);} const w=st.parentElement.clientWidth; st.style.transform=`scale(${w/1600})`;};
+  put('pcur',slides[cur]);
+  const nx=slides[cur+1]?slides[cur+1].cloneNode(true):null; if(nx) nx.querySelectorAll('.f').forEach(f=>f.classList.add('on'));
+  put('pnext',nx);
+  const remaining=frags(slides[cur]).filter(f=>!f.classList.contains('on')).length;
+  d.getElementById('pnum').textContent=`Slide ${cur+1} / ${slides.length}${remaining?` · ${remaining} step(s) left`:''}`;
+  const n=slides[cur].querySelector('.notes');
+  d.getElementById('pnotes').innerHTML=`<div class="lab">Speaker notes</div><b>${titleOf(slides[cur])}</b><br>${n?n.innerHTML:'(no notes)'}`;
+}
+setInterval(()=>{if(pw&&!pw.closed&&t0){const s=Math.floor((Date.now()-t0)/1000);pw.document.getElementById('ptimer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}},1000);
+
+function onKey(e){
+  const k=e.key;
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();next();}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();prev();}
+  else if(k==='Home') go(0);
+  else if(k==='End') go(slides.length-1,true);
+  else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+  else if(k==='t'||k==='T'){root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('deckTheme',root.dataset.theme);syncPresenter();}
+  else if(k==='n'||k==='N'){const p=document.getElementById('notesPanel');p.style.display=p.style.display==='block'?'none':'block';}
+  else if(k==='p'||k==='P') openPresenter();
+  else if(k==='b'||k==='B'||k==='.'){const b=document.getElementById('blank');b.style.display=b.style.display==='block'?'none':'block';}
+  else if(k==='?'){const h=document.getElementById('help');h.style.display=h.style.display==='flex'?'none':'flex';}
+  else if(k==='Escape'){document.getElementById('help').style.display='none';document.getElementById('blank').style.display='none';}
+}
+document.addEventListener('keydown',onKey);
+deck.addEventListener('click',e=>{if(e.target.closest('a,button'))return; (e.clientX<innerWidth*0.25)?prev():next();});
+let tx=null;
+addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)(dx<0?next:prev)();tx=null;});
+
+const start=parseInt(location.hash.slice(1));
+slides[0].classList.add('active');
+go(isNaN(start)?0:start-1);
+</script>
+</body>
+</html>

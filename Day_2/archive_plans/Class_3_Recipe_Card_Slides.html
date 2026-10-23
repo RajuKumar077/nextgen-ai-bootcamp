@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Class 2.1: The Recipe Card · Prompt Engineering</title><style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--text)}
+#deck{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:center;background:var(--bg);overflow:hidden}
+.slide{position:absolute;inset:0;padding:70px 110px 96px;display:none;flex-direction:column}
+.slide.active{display:flex;animation:enter .38s ease}
+@keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.f{opacity:0;transform:translateY(14px);transition:opacity .32s,transform .32s}.f.on{opacity:1;transform:none}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center}
+.center{align-items:center;text-align:center}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:28px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+p,li{font-size:29px;line-height:1.45}
+.mono{font-family:"Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace}
+#progress{position:absolute;left:0;top:0;height:8px;transition:width .3s;z-index:5}
+.foot{position:absolute;left:110px;right:110px;bottom:30px;display:flex;justify-content:space-between;font-size:20px;color:var(--muted);z-index:5}
+.notes{display:none}
+#notesPanel{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:rgba(15,18,26,.97);color:#eef0f5;padding:18px 28px;font:17px/1.55 "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;display:none;z-index:20}
+#help{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:30}
+#help div{background:#1b1f27;color:#eef0f5;padding:34px 44px;border-radius:20px;font:18px/2 "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;min-width:440px}
+#help kbd{background:#2c313c;padding:3px 10px;border-radius:6px;font-family:"Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;margin-right:10px}
+#blank{position:fixed;inset:0;background:#000;display:none;z-index:25}
+.hint{position:absolute;bottom:82px;left:110px;font-size:20px;color:var(--muted)}
+.hint kbd{border:1px solid var(--line);border-radius:6px;padding:2px 8px;margin:0 3px;font-family:"Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;font-size:18px}
+table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden}
+th,td{padding:16px 22px;font-size:25px;text-align:left}
+
+:root{--bg:#faf6ef;--paper:#ffffff;--ink:#2b2622;--muted:#7a6e63;--line:#eadfce;
+--tomato:#c8442f;--tomato-s:#fbe6e1;--basil:#3d7a3a;--basil-s:#e4f0e1;--saffron:#c27c12;--saffron-s:#fbefd9;
+--plum:#6d3b8c;--plum-s:#efe4f6;--board:#1f2d28;--chalk:#f4f1e8;--code-bg:#24211e;--code:#f1ebe0;
+--shadow:0 14px 34px rgba(80,50,20,.10);--text:var(--ink);--accent:var(--tomato)}
+html[data-theme="dark"]{--bg:#151c19;--paper:#1f2925;--ink:#f2eee6;--muted:#a9a196;--line:#30403a;
+--tomato:#ff7a5c;--tomato-s:#3b211b;--basil:#8fd48b;--basil-s:#1c3320;--saffron:#ffc35c;--saffron-s:#3a2c12;
+--plum:#c9a0e8;--plum-s:#2c2236;--board:#0e1613;--code-bg:#0e1311;--shadow:0 14px 34px rgba(0,0,0,.45)}
+#progress{background:linear-gradient(90deg,var(--tomato),var(--saffron),var(--basil))}
+#notesPanel{border-top:3px solid #ff7a5c} #notesPanel b{color:#ffc35c}
+h1,h2,.disp{font-family:Georgia,"Times New Roman",serif}
+h1{font-size:96px;line-height:1.02;margin:0 0 22px;letter-spacing:-1px}
+h2{font-size:58px;line-height:1.08;margin:0 0 28px}
+h3{font-size:31px;margin:0 0 8px}
+.kick{font-size:21px;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:var(--tomato);margin-bottom:12px}
+.kick::before{content:"✦ "}
+.muted{color:var(--muted)} .t{color:var(--tomato)} .b{color:var(--basil)} .s{color:var(--saffron)} .pl{color:var(--plum)}
+.lead{font-size:33px;color:var(--muted);max-width:1250px;margin-top:20px}
+.big{font-family:Georgia,serif;font-size:72px;font-weight:700;line-height:1.12;max-width:1350px}
+.big em{font-style:italic;color:var(--tomato)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:26px 28px;box-shadow:var(--shadow)}
+.card p{font-size:24px;margin:6px 0 0;color:var(--muted)}
+.emo{font-size:56px;line-height:1;margin-bottom:12px}
+/* recipe card */
+.rcard{position:relative;background:var(--paper) repeating-linear-gradient(transparent 0 41px,rgba(70,130,180,.16) 41px 42px);
+border:1px solid var(--line);border-top:12px solid var(--tomato);border-radius:10px 10px 18px 18px;padding:24px 28px 24px 52px;box-shadow:var(--shadow)}
+.rcard::before{content:"";position:absolute;left:34px;top:0;bottom:0;width:2px;background:rgba(200,68,47,.35)}
+.rcard h3{font-family:Georgia,serif;font-size:32px}
+.rcard p{font-size:24px;margin:4px 0;color:var(--ink)}
+.L{font-family:Georgia,serif;font-size:96px;font-weight:700;line-height:.9}
+/* chalkboard */
+.chalk{background:var(--board);color:var(--chalk);border-radius:22px;padding:34px 42px;border:12px solid #6b4f36;box-shadow:inset 0 0 60px rgba(0,0,0,.45),var(--shadow);
+font-family:"Segoe Print","Comic Sans MS","Chalkboard SE",cursive;font-size:36px;line-height:1.5}
+.chalk b{color:#ffd27a} .chalk s{color:#a7b0ab}
+/* order ticket (cell tag) */
+.ticket{position:absolute;top:34px;right:56px;z-index:3;background:#fffdf7;color:#2b2622;transform:rotate(2deg);
+padding:12px 22px 16px;border-radius:6px;box-shadow:0 10px 22px rgba(0,0,0,.18);font:800 23px "Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;
+background-image:radial-gradient(circle at 10px -4px,transparent 9px,#fffdf7 10px);background-size:20px 100%;}
+.ticket b{display:block;font:800 13px "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:3px;color:#c8442f}
+/* chapter */
+.slide.chap{background:radial-gradient(circle at 78% 50%,var(--saffron-s),transparent 42%),var(--bg)}
+.chapgrid{display:grid;grid-template-columns:1.35fr 1fr;align-items:center;gap:30px;flex:1}
+.course{font:800 22px "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:5px;text-transform:uppercase;color:var(--basil)}
+.plate{width:430px;height:430px;border-radius:50%;margin:auto;display:flex;align-items:center;justify-content:center;font-size:190px;
+background:radial-gradient(circle,var(--paper) 55%,var(--line) 56%,var(--paper) 62%);box-shadow:0 30px 60px rgba(60,40,10,.18)}
+/* title */
+.slide.title{background:radial-gradient(circle at 88% 18%,var(--tomato-s),transparent 40%),radial-gradient(circle at 8% 92%,var(--basil-s),transparent 42%),var(--bg)}
+.pill{display:inline-block;padding:10px 22px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font-size:22px;font-weight:600;margin:6px 8px 0 0}
+/* menu (agenda) */
+.menu{font-family:Georgia,serif}
+.menu .row{display:flex;align-items:baseline;gap:16px;font-size:31px;padding:9px 0}
+.menu .row .dots{flex:1;border-bottom:3px dotted var(--line);transform:translateY(-8px)}
+.menu .row .c{font:700 22px "Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;color:var(--tomato)}
+.menu .sec{font:800 18px "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:4px;color:var(--basil);text-transform:uppercase;margin-top:12px}
+/* prompt text */
+.ptxt{background:var(--code-bg);color:var(--code);border-radius:18px;padding:22px 28px;font:22px/1.55 "Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;white-space:pre-wrap;margin:0;box-shadow:var(--shadow)}
+.ptxt .r{color:#82aaff;font-weight:700}.ptxt .tk{color:#d7a6ff;font-weight:700}.ptxt .cx{color:#ffcb6b;font-weight:700}.ptxt .fm{color:#b9e07a;font-weight:700}.ptxt .ru{color:#ff9a7a;font-weight:700}.ptxt .d{color:#8a8f98}
+/* chef answer */
+.chef{background:var(--paper);border:1px solid var(--line);border-left:10px solid var(--basil);border-radius:16px;padding:20px 26px;box-shadow:var(--shadow);font-size:24px;line-height:1.5}
+.chef .who{font:800 16px "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:2.5px;color:var(--basil);text-transform:uppercase;margin-bottom:6px}
+.chef.bad{border-left-color:var(--tomato)} .chef.bad .who{color:var(--tomato)}
+.call{padding:20px 28px;border-radius:18px;font-size:27px;line-height:1.45}
+.call.ok{background:var(--basil-s);border-left:10px solid var(--basil)}
+.call.no{background:var(--tomato-s);border-left:10px solid var(--tomato)}
+.call.tip{background:var(--saffron-s);border-left:10px solid var(--saffron)}
+.sap{display:inline-block;margin-top:20px;padding:12px 22px;border-radius:14px;background:var(--plum-s);color:var(--plum);font-size:25px;font-weight:700}
+.sap::before{content:"SAP lens · ";font-weight:900}
+/* tables */
+.tbl{background:var(--paper);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+.tbl th{background:var(--saffron-s);color:var(--saffron);font-size:19px;letter-spacing:1.5px;text-transform:uppercase}
+.tbl td{border-top:1px solid var(--line)}
+/* bars */
+.bar{display:grid;grid-template-columns:260px 1fr 130px;align-items:center;gap:18px;font-size:28px;font-weight:700;margin:10px 0}
+.bar .tr{height:50px;border-radius:12px;background:var(--line);overflow:hidden}
+.bar .tr i{display:block;height:100%;border-radius:12px;background:linear-gradient(90deg,var(--basil),#7cb36a)}
+.bar .tr i.low{background:linear-gradient(90deg,var(--tomato),#e9845f)}
+.bar .v{font:800 25px "Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;color:var(--muted)}
+.ex{display:flex;gap:18px;align-items:flex-start}
+.ex .n{flex:0 0 66px;height:66px;border-radius:50%;background:var(--tomato);color:#fff;font:700 32px Georgia,serif;display:flex;align-items:center;justify-content:center}
+.ex h3{font-size:28px} .ex p{font-size:22px}
+.timer{display:inline-block;padding:8px 20px;border-radius:999px;background:var(--basil-s);color:var(--basil);font-size:23px;font-weight:800;vertical-align:middle;margin-left:14px}
+.wall{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+.wall span{padding:14px 24px;border-radius:14px;background:var(--paper);border:2px solid var(--line);font-size:27px;font-weight:800;box-shadow:var(--shadow)}
+</style></head><body>
+<div id="deck">
+<div id="progress"></div>
+<section class="slide title" data-section="Opening">
+<div class="body"><div class="kick">Day 2 · Class 2.1 · Prompt Engineering</div>
+<h1>The <span class="t">Recipe</span><br>Card 👨‍🍳</h1>
+<p class="lead" style="margin-top:0">The AI is a talented chef. <b>Your prompt is the recipe.</b><br>Today you learn to write recipes that get exactly the dish you want.</p>
+<div><span class="pill">📋 R-T-C-F-R</span><span class="pill">🧪 Taste test</span><span class="pill">📚 Few-shot</span><span class="pill">🎭 Personas</span><span class="pill">💻 Runs on your laptop</span></div></div>
+<div class="hint">Press <kbd>→</kbd> next <kbd>F</kbd> fullscreen <kbd>T</kbd> theme <kbd>P</kbd> presenter <kbd>?</kbd> help</div>
+<aside class="notes">Before class: open notebooks/Class_3_Prompt_Recipe_Card.ipynb in VS Code or Antigravity, choose the .venv kernel, and run CELL S. Today's metaphor: AI = chef, prompt = recipe card.</aside>
+</section>
+<section class="slide " data-section="Opening">
+<div class="kick">Where we left off</div><h2>Yesterday's intern had one weakness</h2><div class="body"><div class="g3">
+<div class="card f"><div class="emo">🔮</div><h3>It predicts</h3><p>It writes the most likely words, without checking facts</p></div>
+<div class="card f"><div class="emo">🎭</div><h3>It bluffed</h3><p>When pushed, it invented a Z-transaction</p></div>
+<div class="card f" style="border:3px solid var(--basil)"><div class="emo">📜</div><h3>One rule fixed it</h3><p>A single clear instruction changed its behaviour</p></div></div>
+<p class="lead f">If <b>one sentence</b> can change it that much, imagine what a <b>full recipe</b> can do.</p></div>
+<aside class="notes">A 2-minute recap of Day 1. Today: from one rule to a complete, reliable recipe.</aside>
+</section>
+<section class="slide " data-section="Opening">
+<div class="kick">Today's menu</div><h2>Class 2.1 · 2 hours</h2><div class="body"><div class="menu" style="max-width:1150px">
+<div class="sec">Starter</div><div class="row"><span>🥢 The empty order</span><span class="dots"></span><span class="c">CELL 1</span></div>
+<div class="sec">Main courses</div>
+<div class="row"><span>📋 The 5 ingredients: R-T-C-F-R</span><span class="dots"></span><span class="c">CELL 2–5</span></div>
+<div class="row"><span>🧪 Taste test: remove one ingredient</span><span class="dots"></span><span class="c">CELL 6</span></div>
+<div class="row"><span>🍽️ Three cooking styles</span><span class="dots"></span><span class="c">CELL 7–10</span></div>
+<div class="sec">Dessert</div><div class="row"><span>🍰 The kitchen challenge</span><span class="dots"></span><span class="c">CELL 11–14</span></div></div></div>
+<aside class="notes">The notebook follows this menu exactly. The paper 'ORDER' ticket in the top-right corner of a slide tells you which cell to run.</aside>
+</section>
+<section class="slide " data-section="Opening"><div class="ticket" data-cell="S"><b>ORDER</b>▶ CELL S</div>
+<div class="kick">New kitchen</div><h2>From today, the chef cooks <span class="b">on your laptop</span></h2><div class="body"><div class="g3">
+<div class="card f"><div class="emo">🦙</div><h3>Ollama</h3><p>Runs an open AI model locally: no cloud, no API key</p></div>
+<div class="card f"><div class="emo">🔒</div><h3>Private</h3><p>Emails and data never leave the machine</p></div>
+<div class="card f"><div class="emo">⚙️</div><h3>Swap the chef</h3><p>The model name is a placeholder in <span class="mono">bootcamp_config.json</span></p></div></div>
+<div class="call tip f" style="margin-top:26px">💡 Small local models are <b>less polished</b> than big cloud models. That's perfect for learning: you'll <b>see the mistakes</b>, and learn to prevent them.</div></div>
+<aside class="notes"><b>▶ Run CELL S</b> · Run CELL S and show the green ticks. Default placeholder: llama3.2:3b; any Ollama model works. The test run for these slides used gemma4:e2b, so your wording will differ.</aside>
+</section>
+<section class="slide chap" data-section="Starter · The empty order">
+<div class="chapgrid"><div><div class="course">Starter</div><h1>The empty order</h1><p class="lead" style="margin-top:0">What happens when you just say: <b>'Food, please'</b>?</p></div><div class="plate">🥢</div></div>
+<aside class="notes">Chapter opener.</aside>
+</section>
+<section class="slide " data-section="Starter · The empty order">
+<div class="kick">Imagine…</div><h2>You walk into a restaurant and say <span class="t">"Food, please."</span></h2><div class="body"><div class="g2">
+<div class="card f"><div class="emo">🍛</div><h3>What arrives?</h3><p>Something tasty… but is it what you wanted? Spicy? Veg? For one or for four?</p></div>
+<div class="card f"><div class="emo">🤷</div><h3>Whose fault?</h3><p>Not the chef's. The chef cooked well, just without knowing <b>your</b> needs.</p></div></div>
+<div class="sap f">"Summarise this email" is the same as "Food, please"</div></div>
+<aside class="notes">Build the analogy before showing the demo.</aside>
+</section>
+<section class="slide " data-section="Starter · The empty order"><div class="ticket" data-cell="1"><b>ORDER</b>▶ CELL 1</div>
+<div class="kick">🔴 Live · the empty order</div><h2>"Summarise this email."</h2><div class="body"><div class="g2" style="align-items:start">
+<pre class="ptxt"><span class="d">From: Rahul Verma, Bharat Logistics</span>
+Invoice <b>INV-77821</b> · PO <b>4500012346</b>
+Amount <b>₹7,80,000</b> · Plant 1000
+"…price is wrong… 20 days overdue…
+ may put further deliveries on hold."</pre>
+<div class="f"><div class="chef"><div class="who">🧑‍🍳 The chef (AI) says</div>Rahul Verma from Bharat Logistics is urgently requesting payment for invoice INV-77821 amounting to ₹7,80,000, which is now 20 days overdue… Rahul warns that the delay is affecting their cash flow and threatens to <b>halt further deliveries</b>…</div>
+<p class="muted" style="font-size:22px">From the test run · 67 words · 1.9 s</p></div></div></div>
+<aside class="notes"><b>▶ Run CELL 1</b> · Real output from the test run. Ask: 'You're the procurement manager. Can you act on this?' Let them answer before the next slide.</aside>
+</section>
+<section class="slide " data-section="Starter · The empty order">
+<div class="kick">What's missing on the plate?</div><h2>Tasty, but not <span class="t">your</span> dish</h2><div class="body"><div class="g4">
+<div class="card f"><div class="emo">🔢</div><h3>PO number</h3><p class="t"><b>❌ missing</b></p></div>
+<div class="card f"><div class="emo">⬆️</div><h3>Escalate?</h3><p class="t"><b>❌ no decision</b></p></div>
+<div class="card f"><div class="emo">👤</div><h3>Who acts?</h3><p class="t"><b>❌ no owner</b></p></div>
+<div class="card f"><div class="emo">➡️</div><h3>Next step</h3><p class="t"><b>❌ none</b></p></div></div></div>
+<aside class="notes">Reveal one at a time. These gaps become the ingredients of our recipe.</aside>
+</section>
+<section class="slide " data-section="Starter · The empty order">
+<div class="body center"><div class="big">The chef isn't the problem.<br><em>The order is.</em></div>
+<p class="lead f">Same model, same email. Everything else today comes from <b>changing the order</b>.</p></div>
+<aside class="notes">Pause here. This is the key idea of the class.</aside>
+</section>
+<section class="slide chap" data-section="Main 1 · The recipe card">
+<div class="chapgrid"><div><div class="course">Main course 1</div><h1>The recipe card</h1><p class="lead" style="margin-top:0">Five ingredients that turn a vague order into an exact dish</p></div><div class="plate">📋</div></div>
+<aside class="notes">Chapter opener.</aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card">
+<div class="kick">Order ticket vs recipe card</div><h2>A one-liner vs a real recipe</h2><div class="body"><div class="g2">
+<div class="card f"><h3 class="t">🧾 Order ticket</h3><pre class="ptxt" style="margin-top:12px">1 × summary</pre><p style="margin-top:14px">The chef guesses everything else</p></div>
+<div class="rcard f"><h3>📋 Recipe card</h3><p>👨‍🍳 Chef: procurement analyst</p><p>🎯 Dish: dispute summary</p><p>🧂 House rule: &gt; ₹5,00,000 → Finance Controller</p><p>🍱 Plating: 7 fixed fields</p><p>🚫 Allergies: no guessing</p></div></div>
+<div class="sap f">A prompt = a functional spec. Vague spec, vague build.</div></div>
+<aside class="notes">Every consultant has seen a vague spec produce a vague build.</aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card">
+<div class="kick">The 5 ingredients</div><h2>R · T · C · F · R</h2><div class="body"><div class="g5">
+<div class="rcard f" style="padding-left:44px"><div class="L" style="color:#3a6fd8">R</div><h3>Role</h3><p>Who's cooking?</p></div>
+<div class="rcard f" style="padding-left:44px"><div class="L pl">T</div><h3>Task</h3><p>Which dish?</p></div>
+<div class="rcard f" style="padding-left:44px"><div class="L s">C</div><h3>Context</h3><p>House rules</p></div>
+<div class="rcard f" style="padding-left:44px"><div class="L b">F</div><h3>Format</h3><p>Plating</p></div>
+<div class="rcard f" style="padding-left:44px"><div class="L t">R</div><h3>Rules</h3><p>Allergies</p></div></div>
+<p class="lead f" style="text-align:center;max-width:none">Memory aid: <b>R</b>eal <b>T</b>eams <b>C</b>ook <b>F</b>ine <b>R</b>ecipes</p></div>
+<aside class="notes">Reveal one card at a time.</aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card">
+<div class="kick">Ingredient 1 · Role</div><h2>👨‍🍳 Who is cooking?</h2><div class="body"><div class="g2" style="align-items:center">
+<div><p class="f">A pastry chef and a grill chef cook <b>very differently</b>.</p><p class="f">The role sets <b>vocabulary, depth and tone</b>.</p></div>
+<div class="g2 f"><div class="card"><h3>🧁 Pastry chef</h3><p>"You are a polite vendor-relations manager."</p></div><div class="card"><h3>🔥 Grill chef</h3><p>"You are an SAP procurement analyst."</p></div></div></div></div>
+<aside class="notes">One line, big effect. We'll compare personas live in Main 3.</aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card">
+<div class="kick">Ingredient 2 · Task</div><h2>🎯 Which dish? One clear verb</h2><div class="body"><div class="g5">
+<div class="card f" style="text-align:center"><div class="emo">📝</div><h3>Summarise</h3></div>
+<div class="card f" style="text-align:center"><div class="emo">🏷️</div><h3>Classify</h3></div>
+<div class="card f" style="text-align:center"><div class="emo">⛏️</div><h3>Extract</h3></div>
+<div class="card f" style="text-align:center"><div class="emo">✉️</div><h3>Draft</h3></div>
+<div class="card f" style="text-align:center"><div class="emo">⚖️</div><h3>Compare</h3></div></div>
+<p class="lead f">❌ "Look at this and do something useful" &nbsp;→&nbsp; ✅ "<b>Summarise</b> this invoice dispute."</p></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card">
+<div class="kick">Ingredient 3 · Context</div><h2>🧂 The house rules</h2><div class="body"><div class="g2" style="align-items:center">
+<div><p class="f">The chef has never worked in <b>your</b> kitchen.</p><p class="f">It doesn't know your <b>thresholds, approvers or policies</b>, unless you write them down.</p></div>
+<div class="rcard f"><h3>House rules</h3><p>₹5 lakh = ₹5,00,000</p><p>Above ₹5,00,000 → Finance Controller</p><p>Otherwise → AP team handles it</p></div></div></div>
+<aside class="notes">This is where SAP expertise matters most. Only you know the house rules.</aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card">
+<div class="kick">Ingredient 4 · Format</div><h2>🍱 How should it be plated?</h2><div class="body"><div class="g2" style="align-items:center">
+<div class="rcard f"><h3>The plate</h3><p>– Vendor:</p><p>– Invoice number:</p><p>– PO number:</p><p>– Invoice amount:</p><p>– Issue (1 line):</p><p>– Escalate? (Yes/No + reason):</p><p>– Next action:</p></div>
+<div><p class="f">Same plate, <b>every time</b>.</p><p class="f">Easy to scan, compare, and paste into a ticket.</p><div class="sap f">Like a fixed ALV layout: same columns, every run</div></div></div></div>
+<aside class="notes">The most forgotten ingredient. The taste test will prove it.</aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card">
+<div class="kick">Ingredient 5 · Rules</div><h2>🚫 The allergies</h2><div class="body"><div class="g3">
+<div class="card f"><div class="emo">🙅</div><h3>No guessing</h3><p>"If a value isn't in the email, write <b>Not stated</b>."</p></div>
+<div class="card f"><div class="emo">✂️</div><h3>Keep it short</h3><p>"Max 20 words per line."</p></div>
+<div class="card f"><div class="emo">🧾</div><h3>Stay on the plate</h3><p>"Don't add information that isn't in the email."</p></div></div>
+<div class="call ok f" style="margin-top:26px">Remember Day 1? <b>Rules are what stop the bluffing.</b></div></div>
+<aside class="notes">Link back to yesterday's 'one rule'.</aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card"><div class="ticket" data-cell="2"><b>ORDER</b>▶ CELL 2</div>
+<div class="kick">🔴 Live · the full recipe card</div><h2>Five ingredients, stacked</h2><div class="body">
+<pre class="ptxt"><span class="r">You are an SAP procurement analyst.</span>
+<span class="tk">Task: Summarise this invoice dispute email.</span>
+<span class="cx">Context (company policy): ₹5 lakh = ₹5,00,000. ABOVE ₹5,00,000 → Finance Controller. Otherwise → AP team.</span>
+<span class="fm">Format: Vendor · Invoice number · PO number · Invoice amount · Issue · Escalate? (Yes/No + reason) · Next action</span>
+<span class="ru">Rules: If a value is not in the email, write "Not stated". Do not guess. Max 20 words per line.</span>
+Email: <span class="d">&lt;&lt;&lt; …the email… &gt;&gt;&gt;</span></pre>
+<p class="lead f">The <b>&lt;&lt;&lt; &gt;&gt;&gt;</b> markers separate <b>our instructions</b> from <b>their data</b>. That matters after lunch 🔐</p></div>
+<aside class="notes"><b>▶ Run CELL 2</b> · The cell prints the assembled prompt. Point out each colour and the markers.</aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card"><div class="ticket" data-cell="3"><b>ORDER</b>▶ CELL 3</div>
+<div class="kick">🔴 Live · add ingredients one by one</div><h2>Watch the dish change</h2><div class="body"><div class="g3" style="align-items:start">
+<div class="f"><div class="chef"><div class="who">1️⃣ Role + Task</div>A long report: subject, sender, details, urgency, an 'Action required' paragraph… <b>no escalation decision</b>.</div></div>
+<div class="f"><div class="chef"><div class="who">2️⃣ + Format</div>Neat fields ✅ · Escalate? <b>Yes, 'due to potential disruption of future deliveries'</b> ⚠️ (the right answer for the wrong reason)</div></div>
+<div class="f"><div class="chef"><div class="who">3️⃣ + Context + Rules</div>Escalate to Finance Controller? <b>Yes (Amount &gt; ₹5,00,000)</b> ✅<br>Next action: <b>Finance Controller review</b> ✅</div></div></div>
+<p class="muted f" style="font-size:22px">From the test run · 3.8 s → 2.3 s → 1.5 s: the better the recipe, the faster the dish</p></div>
+<aside class="notes"><b>▶ Run CELL 3</b> · Real outputs from the test run. The key moment is step 2: with Format but no Context, it guessed 'Yes' for the wrong reason. Only the house rule produced the right reason.</aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card"><div class="ticket" data-cell="4"><b>ORDER</b>▶ CELL 4</div>
+<div class="kick">🔴 Live · the scorecard</div><h2>Which facts made it onto the plate?</h2><div class="body">
+<table class="tbl"><tr><th>Fact a manager needs</th><th>🧾 Empty order</th><th>📋 Recipe card</th></tr>
+<tr><td>Invoice number</td><td>✅</td><td>✅</td></tr><tr><td>PO number</td><td class="t"><b>❌</b></td><td>✅</td></tr>
+<tr><td>Amount</td><td>✅</td><td>✅</td></tr><tr><td>Escalation decision</td><td class="t"><b>❌</b></td><td>✅</td></tr>
+<tr><td>Next action</td><td class="t"><b>❌</b></td><td>✅</td></tr>
+<tr><td><b>Score</b></td><td class="t"><b>2 / 5</b></td><td class="b"><b>5 / 5</b></td></tr></table></div>
+<aside class="notes"><b>▶ Run CELL 4</b> · Real result. The check is simple and fair: does the answer contain the facts?</aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card"><div class="ticket" data-cell="5"><b>ORDER</b>▶ CELL 5</div>
+<div class="kick">🔴 Live · vague vs explicit house rules</div><h2>The chef got the maths <span class="t">wrong</span></h2><div class="body"><div class="g2" style="align-items:start">
+<div><pre class="ptxt">Context: Disputes on invoices above
+₹5 lakh must go to the finance controller.</pre>
+<div class="f" style="margin-top:14px"><div class="chef bad"><div class="who">😕 Vague rule</div>Escalate to Finance Controller? <b>No: price dispute is below ₹5 lakh.</b></div></div></div>
+<div><pre class="ptxt">₹5 lakh = ₹5,00,000.
+If amount is ABOVE ₹5,00,000 → escalate
+to the Finance Controller. Otherwise → AP team.</pre>
+<div class="f" style="margin-top:14px"><div class="chef"><div class="who">✅ Explicit rule</div>Escalate to Finance Controller? <b>Yes (Amount &gt; ₹5,00,000)</b></div></div></div></div>
+<div class="call no f" style="margin-top:22px">😱 ₹7,80,000 <b>is</b> above ₹5 lakh. With the vague rule, the small model compared the numbers <b>wrongly</b>.</div></div>
+<aside class="notes"><b>▶ Run CELL 5</b> · Real result from the test run, and the strongest moment of the class. Same model; the only change is how clearly the rule is written.</aside>
+</section>
+<section class="slide " data-section="Main 1 · The recipe card">
+<div class="body center"><div class="kick">Kitchen tip</div><div class="big">Spell out the house rules.<br><em>Numbers, thresholds, owners.</em></div>
+<p class="lead f">"₹5 lakh = ₹5,00,000. Above it → Finance Controller. Otherwise → AP team."</p>
+<div class="sap f">Like customising a config table, not mentioning it in the corridor</div></div>
+<aside class="notes">Especially important for small local models.</aside>
+</section>
+<section class="slide chap" data-section="Main 2 · Taste test">
+<div class="chapgrid"><div><div class="course">Main course 2</div><h1>The taste test</h1><p class="lead" style="margin-top:0">Remove one ingredient at a time. Which one ruins the dish?</p></div><div class="plate">🧪</div></div>
+<aside class="notes">Chapter opener.</aside>
+</section>
+<section class="slide " data-section="Main 2 · Taste test">
+<div class="kick">The experiment</div><h2>A blind tasting, five times</h2><div class="body"><div class="g5">
+<div class="card f" style="text-align:center"><h3>No Role</h3><p>R̶ T C F R</p></div><div class="card f" style="text-align:center"><h3>No Task</h3><p>R T̶ C F R</p></div>
+<div class="card f" style="text-align:center"><h3>No Context</h3><p>R T C̶ F R</p></div><div class="card f" style="text-align:center"><h3>No Format</h3><p>R T C F̶ R</p></div>
+<div class="card f" style="text-align:center"><h3>No Rules</h3><p>R T C F R̶</p></div></div>
+<p class="lead f">✋ <b>Vote first:</b> which missing ingredient hurts the most?</p></div>
+<aside class="notes">Take a quick vote, then run the cell.</aside>
+</section>
+<section class="slide " data-section="Main 2 · Taste test"><div class="ticket" data-cell="6"><b>ORDER</b>▶ CELL 6</div>
+<div class="kick">🔴 Live · the results</div><h2>Facts on the plate (out of 5)</h2><div class="body">
+<div class="bar f"><span>Without Role</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 43w</span></div>
+<div class="bar f"><span>Without Task</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 37w</span></div>
+<div class="bar f"><span>Without Context</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 47w</span></div>
+<div class="bar f"><span>Without Format</span><div class="tr"><i class="low" style="width:60%"></i></div><span class="v">3/5 · 44w</span></div>
+<div class="bar f"><span>Without Rules</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 69w</span></div></div>
+<aside class="notes"><b>▶ Run CELL 6</b> · Real results from the test run (w = words). Format is the clear loser. Rules don't change the facts, but without them the answer is the longest (69 words).</aside>
+</section>
+<section class="slide " data-section="Main 2 · Taste test">
+<div class="kick">What the taste test tells us</div><h2>Every ingredient has a job</h2><div class="body"><div class="g3">
+<div class="card f" style="border-top:8px solid var(--basil)"><div class="emo">🍱</div><h3>Format = the salt</h3><p>Leave it out and facts fall off the plate (3/5)</p></div>
+<div class="card f" style="border-top:8px solid var(--saffron)"><div class="emo">✂️</div><h3>Rules = portion control</h3><p>Without them: 69 words instead of ~45</p></div>
+<div class="card f" style="border-top:8px solid var(--tomato)"><div class="emo">🧂</div><h3>Context = correctness</h3><p>Facts can all be present and the <b>decision still wrong</b> (remember CELL 5)</p></div></div></div>
+<aside class="notes">An important nuance: the scorecard checks facts, not correctness. Context fixed the escalation decision.</aside>
+</section>
+<section class="slide " data-section="Main 2 · Taste test">
+<div class="body center"><div class="big">Facts present ≠ <em>decision correct</em>.</div><p class="lead f">Check <b>what</b> it says <i>and</i> <b>why</b> it says it.</p></div>
+<aside class="notes">A short punchline slide.</aside>
+</section>
+<section class="slide chap" data-section="Main 3 · Cooking styles">
+<div class="chapgrid"><div><div class="course">Main course 3</div><h1>Three cooking styles</h1><p class="lead" style="margin-top:0">Just order · show a photo · choose the chef</p></div><div class="plate">🍽️</div></div>
+<aside class="notes">Chapter opener.</aside>
+</section>
+<section class="slide " data-section="Main 3 · Cooking styles">
+<div class="kick">The styles</div><h2>Three ways to ask</h2><div class="body"><div class="g3">
+<div class="rcard f"><h3>🎯 Zero-shot</h3><p>"Just order."</p><p class="muted">No examples</p><p class="b"><b>For simple, common tasks</b></p></div>
+<div class="rcard f"><h3>📸 Few-shot</h3><p>"Here's a photo of the dish."</p><p class="muted">2–3 examples first</p><p class="b"><b>For labels, style, consistency</b></p></div>
+<div class="rcard f"><h3>🎭 Persona</h3><p>"Choose the chef."</p><p class="muted">Give it a role</p><p class="b"><b>For tone, depth, audience</b></p></div></div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Main 3 · Cooking styles"><div class="ticket" data-cell="7"><b>ORDER</b>▶ CELL 7</div>
+<div class="kick">🔴 Live · zero-shot</div><h2>"Classify this email"</h2><div class="body">
+<pre class="ptxt">Classify this email: "Could you confirm the current unit price for material M-200 Copper Wire for Q4?"</pre>
+<div class="f" style="margin-top:18px"><div class="chef bad"><div class="who">🧑‍🍳 The chef (AI) says</div>This email can be classified as a <b>Request for Information (RFI)</b> or a <b>Business Inquiry</b>. Here's a breakdown of why and other ways it could be categorized… Primary Classification… Secondary Classifications…</div></div>
+<p class="lead f">😕 Its <b>own</b> labels, two of them, plus an essay. <b>A system can't route that.</b></p></div>
+<aside class="notes"><b>▶ Run CELL 7</b> · Real output from the test run. Ask: 'Could SAP route a ticket from this answer?'</aside>
+</section>
+<section class="slide " data-section="Main 3 · Cooking styles">
+<div class="kick">Few-shot</div><h2>📸 Show a photo of the dish</h2><div class="body"><div class="g2" style="align-items:center">
+<pre class="ptxt">Categories: INVOICE_ISSUE, DELIVERY_DELAY,
+PRICE_QUERY, OTHER. Reply with the category only.
+
+"…haven't arrived yet."  → <span class="fm">DELIVERY_DELAY</span>
+"…higher price than agreed." → <span class="fm">INVOICE_ISSUE</span>
+"…your price for 500 units?" → <span class="fm">PRICE_QUERY</span>
+
+"…confirm the unit price…" →</pre>
+<div><p class="f">The chef <b>copies the pattern</b> of your examples.</p><div class="sap f">Like giving a developer 2 finished samples before the build</div></div></div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Main 3 · Cooking styles"><div class="ticket" data-cell="8"><b>ORDER</b>▶ CELL 8</div>
+<div class="kick">🔴 Live · few-shot</div><div class="body center"><p class="lead" style="margin:0 0 16px">Same email. Three examples added.</p>
+<div class="big mono" style="font-family:Cascadia Mono,Consolas,monospace;color:var(--basil)">PRICE_QUERY</div>
+<p class="lead f">One word. <b>Our</b> label. Ready for a system.</p></div>
+<aside class="notes"><b>▶ Run CELL 8</b> · Real output.</aside>
+</section>
+<section class="slide " data-section="Main 3 · Cooking styles"><div class="ticket" data-cell="9"><b>ORDER</b>▶ CELL 9</div>
+<div class="kick">🔴 Live · the whole tray</div><h2>5 emails, auto-scored</h2><div class="body">
+<table class="tbl"><tr><th>#</th><th>Email (short)</th><th>Label</th><th></th></tr>
+<tr><td>A</td><td>Goods for PO …49 haven't arrived</td><td class="mono">DELIVERY_DELAY</td><td>✅</td></tr>
+<tr><td>B</td><td>Invoice shows ₹520, PO says ₹500</td><td class="mono">INVOICE_ISSUE</td><td>✅</td></tr>
+<tr><td>C</td><td>Confirm unit price for M-200</td><td class="mono">PRICE_QUERY</td><td>✅</td></tr>
+<tr><td>D</td><td>Please update our bank details</td><td class="mono">OTHER</td><td>✅</td></tr>
+<tr><td>E</td><td>Truck broke down, 3 days late</td><td class="mono">DELIVERY_DELAY</td><td>✅</td></tr></table>
+<p class="lead f">🏆 <b>5 / 5</b> on a small local model, just from three examples.</p></div>
+<aside class="notes"><b>▶ Run CELL 9</b> · Real result from the test run.</aside>
+</section>
+<section class="slide " data-section="Main 3 · Cooking styles">
+<div class="kick">🚩 Red flag</div><div class="body"><div class="chalk">Email D: <b>"Please update our bank details for future payments."</b><br>Label: OTHER ✅<br>Really: a <b>classic payment-fraud pattern</b> 🏦</div>
+<div class="call no f" style="margin-top:26px">Should an AI ever <b>act</b> on this alone? <b>Never.</b> Policy: written confirmation + call-back. We'll build the guardrail on Day 4.</div></div>
+<aside class="notes">Ask the room first. Most will spot it.</aside>
+</section>
+<section class="slide " data-section="Main 3 · Cooking styles">
+<div class="kick">Persona</div><h2>🎭 Same ingredients, different chef</h2><div class="body"><div class="g3">
+<div class="card f"><div class="emo">🧑‍💼</div><h3>Procurement analyst</h3><p>Internal team · 3 bullets</p></div>
+<div class="card f"><div class="emo">🤝</div><h3>Vendor relations</h3><p>A polite reply to the vendor</p></div>
+<div class="card f"><div class="emo">📊</div><h3>CFO</h3><p>One line only</p></div></div>
+<p class="lead f">Email 2: Chennai Components · INV-55190 · ₹12,00,000 blocked for price variance (steel surcharge).</p></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Main 3 · Cooking styles"><div class="ticket" data-cell="10"><b>ORDER</b>▶ CELL 10</div>
+<div class="kick">🔴 Live · three chefs</div><h2>One email, three dishes</h2><div class="body"><div class="g3" style="align-items:start">
+<div class="f"><div class="chef"><div class="who">🧑‍💼 Analyst</div>• <b>Invoice blocked:</b> INV-55190 for PO 4500012348 (₹12,00,000)<br>• <b>Reason:</b> price variance, steel surcharge<br>• <b>Action:</b> procurement to confirm the revised price</div></div>
+<div class="f"><div class="chef"><div class="who">🤝 Vendor relations</div>Dear Lakshmi, thank you for reaching out regarding PO 4500012348. I will immediately check with our procurement team… We aim to resolve this swiftly.</div></div>
+<div class="f"><div class="chef"><div class="who">📊 CFO</div><b>Invoice for Gearbox order is blocked pending procurement confirmation on the revised price due to steel surcharge.</b></div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 10</b> · Real outputs (shortened). Point out how length, tone and detail change.</aside>
+</section>
+<section class="slide " data-section="Main 3 · Cooking styles">
+<div class="kick">When to use which</div><h2>Pick the style for the job</h2><div class="body">
+<table class="tbl"><tr><th>Need</th><th>Style</th><th>SAP example</th></tr>
+<tr><td>Quick, common task</td><td>🎯 Zero-shot</td><td>Explain a transaction code</td></tr>
+<tr><td>Exact labels / categories</td><td>📸 Few-shot</td><td>Route emails and tickets</td></tr>
+<tr><td>Right tone for an audience</td><td>🎭 Persona</td><td>Vendor reply vs CFO update</td></tr>
+<tr><td>Reliable business output</td><td>📋 Full recipe card</td><td>Dispute summary with escalation</td></tr></table>
+<p class="lead f">💡 They <b>combine</b>: a full recipe card <i>with</i> a persona <i>and</i> examples.</p></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Dessert · Kitchen challenge"><div class="ticket" data-cell="11–14"><b>ORDER</b>▶ CELL 11–14</div>
+<div class="kick">🍰 Dessert</div><h2>The Kitchen Challenge <span class="timer">⏱ 40 min</span></h2><div class="body"><div class="g2">
+<div class="card ex f"><div class="n">1</div><div><h3>Your recipe card · CELL 11</h3><p>Write all 5 ingredients for Email 3 (a quantity difference)</p></div></div>
+<div class="card ex f"><div class="n">2</div><div><h3>Your own labels · CELL 12</h3><p>A few-shot classifier for SAP support tickets</p></div></div>
+<div class="card ex f"><div class="n">3</div><div><h3>Persona switch · CELL 13</h3><p>Same email, your chosen chef</p></div></div>
+<div class="card ex f"><div class="n">4</div><div><h3>Head chef review · CELL 14</h3><p>The AI scores your prompt 0–2 per ingredient</p></div></div></div>
+<p class="lead f">Change only the lines marked <span class="mono t">← change me</span>, then press <b>Shift + Enter</b>.</p></div>
+<aside class="notes"><b>▶ Run CELL 11–14</b> · Pairs work well. Walk around and look for missing Format or Rules.</aside>
+</section>
+<section class="slide " data-section="Dessert · Kitchen challenge"><div class="ticket" data-cell="11"><b>ORDER</b>▶ CELL 11</div>
+<div class="kick">Challenge 1 · watch the maths</div><h2>Right decision, <span class="t">wrong maths</span></h2><div class="body"><div class="g2" style="align-items:start">
+<div class="chef"><div class="who">🧑‍🍳 The chef (AI) says</div>– Vendor: Delta Plastics<br>– Invoice: INV-30117<br>– Difference: <b>20 housings (approx 1.67%)</b> ❌<br>– Credit note needed: <b>Yes</b> ✅<br>– Next action: Issue credit note for 20 rejected pieces.</div>
+<div class="f"><div class="card"><h3>🐍 Python check</h3><p class="mono" style="font-size:30px;color:var(--ink)">20 ÷ 400 = <b>5%</b></p><p>5% &gt; 2% → credit note <b>Yes</b></p></div>
+<div class="call tip" style="margin-top:18px">The decision was right; the reasoning was wrong. <b>Never trust AI arithmetic</b>, which is the topic after lunch.</div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 11</b> · Real output from the test run: the model wrote 1.67%, but the true figure is 5%. A great teaching moment.</aside>
+</section>
+<section class="slide " data-section="Dessert · Kitchen challenge"><div class="ticket" data-cell="12–13"><b>ORDER</b>▶ CELL 12–13</div>
+<div class="kick">Challenges 2 & 3</div><h2>Your labels, your chef</h2><div class="body"><div class="g2">
+<div class="card f"><h3>📸 Ticket classifier</h3><p class="mono" style="color:var(--ink)">PERFORMANCE ← Report ZMM_STOCK takes 20 min<br>AUTHORISATION ← Need access to MIGO<br>MASTER_DATA ← Change bank key for V300 🚩</p></div>
+<div class="card f"><h3>🕵️ Strict auditor persona</h3><p>1. Invoice payment blockage<br>2. Unconfirmed price variance<br>3. Lack of a clear escalation path</p></div></div>
+<p class="lead f">🚩 Spot it? "Change the bank key" is <b>MASTER_DATA</b>, and also a <b>fraud risk</b>.</p></div>
+<aside class="notes"><b>▶ Run CELL 12–13</b> · Real outputs from the test run.</aside>
+</section>
+<section class="slide " data-section="Dessert · Kitchen challenge"><div class="ticket" data-cell="14"><b>ORDER</b>▶ CELL 14</div>
+<div class="kick">Challenge 4 · head chef review</div><h2>The AI scores "Summarise this email."</h2><div class="body">
+<table class="tbl"><tr><th>Ingredient</th><th>Score (0–2)</th><th>Head chef's note (shortened)</th></tr>
+<tr><td>Role</td><td>1</td><td>No specified role</td></tr><tr><td>Task</td><td class="b"><b>2</b></td><td>Clear: "summarise"</td></tr>
+<tr><td>Context</td><td class="t"><b>0</b></td><td>Missing: what email?</td></tr><tr><td>Format</td><td>1</td><td>No output format</td></tr>
+<tr><td>Rules</td><td>1</td><td>No constraints</td></tr><tr><td><b>Total</b></td><td><b>5 / 10</b></td><td>Now paste <b>your</b> recipe card and beat it!</td></tr></table></div>
+<aside class="notes"><b>▶ Run CELL 14</b> · Real output from the test run. Ask pairs to paste their best prompt and compare scores.</aside>
+</section>
+<section class="slide " data-section="Dessert · Kitchen challenge">
+<div class="kick">Take-home</div><h2>📋 Your recipe card template</h2><div class="body"><pre class="ptxt"><span class="r">ROLE:    You are a ______________________.</span>
+<span class="tk">TASK:    ______________________ (one clear verb).</span>
+<span class="cx">CONTEXT: House rules, with numbers spelled out: ______________________.</span>
+<span class="fm">FORMAT:  Answer as: – Field 1:  – Field 2:  – Field 3:</span>
+<span class="ru">RULES:   If a value is missing, write "Not stated". Do not guess. Max __ words.</span>
+DATA:
+&lt;&lt;&lt;
+(paste the email / text here)
+&gt;&gt;&gt;</pre></div>
+<aside class="notes">Encourage them to save this in their notes.</aside>
+</section>
+<section class="slide " data-section="The bill">
+<div class="kick">Kitchen disasters</div><h2>5 common mistakes</h2><div class="body"><div class="g5">
+<div class="card f"><div class="emo">📏</div><h3>Too long</h3><p>Clear beats long</p></div>
+<div class="card f"><div class="emo">🍽️</div><h3>No format</h3><p>Different plate each time</p></div>
+<div class="card f"><div class="emo">🌫️</div><h3>Vague rules</h3><p>"5 lakh" vs ₹5,00,000</p></div>
+<div class="card f"><div class="emo">📸</div><h3>No examples</h3><p>Its own labels</p></div>
+<div class="card f"><div class="emo">🥣</div><h3>Mixed bowl</h3><p>Instructions and data together, with no <span class="mono">&lt;&lt;&lt; &gt;&gt;&gt;</span></p></div></div></div>
+<aside class="notes">Each mistake was demonstrated live today.</aside>
+</section>
+<section class="slide " data-section="The bill">
+<div class="kick">🧾 The bill</div><h2>Class 2.1 takeaways</h2><div class="body"><div class="g3">
+<div class="rcard f"><h3>1 · Recipe card</h3><p>Role · Task · Context · Format · Rules</p></div>
+<div class="rcard f"><h3>2 · Spell it out</h3><p>Numbers, thresholds and owners, especially for small local models</p></div>
+<div class="rcard f"><h3>3 · Pick the style</h3><p>Few-shot for labels · Persona for tone</p></div></div></div>
+<aside class="notes">Checkpoint: 'Name the 5 ingredients.' 'Which one did the taste test say matters most?'</aside>
+</section>
+<section class="slide " data-section="The bill">
+<div class="kick">Word wall</div><h2>Can you explain each one?</h2><div class="body"><div class="wall">
+<span class="f">📋 Prompt</span><span class="f">👨‍🍳 Role</span><span class="f">🎯 Task</span><span class="f">🧂 Context</span><span class="f">🍱 Format</span><span class="f">🚫 Rules</span>
+<span class="f">🎯 Zero-shot</span><span class="f">📸 Few-shot</span><span class="f">🎭 Persona</span><span class="f">🔒 &lt;&lt;&lt; Data markers &gt;&gt;&gt;</span></div></div>
+<aside class="notes">Point and ask for one-line definitions.</aside>
+</section>
+<section class="slide title" data-section="The bill">
+<div class="body center"><div class="kick">🌉 After lunch · Class 2.2</div>
+<div class="big">A great dish isn't enough when<br>a <em>machine</em> eats it, or the order is <em>poisoned</em>.</div>
+<p class="lead">Next: structured JSON, step-by-step checks, and <b>airport-style security</b> against prompt injection 🛂</p>
+<div class="g3" style="margin-top:34px;width:100%;text-align:left">
+<div class="card"><h3>✅ One thing I learned</h3><p>…this morning</p></div><div class="card"><h3>❓ Still unclear</h3><p>…I'll answer after lunch</p></div><div class="card"><h3>📧 Try it</h3><p>Write a recipe card for a real weekly task (<b>no client data</b>)</p></div></div></div>
+<aside class="notes">Cliffhanger into Class 2.2.</aside>
+</section>
+<div class="foot"><span id="sec"></span><span id="num"></span></div>
+</div>
+
+<div id="notesPanel"></div>
+<div id="blank"></div>
+<div id="help"><div>
+  <b style="font-size:22px">Keyboard shortcuts</b><br>
+  <kbd>→</kbd><kbd>Space</kbd> Next step / slide<br>
+  <kbd>←</kbd> Previous<br>
+  <kbd>Home</kbd><kbd>End</kbd> First / last slide<br>
+  <kbd>F</kbd> Fullscreen<br>
+  <kbd>T</kbd> Light / dark theme<br>
+  <kbd>P</kbd> Presenter window (notes, next slide, timer)<br>
+  <kbd>N</kbd> Show notes on this screen<br>
+  <kbd>B</kbd> Black screen (pause)<br>
+  <kbd>?</kbd> Toggle this help
+</div></div>
+
+<script>
+const deck=document.getElementById('deck');
+const slides=[...document.querySelectorAll('.slide')];
+const root=document.documentElement;
+let cur=0, pw=null, t0=null;
+
+// theme
+root.dataset.theme=localStorage.getItem('deckTheme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900);deck.style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+
+const frags=s=>[...s.querySelectorAll('.f')];
+const titleOf=s=>(s.querySelector('h1,h2,.quote,.statement')||{}).textContent?.trim().replace(/\s+/g,' ')||'';
+
+function go(i,allOn=false){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  slides[cur].classList.remove('active');
+  cur=i;
+  frags(slides[cur]).forEach(f=>f.classList.toggle('on',allOn));
+  slides[cur].classList.add('active');
+  history.replaceState(null,'','#'+(cur+1));
+  render();
+}
+function next(){
+  const hidden=frags(slides[cur]).filter(f=>!f.classList.contains('on'));
+  if(hidden.length){hidden[0].classList.add('on');render();}
+  else if(cur<slides.length-1) go(cur+1);
+}
+function prev(){
+  const on=frags(slides[cur]).filter(f=>f.classList.contains('on'));
+  if(on.length){on[on.length-1].classList.remove('on');render();}
+  else if(cur>0) go(cur-1,true);
+}
+function render(){
+  document.getElementById('progress').style.width=((cur+1)/slides.length*100)+'%';
+  document.getElementById('num').textContent=`${cur+1} / ${slides.length}`;
+  document.getElementById('sec').textContent='Class 2.1 · '+(slides[cur].dataset.section||'');
+  const n=slides[cur].querySelector('.notes');
+  document.getElementById('notesPanel').innerHTML=`<b>Slide ${cur+1}: ${titleOf(slides[cur])}</b><br>${n?n.innerHTML:'(no notes)'}`;
+  syncPresenter();
+}
+
+// presenter window
+function openPresenter(){
+  pw=window.open('','deckPresenter','width=1200,height=760');
+  if(!pw){alert('Please allow pop-ups to open the presenter view.');return;}
+  const css=document.querySelector('style').textContent;
+  pw.document.open();
+  pw.document.write(`<!DOCTYPE html><html data-theme="${root.dataset.theme}"><head><title>Presenter · Class 2.1</title><style>${css}
+  html,body{overflow:auto;background:#0c0e13;color:#eef0f5}
+  .pv{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto 1fr;gap:20px;padding:20px;height:100vh;box-sizing:border-box}
+  .box2{background:#151922;border-radius:16px;padding:16px;overflow:hidden}
+  .lab{font:700 13px -apple-system,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#5aa9ff;margin-bottom:10px}
+  .mini{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:10px}
+  .mini .stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;background:var(--bg);color:var(--text)}
+  .mini .slide{display:flex!important;animation:none}
+  #pnotes{font:20px/1.6 -apple-system,sans-serif;grid-column:1/3;overflow:auto}
+  #pnotes b{color:#5aa9ff}
+  .top{display:flex;justify-content:space-between;align-items:center;font:600 22px -apple-system,sans-serif}
+  #ptimer{font:800 40px Menlo,monospace;color:#4fd1a1}
+  button{background:#2a3142;color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:16px;margin-left:8px;cursor:pointer}
+  </style></head><body><div class="pv">
+   <div class="box2"><div class="top"><span class="lab">Now · <span id="pnum"></span></span><span><button id="bp">◀ Prev</button><button id="bn">Next ▶</button></span></div><div class="mini"><div class="stage" id="pcur"></div></div></div>
+   <div class="box2"><div class="top"><span class="lab">Next</span><span id="ptimer">00:00</span></div><div class="mini"><div class="stage" id="pnext"></div></div><button id="br" style="margin:12px 0 0">Reset timer</button></div>
+   <div class="box2" id="pnotes"></div>
+  </div></body></html>`);
+  pw.document.close();
+  t0=Date.now();
+  pw.document.addEventListener('keydown',onKey);
+  pw.document.getElementById('bn').onclick=()=>next();
+  pw.document.getElementById('bp').onclick=()=>prev();
+  pw.document.getElementById('br').onclick=()=>{t0=Date.now();};
+  pw.addEventListener('resize',syncPresenter);
+  syncPresenter();
+}
+function syncPresenter(){
+  if(!pw||pw.closed) return;
+  const d=pw.document; d.documentElement.dataset.theme=root.dataset.theme;
+  const put=(id,s)=>{const st=d.getElementById(id); if(!st) return; st.innerHTML=''; if(!s){st.innerHTML='<div style="padding:60px;font-size:60px">End of deck</div>';} else {const c=s.cloneNode(true);c.classList.add('active');st.appendChild(c);} const w=st.parentElement.clientWidth; st.style.transform=`scale(${w/1600})`;};
+  put('pcur',slides[cur]);
+  const nx=slides[cur+1]?slides[cur+1].cloneNode(true):null; if(nx) nx.querySelectorAll('.f').forEach(f=>f.classList.add('on'));
+  put('pnext',nx);
+  const remaining=frags(slides[cur]).filter(f=>!f.classList.contains('on')).length;
+  d.getElementById('pnum').textContent=`Slide ${cur+1} / ${slides.length}${remaining?` · ${remaining} step(s) left`:''}`;
+  const n=slides[cur].querySelector('.notes');
+  d.getElementById('pnotes').innerHTML=`<div class="lab">Speaker notes</div><b>${titleOf(slides[cur])}</b><br>${n?n.innerHTML:'(no notes)'}`;
+}
+setInterval(()=>{if(pw&&!pw.closed&&t0){const s=Math.floor((Date.now()-t0)/1000);pw.document.getElementById('ptimer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}},1000);
+
+function onKey(e){
+  const k=e.key;
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();next();}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();prev();}
+  else if(k==='Home') go(0);
+  else if(k==='End') go(slides.length-1,true);
+  else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+  else if(k==='t'||k==='T'){root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('deckTheme',root.dataset.theme);syncPresenter();}
+  else if(k==='n'||k==='N'){const p=document.getElementById('notesPanel');p.style.display=p.style.display==='block'?'none':'block';}
+  else if(k==='p'||k==='P') openPresenter();
+  else if(k==='b'||k==='B'||k==='.'){const b=document.getElementById('blank');b.style.display=b.style.display==='block'?'none':'block';}
+  else if(k==='?'){const h=document.getElementById('help');h.style.display=h.style.display==='flex'?'none':'flex';}
+  else if(k==='Escape'){document.getElementById('help').style.display='none';document.getElementById('blank').style.display='none';}
+}
+document.addEventListener('keydown',onKey);
+deck.addEventListener('click',e=>{if(e.target.closest('a,button'))return; (e.clientX<innerWidth*0.25)?prev():next();});
+let tx=null;
+addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)(dx<0?next:prev)();tx=null;});
+
+const start=parseInt(location.hash.slice(1));
+slides[0].classList.add('active');
+go(isNaN(start)?0:start-1);
+</script>
+</body>
+</html>

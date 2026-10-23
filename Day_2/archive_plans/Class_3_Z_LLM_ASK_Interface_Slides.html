@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Class 2.1 · Z_LLM_ASK: Designing the Interface</title><style>:root{--panel:var(--card);--bar:var(--seg);--line:var(--hair);--bg:#fbfbfd;--card:#ffffff;--chrome:#f5f5f7;--seg:#f0f0f3;--hair:rgba(0,0,0,.07);--text:#1d1d1f;--muted:#6e6e73;--muted2:#aeaeb2;
+--accent:#0071e3;--acc-s:rgba(0,113,227,.08);--grad:linear-gradient(90deg,#0071e3 0%,#6e5bff 55%,#bf4fd6 100%);
+--ok:#1a8f43;--ok-s:rgba(52,199,89,.12);--bad:#d70015;--bad-s:rgba(255,59,48,.09);--warn:#b25e00;--warn-s:rgba(255,149,0,.12);
+--codebg:#1d1d1f;--code:#f5f5f7;--shadow:0 1px 2px rgba(0,0,0,.03),0 10px 30px rgba(0,0,0,.055);--winsh:0 1px 2px rgba(0,0,0,.04),0 28px 60px rgba(0,0,0,.13);
+--pill:rgba(255,255,255,.75);--pillfg:#1d1d1f;--pillsh:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.07);--live:#0071e3;--live-s:rgba(0,113,227,.16);
+--divbg:radial-gradient(900px 600px at 82% 18%,rgba(110,91,255,.30),transparent 62%),radial-gradient(800px 520px at 8% 100%,rgba(0,113,227,.22),transparent 60%),#000;
+--titlebg:radial-gradient(1100px 600px at 85% -12%,rgba(110,91,255,.11),transparent 62%),radial-gradient(900px 520px at -5% 112%,rgba(0,113,227,.09),transparent 60%),#fbfbfd}
+html[data-theme="dark"]{--bg:#000;--card:#1c1c1e;--chrome:#2c2c2e;--seg:#2c2c2e;--hair:rgba(255,255,255,.08);--text:#f5f5f7;--muted:#a1a1a6;--muted2:#636366;
+--accent:#2997ff;--acc-s:rgba(41,151,255,.14);--grad:linear-gradient(90deg,#2997ff 0%,#9d8cff 55%,#f472b6 100%);
+--ok:#30d158;--ok-s:rgba(48,209,88,.14);--bad:#ff453a;--bad-s:rgba(255,69,58,.15);--warn:#ff9f0a;--warn-s:rgba(255,159,10,.14);
+--codebg:#111113;--shadow:0 0 0 1px rgba(255,255,255,.03),0 18px 40px rgba(0,0,0,.55);--winsh:0 0 0 1px rgba(255,255,255,.05),0 30px 80px rgba(0,0,0,.75);
+--pill:rgba(44,44,46,.72);--pillfg:#f5f5f7;--pillsh:0 8px 24px rgba(0,0,0,.45);--live:#2997ff;--live-s:rgba(41,151,255,.25);
+--titlebg:radial-gradient(1100px 600px at 85% -12%,rgba(110,91,255,.20),transparent 62%),radial-gradient(900px 520px at -5% 112%,rgba(41,151,255,.14),transparent 60%),#000}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+#deck{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:center;background:var(--bg);overflow:hidden}
+.slide{position:absolute;inset:0;padding:126px 120px 92px;display:none;flex-direction:column}
+.slide.active{display:flex;animation:enter .6s cubic-bezier(.2,.7,.2,1)}
+@keyframes enter{from{opacity:0;transform:scale(.988)}to{opacity:1;transform:none}}
+.f{opacity:0;transform:translateY(18px);transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .55s cubic-bezier(.2,.7,.2,1)}.f.on{opacity:1;transform:none}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center}
+.center{align-items:center;text-align:center}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:28px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+p,li{font-size:25px;line-height:1.5;letter-spacing:-.005em;margin:0 0 12px}
+b{font-weight:600}
+.mono{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;letter-spacing:-.01em}
+h1,h2,h3{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;color:var(--text)}
+h1{font-size:92px;line-height:1.02;font-weight:700;letter-spacing:-.04em;margin-bottom:24px}
+h2{font-size:54px;line-height:1.06;font-weight:700;letter-spacing:-.03em;margin-bottom:36px;max-width:1300px}
+h3{font-size:25px;font-weight:600;letter-spacing:-.018em;margin-bottom:8px}
+h1 .mono,.big .mono{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-weight:600;letter-spacing:-.045em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .mono{font-weight:600;color:var(--accent)}
+.muted{color:var(--muted)}
+.lead{font-size:29px;color:var(--muted);max-width:1160px;margin-top:18px;line-height:1.42;letter-spacing:-.012em;font-weight:400}
+.lead b{color:var(--text)}
+.big{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;font-size:78px;font-weight:700;line-height:1.05;letter-spacing:-.04em;max-width:1300px;color:var(--text)}
+.big em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.label{font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+/* minimal header */
+.shell{position:absolute;top:46px;left:120px;right:120px;display:flex;align-items:center;gap:12px;font:500 16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);z-index:4;letter-spacing:-.005em}
+.shell .obj{font:600 15px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--text);letter-spacing:0}
+.shell .sep{opacity:.35}
+.shell .cmd{margin-left:auto;display:flex;align-items:center}
+.shell .cmd .box{display:inline-flex;align-items:center;gap:10px;padding:10px 20px 10px 16px;border-radius:999px;background:var(--pill);color:var(--pillfg);font:600 16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;
+ -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);box-shadow:var(--pillsh);border:1px solid var(--hair)}
+.shell .cmd .box::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--live);box-shadow:0 0 0 4px var(--live-s)}
+.shell .cmd .box small{font:500 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);margin-right:2px}
+.shell .tc{font:500 14px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--muted2)}
+/* cards */
+.card{background:var(--card);border-radius:28px;padding:30px 32px;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.card p{font-size:20px;margin:8px 0 0;color:var(--muted);line-height:1.45}
+.card.acc{box-shadow:inset 0 4px 0 var(--accent),var(--shadow)} .card.ok{box-shadow:inset 0 4px 0 var(--ok),var(--shadow)}
+.card.bad{box-shadow:inset 0 4px 0 var(--bad),var(--shadow)} .card.warn{box-shadow:inset 0 4px 0 var(--warn),var(--shadow)}
+.tcode{display:inline-block;font:600 13px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--accent);background:var(--acc-s);border-radius:999px;padding:5px 12px;margin-bottom:14px;letter-spacing:.02em}
+.num{font:700 60px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.05;margin-bottom:10px}
+/* macOS-window panels */
+.se37{background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--winsh);border:1px solid var(--hair)}
+.se37 .title{display:flex;align-items:center;gap:8px;padding:15px 22px;font:500 15px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);border-bottom:1px solid var(--hair);background:var(--chrome)}
+.se37 .title::before{content:"";flex:0 0 12px;height:12px;border-radius:50%;background:#ff5f57;box-shadow:20px 0 0 #febc2e,40px 0 0 #28c840;margin-right:46px}
+.se37 .title span{font:600 15px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--text)}
+.se37 .tabs{display:inline-flex;margin:16px 22px 4px;padding:3px;border-radius:11px;background:var(--seg);gap:2px}
+.se37 .tabs div{padding:6px 13px;border-radius:8px;font:500 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted)}
+.se37 .tabs div.on{background:var(--card);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06)}
+.se37 table{border:0;box-shadow:none;background:transparent;border-radius:0}
+/* code */
+.abap{background:var(--codebg);color:var(--code);border-radius:22px;padding:28px 32px;font:19px/1.68 "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;white-space:pre-wrap;margin:0;box-shadow:var(--winsh);letter-spacing:0}
+.abap .kw{color:#fc5fa3;font-weight:600} .abap .st{color:#fdb877} .abap .cm{color:#7f8c98;font-style:italic} .abap .nu{color:#d0bf69}
+.abap .hl{background:rgba(255,255,255,.07);border-radius:6px;display:inline-block;width:100%;padding:0 6px;margin-left:-6px}
+.json .k{color:#5dd8ff} .json .s{color:#fdb877} .json .n{color:#d0bf69} .json .x{color:#ff6961;font-weight:700}
+/* output */
+.out{background:var(--card);border-radius:22px;padding:22px 26px;font-size:20px;line-height:1.55;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.out .who{display:flex;align-items:center;gap:8px;font:600 12px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.out .who::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.out.bad .who{color:var(--bad)} .out.ok .who{color:var(--ok)}
+.msg{display:flex;gap:14px;align-items:flex-start;padding:17px 22px;border-radius:18px;font-size:21px;line-height:1.45}
+.msg .i{flex:0 0 26px;height:26px;margin-top:1px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font:700 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif}
+.msg.e{background:var(--bad-s)} .msg.e .i{background:var(--bad)}
+.msg.w{background:var(--warn-s)} .msg.w .i{background:var(--warn)}
+.msg.s{background:var(--ok-s)} .msg.s .i{background:var(--ok)}
+.msg.n{background:var(--acc-s)} .msg.n .i{background:var(--accent)}
+/* tables */
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--hair)}
+th{text-align:left;padding:18px 26px 12px;font:600 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:transparent;border-bottom:1px solid var(--hair)}
+td{padding:15px 26px;font-size:21px;border-bottom:1px solid var(--hair);vertical-align:top;letter-spacing:-.006em}
+tr:last-child td{border-bottom:0}
+td.m{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-size:19px;letter-spacing:0}
+.pass{color:var(--ok);font-weight:600}.fail{color:var(--bad);font-weight:600}.warnc{color:var(--warn);font-weight:600}
+.chip{display:inline-block;padding:4px 12px;border-radius:999px;font:600 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.04em}
+.chip.ok{background:var(--ok-s);color:var(--ok)}.chip.bad{background:var(--bad-s);color:var(--bad)}.chip.warn{background:var(--warn-s);color:var(--warn)}.chip.acc{background:var(--acc-s);color:var(--accent)}
+.idoc{display:inline-flex;align-items:center;gap:9px;font:600 16px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace}
+.idoc i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.idoc.g i{background:var(--ok);box-shadow:0 0 0 4px var(--ok-s)}.idoc.r i{background:var(--bad);box-shadow:0 0 0 4px var(--bad-s)}.idoc.y i{background:var(--warn);box-shadow:0 0 0 4px var(--warn-s)}
+/* bars */
+.bar{display:grid;grid-template-columns:240px 1fr 150px;align-items:center;gap:22px;font-size:22px;font-weight:500;margin:14px 0;letter-spacing:-.01em}
+.bar .tr{height:12px;border-radius:999px;background:var(--seg)}
+.bar .tr i{display:block;height:100%;border-radius:999px;background:var(--grad)}
+.bar .tr i.low{background:var(--bad)}
+.bar .v{font:500 17px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--muted)}
+/* flow */
+.flow{display:flex;align-items:stretch;gap:12px}
+.flow .st{flex:1;background:var(--card);border-radius:24px;padding:26px 24px;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.flow .st h3{font-size:22px}.flow .st p{font-size:18px;margin:8px 0 0;color:var(--muted);line-height:1.4}
+.flow .ar{align-self:center;font-size:24px;color:var(--muted2);font-weight:300}
+.callout{padding:22px 28px;border-radius:20px;font-size:23px;line-height:1.5;background:var(--seg);letter-spacing:-.006em}
+.callout.acc{background:var(--acc-s)}.callout.ok{background:var(--ok-s)}.callout.bad{background:var(--bad-s)}.callout.warn{background:var(--warn-s)}
+/* debugger window */
+.dbg{position:relative;display:grid;grid-template-columns:1.25fr 1fr;border-radius:22px;overflow:hidden;box-shadow:var(--winsh);border:1px solid var(--hair);background:var(--codebg);padding-top:46px}
+.dbg::before{content:"";position:absolute;top:17px;left:20px;width:12px;height:12px;border-radius:50%;background:#ff5f57;box-shadow:20px 0 0 #febc2e,40px 0 0 #28c840}
+.dbg .src{color:var(--code);font:19px/1.8 "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;padding:6px 0 20px}
+.dbg .src div{padding:0 22px;white-space:pre}
+.dbg .src .cur{background:rgba(10,132,255,.22);box-shadow:inset 3px 0 0 #0a84ff}
+.dbg .src .ln{color:#5f6670;display:inline-block;width:40px}
+.dbg .vars{background:var(--card)}
+.dbg .vars table{border:0;box-shadow:none;border-radius:0}
+/* section divider */
+.slide.div{background:var(--divbg)}
+.slide.div .shell{color:rgba(255,255,255,.45)} .slide.div .shell .obj{color:#fff} .slide.div .shell .tc{color:rgba(255,255,255,.4)}
+.divgrid{display:flex;flex-direction:column;justify-content:center;flex:1;max-width:1240px}
+.divtc{align-self:flex-start;font:600 17px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 18px;margin-bottom:34px;letter-spacing:.04em}
+.divk{font:600 24px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.01em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;display:inline-block}
+.slide.div h1{color:#fff;font-size:118px;letter-spacing:-.045em}
+.slide.div .lead{color:rgba(255,255,255,.6);font-size:31px}
+.slide.div .lead .mono{color:#fff}
+.slide.title{background:var(--titlebg)}
+.pill{display:inline-block;padding:9px 18px;border-radius:999px;background:var(--seg);font-size:17px;font-weight:500;margin:6px 8px 0 0;color:var(--text);letter-spacing:-.005em}
+.ex{display:flex;gap:16px;align-items:flex-start}
+.ex .n{flex:0 0 44px;height:44px;border-radius:50%;background:var(--grad);color:#fff;font:700 20px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+.ex h3{font-size:22px}.ex p{font-size:18px}
+.timer{display:inline-block;padding:6px 16px;border-radius:999px;background:var(--acc-s);color:var(--accent);font:600 18px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;vertical-align:middle;margin-left:14px;letter-spacing:0}
+.wall{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.wall span{padding:11px 20px;border-radius:999px;background:var(--seg);font-size:19px;font-weight:500;letter-spacing:-.005em}
+#progress{position:absolute;left:0;bottom:0;height:3px;background:var(--grad);transition:width .4s cubic-bezier(.2,.7,.2,1);z-index:5}
+.foot{position:absolute;left:120px;right:120px;bottom:30px;display:flex;justify-content:space-between;font-size:14px;color:var(--muted2);z-index:5;letter-spacing:.01em}
+.notes{display:none}
+#notesPanel{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:rgba(22,22,24,.94);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);color:#f5f5f7;padding:22px 32px;font:17px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;display:none;z-index:20;border-top:1px solid rgba(255,255,255,.1)}
+#notesPanel b{color:#2997ff}
+#help{position:fixed;inset:0;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;z-index:30}
+#help div{background:rgba(28,28,30,.96);color:#f5f5f7;padding:36px 46px;border-radius:24px;font:17px/2 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;min-width:440px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+#help kbd{background:#3a3a3c;padding:3px 10px;border-radius:6px;font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;margin-right:10px}
+#blank{position:fixed;inset:0;background:#000;display:none;z-index:25}
+.hint{position:absolute;bottom:70px;left:120px;font-size:15px;color:var(--muted2)}
+.hint kbd{border:1px solid var(--hair);background:var(--seg);border-radius:6px;padding:2px 8px;margin:0 3px;font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-size:13px;color:var(--muted)}
+</style></head><body>
+<div id="deck">
+<div id="progress"></div>
+<section class="slide title" data-section="Title"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Title</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<div class="body"><div class="label" style="color:var(--accent)">Day 2 · Class 2.1 · Prompt Engineering</div>
+<h1><span class="mono">Z_LLM_ASK</span><br>Designing the interface</h1>
+<p class="lead" style="margin-top:0">Treat the AI like a new function module in your landscape. <b>Prompt engineering is how you design its interface.</b></p>
+<div><span class="pill">SE37 · interface</span><span class="pill">SPRO · business rules</span><span class="pill">SE11 · structure</span><span class="pill">Unit tests</span><span class="pill">Regression test</span><span class="pill">Local model · Ollama</span></div></div>
+<div class="hint">Press <kbd>→</kbd> next <kbd>F</kbd> fullscreen <kbd>T</kbd> theme <kbd>P</kbd> presenter <kbd>?</kbd> help</div>
+<aside class="notes">Before class: open notebooks/Class_3_Z_LLM_ASK_Interface.ipynb, choose the .venv kernel, run CELL S. Today's single analogy: the LLM is a function module called Z_LLM_ASK. Everything we do today is interface design.</aside>
+</section>
+<section class="slide " data-section="Recap"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Recap</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Yesterday: what is inside the box</h2><div class="body"><div class="g3">
+<div class="card acc f"><div class="tcode">DAY 1</div><h3>It predicts</h3><p>It writes the most likely next tokens. It doesn't look anything up.</p></div>
+<div class="card warn f"><div class="tcode">DAY 1</div><h3>It bluffs</h3><p>Pushed by a careless instruction, it invented a Z-transaction.</p></div>
+<div class="card ok f"><div class="tcode">DAY 1</div><h3>Input controls output</h3><p>One clear rule changed its behaviour completely.</p></div></div>
+<p class="lead f">Today: how to control that input <b>like an engineer</b>.</p></div>
+<aside class="notes">2-minute recap.</aside>
+</section>
+<section class="slide " data-section="The new object"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · The new object</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>A new object arrives in your landscape</h2><div class="body"><div class="g2" style="align-items:center">
+<div class="se37"><div class="title">Function Builder: Display <span>Z_LLM_ASK</span></div><div class="tabs"><div class="on">Attributes</div><div>Import</div><div>Export</div><div>Changing</div><div>Tables</div><div>Exceptions</div><div>Source code</div></div><table><tr><th>Attribute</th><th>Value</th><th></th><th>Note</th></tr><tr><td class="m">Processing type</td><td class="m">Remote-enabled</td><td class="m"></td><td>Called over a destination</td></tr><tr><td class="m">Destination</td><td class="m">OLLAMA_LOCAL</td><td class="m"></td><td>localhost:11434</td></tr><tr><td class="m">Function group</td><td class="m">ZGENAI</td><td class="m"></td><td>Generative AI</td></tr><tr><td class="m">Released</td><td class="m">Yes</td><td class="m"></td><td>Anyone can call it</td></tr></table></div>
+<div class="f"><p>It can read, summarise, classify and draft text in any language.</p><p>It has read more documentation than any consultant ever will.</p><p><b>So what does its interface look like?</b></p></div></div></div>
+<aside class="notes">Introduce the analogy calmly. Everyone in the room has opened SE37 hundreds of times.</aside>
+</section>
+<section class="slide " data-section="The new object"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · The new object</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>The interface tab: almost empty</h2><div class="body">
+<div class="se37"><div class="title">Function Builder: Display <span>Z_LLM_ASK</span></div><div class="tabs"><div>Attributes</div><div class="on">Import</div><div>Export</div><div>Changing</div><div>Tables</div><div>Exceptions</div><div>Source code</div></div><table><tr><th>Parameter</th><th>Typing</th><th>Associated type</th><th>Short text</th></tr><tr><td class="m">IV_TEXT</td><td class="m">TYPE</td><td class="m">STRING</td><td>Anything you like</td></tr><tr><td class="m">EV_TEXT</td><td class="m">TYPE</td><td class="m">STRING</td><td>Anything it likes (Export)</td></tr><tr><td class="m">Exceptions</td><td class="m">–</td><td class="m">none</td><td>It never raises one</td></tr></table></div>
+<div class="callout bad f" style="margin-top:18px">One string in, one string out, <b>no exceptions</b>. It always returns something, <b>even when it should fail</b>.</div></div>
+<aside class="notes">This is the key moment. Pause on 'no exceptions'.</aside>
+</section>
+<section class="slide " data-section="The new object"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · The new object</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>A normal function module vs <span class="mono">Z_LLM_ASK</span></h2><div class="body"><table>
+<tr><th>Property</th><th>BAPI_PO_GETDETAIL</th><th>Z_LLM_ASK</th></tr>
+<tr class="f"><td>Import parameters</td><td>Typed: PURCHASEORDER, ITEMS…</td><td class="warnc">One free-text string</td></tr>
+<tr class="f"><td>Export structure</td><td>Fixed: PO_HEADER, PO_ITEMS</td><td class="warnc">Free text, any shape</td></tr>
+<tr class="f"><td>Business rules</td><td>Read from customizing tables</td><td class="warnc">None, unless you pass them</td></tr>
+<tr class="f"><td>Error handling</td><td>RETURN table, exceptions</td><td class="fail">Always "succeeds"</td></tr>
+<tr class="f"><td>Same input, same output?</td><td>Yes</td><td class="warnc">Not guaranteed</td></tr></table></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="The new object"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · The new object</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<div class="body center"><div class="big">An LLM is a function module<br><em>with no interface.</em></div>
+<p class="lead f">Prompt engineering = <b>designing that interface</b>: the parameters, the rules, the structure and the checks.</p></div>
+<aside class="notes">The one sentence they should remember from today.</aside>
+</section>
+<section class="slide " data-section="Agenda"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Agenda</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Today's development plan · 2 hours</h2><div class="body"><table>
+<tr><th>Step</th><th>Activity</th><th>SAP equivalent</th><th>Notebook</th></tr>
+<tr><td>1</td><td>Call it with one vague parameter</td><td>SE37 single test</td><td class="m">CELL 1</td></tr>
+<tr><td>2</td><td>Define 5 interface parameters (R-T-C-F-R)</td><td>SE37 interface tabs</td><td class="m">CELL 2–5</td></tr>
+<tr><td>3</td><td>Remove one parameter at a time</td><td>Regression test</td><td class="m">CELL 6</td></tr>
+<tr><td>4</td><td>Calling patterns</td><td>Test data · fixed values · variants</td><td class="m">CELL 7–10</td></tr>
+<tr><td>5</td><td>Build your own interface</td><td>Develop · test · Code Inspector</td><td class="m">CELL 11–14</td></tr></table></div>
+<aside class="notes">The command field at the top right of each demo slide shows which notebook cell to run.</aside>
+</section>
+<section class="slide " data-section="Destination test"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Destination test</span><span class="cmd"><span class="box" data-cell="S"><small>Notebook</small>Cell S</span></span></div>
+<h2>First: test the destination</h2><div class="body"><div class="g2" style="align-items:center">
+<div class="se37"><div class="title">RFC destination <span>OLLAMA_LOCAL</span></div><table>
+<tr><th>Setting</th><th>Value</th></tr><tr><td>Target host</td><td class="m">localhost:11434</td></tr>
+<tr><td>Program</td><td class="m">Ollama (local model server)</td></tr><tr><td>Model</td><td class="m">bootcamp_config.json → "model"</td></tr>
+<tr><td>Network</td><td>None. Runs on the laptop.</td></tr></table></div>
+<div class="f"><div class="msg s"><span class="i">✓</span><span>Connection test OK · Ollama is running · model is available</span></div>
+<p style="margin-top:18px">Like <b>SM59 → Connection Test</b> before the first call.</p></div></div></div>
+<aside class="notes"><b>▶ Run CELL S</b> · Run CELL S. Expect three green checks and 'Connection OK'. The slides quote a test run on gemma4:e2b, so your wording will differ.</aside>
+</section>
+<section class="slide div" data-section="Step 1 · Single test"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 1 · Single test</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<div class="divgrid"><div class="divtc">SE37</div><div><div class="divk">Step 1 · Single test</div><h1>One vague parameter</h1><p class="lead" style="margin-top:0"><span class='mono'>IV_TEXT = 'Summarise this email.'</span></p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="Step 1 · Single test"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 1 · Single test</span><span class="cmd"><span class="box" data-cell="1"><small>Notebook</small>Cell 1</span></span></div>
+<h2>The first call</h2><div class="body"><div class="g2" style="align-items:start">
+<pre class="abap"><span class="kw">CALL FUNCTION</span> <span class="st">'Z_LLM_ASK'</span>
+  <span class="kw">DESTINATION</span> <span class="st">'OLLAMA_LOCAL'</span>
+  <span class="kw">EXPORTING</span>
+    iv_text = <span class="st">'Summarise this email.'</span>
+            &amp;&amp; lv_email
+  <span class="kw">IMPORTING</span>
+    ev_text = lv_result.</pre>
+<div class="f"><div class="out "><div class="who">EV_TEXT · test run · 82 words · 2.0 s</div>Rahul Verma from Bharat Logistics is urgently requesting payment for invoice INV-77821 amounting to ₹7,80,000, which is now 20 days overdue… threatens to <b>halt further deliveries</b> if payment is not resolved immediately.</div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 1</b> · This is pseudo-ABAP, just to frame the call. Run CELL 1 for the real Python call. The output is real (shortened). Ask the AP leads in the room: can you post, park or escalate from this?</aside>
+</section>
+<section class="slide " data-section="Step 1 · Single test"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 1 · Single test</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>What the caller needed vs what came back</h2><div class="body"><table>
+<tr><th>Caller needs</th><th>Returned?</th></tr>
+<tr class="f"><td>Invoice and PO reference</td><td><span class="chip warn">PARTIAL</span> &nbsp;invoice yes, PO number missing</td></tr>
+<tr class="f"><td>Escalation decision per policy</td><td><span class="chip bad">MISSING</span></td></tr>
+<tr class="f"><td>Owner / next step</td><td><span class="chip bad">MISSING</span></td></tr>
+<tr class="f"><td>Fixed fields a program can read</td><td><span class="chip bad">MISSING</span></td></tr></table>
+<div class="callout acc f" style="margin-top:18px">Like a BAPI that returns <b>one free-text message</b> instead of a filled export structure. The FM ran fine; <b>the interface was never defined</b>.</div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide div" data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<div class="divgrid"><div class="divtc">SE37</div><div><div class="divk">Step 2 · Interface definition</div><h1>Five parameters</h1><p class="lead" style="margin-top:0">Role · Task · Context · Format · Rules, each behaving like an SAP object you already know</p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>The 5 prompt parameters, mapped to SAP</h2><div class="body"><table>
+<tr><th>Prompt parameter</th><th>Behaves like</th><th>What you pass</th></tr>
+<tr class="f"><td><b>R</b>ole</td><td><span class="tcode">PFCG</span> role</td><td>Who is calling, and at what level of detail</td></tr>
+<tr class="f"><td><b>T</b>ask</td><td><span class="tcode">SE37</span> short text</td><td>One function, one job: summarise · classify · extract</td></tr>
+<tr class="f"><td><b>C</b>ontext</td><td><span class="tcode">SPRO</span> customizing</td><td>Business rules and thresholds, with exact values</td></tr>
+<tr class="f"><td><b>F</b>ormat</td><td><span class="tcode">SE11</span> structure</td><td>The fixed fields of the result</td></tr>
+<tr class="f"><td><b>R</b>ules</td><td><span class="tcode">MESSAGE E</span> checks</td><td>What it must never do, e.g. guess a value</td></tr></table></div>
+<aside class="notes">Reveal row by row. Each prompt parameter maps to an object they use every week.</aside>
+</section>
+<section class="slide " data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Written as an interface</h2><div class="body">
+<div class="se37"><div class="title">Function Builder: Display <span>Z_LLM_ASK</span></div><div class="tabs"><div>Attributes</div><div class="on">Import</div><div>Export</div><div>Changing</div><div>Tables</div><div>Exceptions</div><div>Source code</div></div><table><tr><th>Parameter</th><th>Typing</th><th>Associated type</th><th>Short text</th></tr><tr><td class="m">IV_ROLE</td><td class="m">TYPE</td><td class="m">STRING</td><td>'SAP procurement analyst'</td></tr><tr><td class="m">IV_TASK</td><td class="m">TYPE</td><td class="m">STRING</td><td>'Summarise this invoice dispute'</td></tr><tr><td class="m">IT_CUSTOMIZING</td><td class="m">TYPE</td><td class="m">TT_RULES</td><td>Above ₹5,00,000 → Finance Controller</td></tr><tr><td class="m">ES_RESULT</td><td class="m">TYPE</td><td class="m">ZAP_DISPUTE</td><td>Vendor · Invoice · PO · Amount · Issue · Escalate · Next action</td></tr><tr><td class="m">Checks</td><td class="m">–</td><td class="m">NOT_STATED</td><td>No guessing: write 'Not stated'</td></tr></table></div>
+<p class="lead f">In a prompt, all five are <b>plain text in the same request</b>. They still play exactly these roles.</p></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Role and Task</h2><div class="body"><div class="g2">
+<div class="card acc f"><div class="tcode">PFCG</div><h3>Role: who is calling</h3><p>An "SAP procurement analyst" gets a different answer from a "customer service agent". Different vocabulary, depth and focus, the way a role changes what a user sees.</p></div>
+<div class="card acc f"><div class="tcode">SE37 · short text</div><h3>Task: one function, one job</h3><p>A good function module does one thing. So should a prompt: <b>summarise</b>, <b>classify</b>, <b>extract</b> or <b>draft</b>, not "look at this and help".</p></div></div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Context: the model has no customizing</h2><div class="body"><div class="g2" style="align-items:center">
+<pre class="abap"><span class="cm">" Normal code reads customizing at runtime</span>
+<span class="kw">SELECT SINGLE</span> * <span class="kw">FROM</span> zap_escal_rule
+  <span class="kw">INTO</span> @ls_rule
+  <span class="kw">WHERE</span> bukrs = @lv_bukrs.
+
+<span class="cm">" Z_LLM_ASK has no tables to read.</span>
+<span class="cm">" The rule must travel in the call:</span>
+<span class="hl">"Above ₹5,00,000 → Finance Controller"</span></pre>
+<div class="f"><p>The model has never seen <b>your</b> SPRO, your thresholds or your approvers.</p><p>If a rule matters, <b>pass it as a parameter</b>, every call.</p></div></div></div>
+<aside class="notes">This is where functional expertise is irreplaceable.</aside>
+</section>
+<section class="slide " data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Format and Rules: structure and checks</h2><div class="body"><div class="g2">
+<div class="card acc f"><div class="tcode">SE11</div><h3>Format: a fixed structure</h3><p>Vendor · Invoice number · PO number · Amount · Issue · Escalate (Yes/No + reason) · Next action. The same fields on every call, so they can be parsed and compared.</p></div>
+<div class="card acc f"><div class="tcode">MESSAGE E</div><h3>Rules: the checks</h3><p>"If a value is not in the email, write <b>Not stated</b>. Do not guess. Max 20 words per line." That's the AI version of an input check that stops bad data.</p></div></div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>System prompt vs user prompt</h2><div class="body"><div class="g2">
+<div class="card acc f"><div class="label">System prompt · set once by the developer</div><h3>Like customizing</h3><p>Role, rules, structure, checks. Identical for every call; end users never see it.</p></div>
+<div class="card f"><div class="label">User prompt · changes every call</div><h3>Like the business document</h3><p>The actual email or text to process, wrapped in <span class="mono">&lt;&lt;&lt; &gt;&gt;&gt;</span> markers.</p></div></div>
+<div class="callout acc f" style="margin-top:18px">The notebook helpers support both: <span class="mono">ask_ai(question, system=…)</span>. The split matters for security in Class 2.2.</div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="box" data-cell="2"><small>Notebook</small>Cell 2</span></span></div>
+<h2>The full call</h2><div class="body"><pre class="abap"><span class="kw">ROLE</span>     <span class="st">You are an SAP procurement analyst.</span>
+<span class="kw">TASK</span>     <span class="st">Summarise this invoice dispute email.</span>
+<span class="kw">CONTEXT</span>  <span class="st">₹5 lakh = ₹5,00,000. ABOVE ₹5,00,000 → escalate to the Finance Controller. Otherwise → AP team.</span>
+<span class="kw">FORMAT</span>   <span class="st">Vendor · Invoice number · PO number · Invoice amount · Issue · Escalate? (Yes/No + reason) · Next action</span>
+<span class="kw">RULES</span>    <span class="st">If a value is not in the email, write "Not stated". Do not guess. Max 20 words per line.</span>
+<span class="kw">PAYLOAD</span>  &lt;&lt;&lt; <span class="cm">…vendor email…</span> &gt;&gt;&gt;</pre>
+<p class="lead f">The <span class="mono">&lt;&lt;&lt; &gt;&gt;&gt;</span> markers separate <b>our parameters</b> from <b>external data</b>, like escaping input before dynamic SQL.</p></div>
+<aside class="notes"><b>▶ Run CELL 2</b> · CELL 2 prints the assembled prompt exactly.</aside>
+</section>
+<section class="slide " data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="box" data-cell="3"><small>Notebook</small>Cell 3</span></span></div>
+<h2>Version history: same model, same email</h2><div class="body"><div class="g3" style="align-items:start">
+<div class="f"><div class="out bad"><div class="who">v0.1 · Role + Task</div>A long report: subject, sender, invoice details, urgency, an 'action required' paragraph. <b>No escalation decision.</b></div></div>
+<div class="f"><div class="out "><div class="who">v0.2 · + Structure</div>Fixed fields ✓<br>Escalate? <b>“Yes, due to potential disruption of future deliveries”</b>: right answer, <b>wrong reason</b></div></div>
+<div class="f"><div class="out ok"><div class="who">v1.0 · + Customizing + Checks</div>Escalate to Finance Controller? <b>Yes (Amount &gt; ₹5,00,000)</b><br>Next action: <b>Finance Controller review</b></div></div></div>
+<p class="muted f" style="font-size:19px">Test run · 4.1 s → 2.4 s → 1.7 s</p></div>
+<aside class="notes"><b>▶ Run CELL 3</b> · Real outputs. The key moment is v0.2: with a structure but no customizing, it gave the right answer for the wrong reason.</aside>
+</section>
+<section class="slide " data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="box" data-cell="4"><small>Notebook</small>Cell 4</span></span></div>
+<h2>Unit test: expected vs actual</h2><div class="body"><table>
+<tr><th>Expected in the result</th><th>1 parameter</th><th>5 parameters</th></tr>
+<tr><td>Invoice number</td><td class="pass">PASS</td><td class="pass">PASS</td></tr>
+<tr><td>PO number</td><td class="fail">FAIL</td><td class="pass">PASS</td></tr>
+<tr><td>Amount</td><td class="pass">PASS</td><td class="pass">PASS</td></tr>
+<tr><td>Escalation decision</td><td class="fail">FAIL</td><td class="pass">PASS</td></tr>
+<tr><td>Next action</td><td class="fail">FAIL</td><td class="pass">PASS</td></tr>
+<tr><td><b>Result</b></td><td class="fail">2 / 5</td><td class="pass">5 / 5</td></tr></table></div>
+<aside class="notes"><b>▶ Run CELL 4</b> · Real result.</aside>
+</section>
+<section class="slide " data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="box" data-cell="5"><small>Notebook</small>Cell 5</span></span></div>
+<h2>Customizing must be exact</h2><div class="body"><div class="g2" style="align-items:start">
+<div><div class="label">Vague text</div><pre class="abap"><span class="st">Disputes on invoices above ₹5 lakh
+must go to the finance controller.</span></pre>
+<div class="f" style="margin-top:12px"><div class="msg e"><span class="i">!</span><span>Run A: Escalate? <b>No: “price dispute is below ₹5 lakh”</b></span></div><div style='height:8px'></div><div class="msg w"><span class="i">!</span><span>Run B: Escalate? <b>Yes: “price dispute”</b> (right answer, wrong reason)</span></div></div></div>
+<div><div class="label">Exact customizing value</div><pre class="abap"><span class="st">₹5 lakh = ₹5,00,000.
+If amount is ABOVE ₹5,00,000 → Finance Controller.
+Otherwise → AP team.</span></pre>
+<div class="f" style="margin-top:12px"><div class="msg s"><span class="i">✓</span><span>Escalate? <b>Yes (Amount &gt; ₹5,00,000)</b>, on every run</span></div></div></div></div>
+<div class="callout bad f" style="margin-top:16px">₹7,80,000 <b>is</b> above ₹5 lakh. With the vague text, the small model compared the numbers inconsistently.</div></div>
+<aside class="notes"><b>▶ Run CELL 5</b> · Both vague-text results are real, from two runs of the same model. This is the most important finding of the morning.</aside>
+</section>
+<section class="slide " data-section="Step 2 · Interface"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 2 · Interface</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<div class="body center"><div class="big">Pass business rules the way<br>you'd <em>maintain them in SPRO</em>.</div>
+<p class="lead f">Exact value · exact threshold · exact owner. Not a sentence from a meeting.</p></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide div" data-section="Step 3 · Regression"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 3 · Regression</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<div class="divgrid"><div class="divtc">SE80</div><div><div class="divk">Step 3 · Regression test</div><h1>Remove one parameter</h1><p class="lead" style="margin-top:0">Which parameter can the interface least afford to lose?</p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="Step 3 · Regression"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 3 · Regression</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Five test runs, one parameter missing each time</h2><div class="body"><div class="g5">
+<div class="card f"><h3>– Role</h3><p class="mono">R̶ T C F R</p></div><div class="card f"><h3>– Task</h3><p class="mono">R T̶ C F R</p></div>
+<div class="card f"><h3>– Context</h3><p class="mono">R T C̶ F R</p></div><div class="card f"><h3>– Format</h3><p class="mono">R T C F̶ R</p></div>
+<div class="card f"><h3>– Rules</h3><p class="mono">R T C F R̶</p></div></div>
+<p class="lead f">Poll the room first: <b>which removal breaks the most?</b></p></div>
+<aside class="notes">Quick vote, then run CELL 6.</aside>
+</section>
+<section class="slide " data-section="Step 3 · Regression"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 3 · Regression</span><span class="cmd"><span class="box" data-cell="6"><small>Notebook</small>Cell 6</span></span></div>
+<h2>Results: checks passed (out of 5)</h2><div class="body">
+<div class="bar f"><span>Without Role</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 42 w</span></div>
+<div class="bar f"><span>Without Task</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 37 w</span></div>
+<div class="bar f"><span>Without Context</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 47 w</span></div>
+<div class="bar f"><span>Without Format</span><div class="tr"><i class="low" style="width:60%"></i></div><span class="v">3/5 · 44 w</span></div>
+<div class="bar f"><span>Without Rules</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 71 w</span></div></div>
+<aside class="notes"><b>▶ Run CELL 6</b> · Real results (w = words). Format is the clear loss. Without rules the output is the longest.</aside>
+</section>
+<section class="slide " data-section="Step 3 · Regression"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 3 · Regression</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Reading the regression results</h2><div class="body"><div class="g3">
+<div class="card bad f"><div class="tcode">SE11</div><h3>Structure → completeness</h3><p>Remove it and required fields drop out (3/5)</p></div>
+<div class="card warn f"><div class="tcode">MESSAGE E</div><h3>Checks → scope</h3><p>Remove them: 71 words instead of ~45, with content nobody asked for</p></div>
+<div class="card acc f"><div class="tcode">SPRO</div><h3>Customizing → correctness</h3><p>All fields present, but the <b>decision can still be wrong</b> (Step 2)</p></div></div>
+<div class="callout acc f" style="margin-top:18px">A test that only checks <b>presence</b> misses <b>wrong decisions</b>. Test the logic too, which is what ABAP Unit is for.</div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Step 3 · Regression"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 3 · Regression</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Runtime analysis: a tighter interface runs faster</h2><div class="body"><div class="g3">
+<div class="card f"><div class="label">v0.1 · Role + Task</div><div class="num">4.1 s</div><p>Long, unstructured report</p></div>
+<div class="card f"><div class="label">v0.2 · + Structure</div><div class="num">2.4 s</div><p>Structured, wrong reason</p></div>
+<div class="card ok f"><div class="label">v1.0 · full interface</div><div class="num">1.7 s</div><p>Short, correct, usable</p></div></div>
+<p class="lead f">The model spends its time <b>writing output</b>. A precise interface produces less text, so it's faster and cheaper, as SAT would show.</p></div>
+<aside class="notes">Real timings on the local model; yours depend on hardware.</aside>
+</section>
+<section class="slide div" data-section="Step 4 · Patterns"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 4 · Patterns</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<div class="divgrid"><div class="divtc">SE11</div><div><div class="divk">Step 4 · Calling patterns</div><h1>Zero-shot · few-shot · consumer view</h1><p class="lead" style="margin-top:0">Three ways to call the same function module</p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="Step 4 · Patterns"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 4 · Patterns</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Three calling patterns</h2><div class="body"><table>
+<tr><th>Pattern</th><th>What you pass</th><th>SAP equivalent</th><th>Use for</th></tr>
+<tr class="f"><td><b>Zero-shot</b></td><td>The task only</td><td>Calling with no test data</td><td>Simple, common tasks</td></tr>
+<tr class="f"><td><b>Few-shot</b></td><td>The task + 2–3 example entries</td><td>Domain with <span class="tcode">fixed values</span></td><td>Fixed categories, a consistent style</td></tr>
+<tr class="f"><td><b>Consumer view</b></td><td>The same input for a specific caller</td><td>Report <span class="tcode">variants</span></td><td>Tone, depth, length per audience</td></tr></table></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Step 4 · Patterns"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 4 · Patterns</span><span class="cmd"><span class="box" data-cell="7"><small>Notebook</small>Cell 7</span></span></div>
+<h2>Zero-shot: no allowed values defined</h2><div class="body">
+<pre class="abap">iv_text = <span class="st">'Classify this email: "Could you confirm the current unit price for M-200 Copper Wire for Q4?"'</span></pre>
+<div class="f" style="margin-top:14px"><div class="out bad"><div class="who">EV_TEXT · test run</div>This email can be classified as <b>Informational Request</b> or <b>Business Inquiry</b>. Here's a breakdown of why… Primary classification… Secondary classifications: business inquiry, transactional (implied), operational…</div></div>
+<p class="lead f">Its own values, several of them, plus an essay. <b>No routing logic can consume this.</b></p></div>
+<aside class="notes"><b>▶ Run CELL 7</b> · Real output (shortened).</aside>
+</section>
+<section class="slide " data-section="Step 4 · Patterns"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 4 · Patterns</span><span class="cmd"><span class="box" data-cell="8"><small>Notebook</small>Cell 8</span></span></div>
+<h2>Few-shot: examples act as fixed values</h2><div class="body"><div class="g2" style="align-items:center">
+<pre class="abap"><span class="cm">" Allowed values (like a domain)</span>
+INVOICE_ISSUE · DELIVERY_DELAY · PRICE_QUERY · OTHER
+
+<span class="st">"…haven't arrived yet."</span>      → DELIVERY_DELAY
+<span class="st">"…higher price than agreed."</span> → INVOICE_ISSUE
+<span class="st">"…your price for 500 units?"</span> → PRICE_QUERY
+
+<span class="st">"…confirm the unit price…"</span>   → ?</pre>
+<div><div class="out ok"><div class="who">EV_TEXT · test run</div><span class='mono' style='font-size:38px;font-weight:700'>PRICE_QUERY</span></div>
+<p class="f" style="margin-top:14px">Three examples define the value list, like <b>fixed values on an SE11 domain</b>.</p></div></div></div>
+<aside class="notes"><b>▶ Run CELL 8</b> · Real output.</aside>
+</section>
+<section class="slide " data-section="Step 4 · Patterns"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 4 · Patterns</span><span class="cmd"><span class="box" data-cell="9"><small>Notebook</small>Cell 9</span></span></div>
+<h2>Unit test: 5 emails vs the expected values</h2><div class="body"><table>
+<tr><th>ID</th><th>Email (shortened)</th><th>Expected</th><th>Result</th></tr>
+<tr><td>A</td><td>Goods for PO …49 haven't arrived at plant 2000</td><td class="m">DELIVERY_DELAY</td><td class="pass">PASS</td></tr>
+<tr><td>B</td><td>Invoice shows ₹520/unit, PO says ₹500</td><td class="m">INVOICE_ISSUE</td><td class="pass">PASS</td></tr>
+<tr><td>C</td><td>Confirm the unit price for M-200 for Q4</td><td class="m">PRICE_QUERY</td><td class="pass">PASS</td></tr>
+<tr><td>D</td><td>Please update our bank details for future payments</td><td class="m">OTHER</td><td class="pass">PASS</td></tr>
+<tr><td>E</td><td>Truck broke down, delivery 3 days late</td><td class="m">DELIVERY_DELAY</td><td class="pass">PASS</td></tr></table>
+<p class="lead f"><b>5 / 5</b> on a small local model, from three examples.</p></div>
+<aside class="notes"><b>▶ Run CELL 9</b> · Real result.</aside>
+</section>
+<section class="slide " data-section="Step 4 · Patterns"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 4 · Patterns</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Email D: a sensitive field</h2><div class="body"><div class="g2" style="align-items:center">
+<div><div class="msg w"><span class="i">!</span><span>Vendor email: <b>“Please update our bank details for future payments; new letter attached.”</b></span></div></div>
+<div class="f"><p>Classification correct. But in SAP, vendor bank data is a <b>sensitive field</b>: a change needs <b>dual control</b>, with confirmation by a second person (<span class="tcode">FK08</span> / <span class="tcode">FK09</span>).</p>
+<p><b>An AI must never bypass that.</b> Day 4 covers guardrails.</p></div></div></div>
+<aside class="notes">Ask the room first.</aside>
+</section>
+<section class="slide " data-section="Step 4 · Patterns"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 4 · Patterns</span><span class="cmd"><span class="box" data-cell="10"><small>Notebook</small>Cell 10</span></span></div>
+<h2>Consumer view: one email, three callers</h2><div class="body"><div class="g3" style="align-items:start">
+<div class="f"><div class="out "><div class="who">Variant · procurement analyst</div>• <b>Invoice blocked:</b> INV-55190, PO 4500012348, ₹12,00,000<br>• <b>Reason:</b> price variance, steel surcharge<br>• <b>Action:</b> procurement to confirm the revised price</div></div>
+<div class="f"><div class="out "><div class="who">Variant · vendor reply</div>Dear Lakshmi, thank you for reaching out regarding PO 4500012348. I will immediately check with our procurement team regarding the price variance… I will update you shortly.</div></div>
+<div class="f"><div class="out "><div class="who">Variant · CFO one-liner</div><b>Invoice for Gearbox order is blocked pending procurement confirmation on the revised price due to steel surcharge.</b></div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 10</b> · Real outputs (shortened). Same function, different variant.</aside>
+</section>
+<section class="slide " data-section="Step 4 · Patterns"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 4 · Patterns</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Good example entries: like good test data</h2><div class="body"><div class="g4">
+<div class="card ok f"><h3>Realistic</h3><p>Anonymised emails from your own mailbox</p></div>
+<div class="card ok f"><h3>One per value</h3><p>Cover every category at least once</p></div>
+<div class="card ok f"><h3>Exact output</h3><p>Show the result exactly as you want it back</p></div>
+<div class="card warn f"><h3>Few</h3><p>2–5 is usually enough; more costs tokens</p></div></div>
+<div class="callout warn f" style="margin-top:18px">Watch for <b>bias</b>: if most examples are DELIVERY_DELAY, the model leans towards DELIVERY_DELAY.</div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Step 4 · Patterns"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 4 · Patterns</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>A prompt is a development object</h2><div class="body"><div class="flow">
+<div class="st f"><h3>Develop</h3><p>Interface v0.1</p></div><div class="ar f">→</div>
+<div class="st f"><h3>Unit test</h3><p>10–20 real emails, expected values</p></div><div class="ar f">→</div>
+<div class="st f"><h3>Fix and retest</h3><p>Re-run the whole test set</p></div><div class="ar f">→</div>
+<div class="st f" style="border-top-color:var(--ok)"><h3>Transport</h3><p>Version ID + change log (SE09 / STMS discipline)</p></div></div>
+<p class="lead f">On real projects, prompts live in code or config repositories, with versions and test sets.</p></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide div" data-section="Step 5 · Build"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 5 · Build</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<div class="divgrid"><div class="divtc">SE38</div><div><div class="divk">Step 5 · Build</div><h1>Your own interface</h1><p class="lead" style="margin-top:0">Develop, test and inspect</p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="Step 5 · Build"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 5 · Build</span><span class="cmd"><span class="box" data-cell="11–14"><small>Notebook</small>Cell 11–14</span></span></div>
+<h2>Development tasks <span class="timer">40 min</span></h2><div class="body"><div class="g2">
+<div class="card ex f"><div class="n">1</div><div><h3>Interface for Email 3 · CELL 11</h3><p>400 invoiced, 380 accepted: is a credit note needed?</p></div></div>
+<div class="card ex f"><div class="n">2</div><div><h3>Your own value list · CELL 12</h3><p>Few-shot categories for SAP support tickets</p></div></div>
+<div class="card ex f"><div class="n">3</div><div><h3>A new consumer · CELL 13</h3><p>Auditor, buyer or plant head</p></div></div>
+<div class="card ex f"><div class="n">4</div><div><h3>Code Inspector · CELL 14</h3><p>The AI scores your prompt 0–2 per parameter</p></div></div></div>
+<p class="lead f">Edit only the lines marked <span class="mono">← change me</span> · <b>Shift + Enter</b>.</p></div>
+<aside class="notes"><b>▶ Run CELL 11–14</b> · Pairs work well.</aside>
+</section>
+<section class="slide " data-section="Step 5 · Build"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 5 · Build</span><span class="cmd"><span class="box" data-cell="11"><small>Notebook</small>Cell 11</span></span></div>
+<h2>Task 1 result: right decision, wrong calculation</h2><div class="body"><div class="g2" style="align-items:start">
+<div class="out "><div class="who">EV_TEXT · test run</div>– Vendor: Delta Plastics<br>– Invoice: INV-30117<br>– Difference: <b>20 housings (approx 1.67%)</b><br>– Credit note needed: <b>Yes</b><br>– Next action: issue a credit note for 20 rejected pieces</div>
+<div class="f"><div class="card"><div class="label">Checked in Python</div><p class="mono" style="font-size:28px;color:var(--text)">20 ÷ 400 = <b>5.0%</b></p><p>5.0% &gt; 2% → credit note: <b>Yes</b></p></div>
+<div style="height:12px"></div><div class="msg w"><span class="i">!</span><span>The decision passed; the calculation failed. <b>Never trust AI arithmetic</b> (Class 2.2).</span></div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 11</b> · Real output: 1.67% where the true value is 5%.</aside>
+</section>
+<section class="slide " data-section="Step 5 · Build"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 5 · Build</span><span class="cmd"><span class="box" data-cell="12–13"><small>Notebook</small>Cell 12–13</span></span></div>
+<h2>Tasks 2 and 3: sample results</h2><div class="body"><div class="g2">
+<div class="card f"><div class="label">Support ticket value list</div><p class="mono" style="color:var(--text);font-size:19px">PERFORMANCE ← Report ZMM_STOCK takes 20 min<br>AUTHORISATION ← Need access to MIGO, plant 2000<br>MASTER_DATA ← Change bank key for vendor V300</p><p style="margin-top:8px">The third: right category, and also a <b>sensitive-field change</b>.</p></div>
+<div class="card f"><div class="label">Consumer: internal auditor</div><p style="color:var(--text)">1. Invoice payment blockage<br>2. Unconfirmed price variance<br>3. No clear escalation path</p></div></div></div>
+<aside class="notes"><b>▶ Run CELL 12–13</b> · Real outputs.</aside>
+</section>
+<section class="slide " data-section="Step 5 · Build"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 5 · Build</span><span class="cmd"><span class="box" data-cell="14"><small>Notebook</small>Cell 14</span></span></div>
+<h2>Task 4: Code Inspector result</h2><div class="body"><table>
+<tr><th>Parameter</th><th>Score</th><th>Finding (shortened)</th></tr>
+<tr><td>Role</td><td>1</td><td>No specified role</td></tr><tr><td>Task</td><td class="pass">2</td><td>Clear: "summarise"</td></tr>
+<tr><td>Context</td><td class="fail">0</td><td>Missing context</td></tr><tr><td>Format</td><td>1</td><td>No output format</td></tr>
+<tr><td>Rules</td><td>1</td><td>No constraints</td></tr><tr><td><b>Total</b></td><td><b>5 / 10</b></td><td>Paste your own prompt and compare scores</td></tr></table></div>
+<aside class="notes"><b>▶ Run CELL 14</b> · Real output (total = 1+2+0+1+1 = 5).</aside>
+</section>
+<section class="slide " data-section="Step 5 · Build"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Step 5 · Build</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Take-home: the interface template</h2><div class="body"><pre class="abap"><span class="cm">" Prompt interface template</span>
+<span class="kw">ROLE</span>     <span class="st">You are a ______________________.</span>
+<span class="kw">TASK</span>     <span class="st">______________________  (one verb: summarise / classify / extract / draft)</span>
+<span class="kw">CONTEXT</span>  <span class="st">Rules with exact values: ______________________</span>
+<span class="kw">FORMAT</span>   <span class="st">– Field 1:   – Field 2:   – Field 3:</span>
+<span class="kw">RULES</span>    <span class="st">If a value is missing, write "Not stated". Do not guess. Max __ words.</span>
+<span class="kw">PAYLOAD</span>  &lt;&lt;&lt; <span class="cm">paste the email / document here</span> &gt;&gt;&gt;</pre></div>
+<aside class="notes">Encourage them to save this.</aside>
+</section>
+<section class="slide " data-section="Summary"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Summary</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<h2>Class 2.1 takeaways</h2><div class="body"><div class="g3">
+<div class="card acc f"><div class="num">1</div><h3>No interface by default</h3><p>An LLM takes any text and returns any text. Your prompt defines the interface.</p></div>
+<div class="card acc f"><div class="num">2</div><h3>No customizing</h3><p>Pass rules with exact values: thresholds, amounts, owners.</p></div>
+<div class="card acc f"><div class="num">3</div><h3>Test it like code</h3><p>Expected values, regression tests, Code Inspector.</p></div></div>
+<div class="wall f" style="margin-top:26px"><span>Role · PFCG</span><span>Task · SE37</span><span>Context · SPRO</span><span>Format · SE11</span><span>Rules · checks</span><span>Few-shot · fixed values</span><span>Persona · variant</span><span>&lt;&lt;&lt; payload &gt;&gt;&gt;</span></div></div>
+<aside class="notes">Checkpoint: name the five parameters and their SAP equivalents.</aside>
+</section>
+<section class="slide title" data-section="Summary"><div class="shell"><span class="obj">Z_LLM_ASK</span><span class="sep">›</span><span class="sec">Class 2.1 · Summary</span><span class="cmd"><span class="tc">SE37</span></span></div>
+<div class="body center"><div class="label" style="color:var(--accent)">After lunch · Class 2.2</div>
+<div class="big"><span class="mono">Z_LLM_ASK</span> goes to production.</div>
+<p class="lead">A background job calls it 300 times a day, and a program, not a person, reads the result. So we need <b>typed output, debugging and security</b>.</p></div>
+<aside class="notes">Bridge to Class 2.2. Collect feedback.</aside>
+</section>
+<div class="foot"><span id="sec"></span><span id="num"></span></div>
+</div>
+
+<div id="notesPanel"></div>
+<div id="blank"></div>
+<div id="help"><div>
+  <b style="font-size:22px">Keyboard shortcuts</b><br>
+  <kbd>→</kbd><kbd>Space</kbd> Next step / slide<br>
+  <kbd>←</kbd> Previous<br>
+  <kbd>Home</kbd><kbd>End</kbd> First / last slide<br>
+  <kbd>F</kbd> Fullscreen<br>
+  <kbd>T</kbd> Light / dark theme<br>
+  <kbd>P</kbd> Presenter window (notes, next slide, timer)<br>
+  <kbd>N</kbd> Show notes on this screen<br>
+  <kbd>B</kbd> Black screen (pause)<br>
+  <kbd>?</kbd> Toggle this help
+</div></div>
+
+<script>
+const deck=document.getElementById('deck');
+const slides=[...document.querySelectorAll('.slide')];
+const root=document.documentElement;
+let cur=0, pw=null, t0=null;
+
+// theme
+root.dataset.theme=localStorage.getItem('deckTheme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900);deck.style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+
+const frags=s=>[...s.querySelectorAll('.f')];
+const titleOf=s=>(s.querySelector('h1,h2,.quote,.statement')||{}).textContent?.trim().replace(/\s+/g,' ')||'';
+
+function go(i,allOn=false){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  slides[cur].classList.remove('active');
+  cur=i;
+  frags(slides[cur]).forEach(f=>f.classList.toggle('on',allOn));
+  slides[cur].classList.add('active');
+  history.replaceState(null,'','#'+(cur+1));
+  render();
+}
+function next(){
+  const hidden=frags(slides[cur]).filter(f=>!f.classList.contains('on'));
+  if(hidden.length){hidden[0].classList.add('on');render();}
+  else if(cur<slides.length-1) go(cur+1);
+}
+function prev(){
+  const on=frags(slides[cur]).filter(f=>f.classList.contains('on'));
+  if(on.length){on[on.length-1].classList.remove('on');render();}
+  else if(cur>0) go(cur-1,true);
+}
+function render(){
+  document.getElementById('progress').style.width=((cur+1)/slides.length*100)+'%';
+  document.getElementById('num').textContent=`${cur+1} / ${slides.length}`;
+  document.getElementById('sec').textContent='Class 2.1 · '+(slides[cur].dataset.section||'');
+  const n=slides[cur].querySelector('.notes');
+  document.getElementById('notesPanel').innerHTML=`<b>Slide ${cur+1}: ${titleOf(slides[cur])}</b><br>${n?n.innerHTML:'(no notes)'}`;
+  syncPresenter();
+}
+
+// presenter window
+function openPresenter(){
+  pw=window.open('','deckPresenter','width=1200,height=760');
+  if(!pw){alert('Please allow pop-ups to open the presenter view.');return;}
+  const css=document.querySelector('style').textContent;
+  pw.document.open();
+  pw.document.write(`<!DOCTYPE html><html data-theme="${root.dataset.theme}"><head><title>Presenter · Class 2.1</title><style>${css}
+  html,body{overflow:auto;background:#0c0e13;color:#eef0f5}
+  .pv{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto 1fr;gap:20px;padding:20px;height:100vh;box-sizing:border-box}
+  .box2{background:#151922;border-radius:16px;padding:16px;overflow:hidden}
+  .lab{font:700 13px -apple-system,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#5aa9ff;margin-bottom:10px}
+  .mini{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:10px}
+  .mini .stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;background:var(--bg);color:var(--text)}
+  .mini .slide{display:flex!important;animation:none}
+  #pnotes{font:20px/1.6 -apple-system,sans-serif;grid-column:1/3;overflow:auto}
+  #pnotes b{color:#5aa9ff}
+  .top{display:flex;justify-content:space-between;align-items:center;font:600 22px -apple-system,sans-serif}
+  #ptimer{font:800 40px Menlo,monospace;color:#4fd1a1}
+  button{background:#2a3142;color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:16px;margin-left:8px;cursor:pointer}
+  </style></head><body><div class="pv">
+   <div class="box2"><div class="top"><span class="lab">Now · <span id="pnum"></span></span><span><button id="bp">◀ Prev</button><button id="bn">Next ▶</button></span></div><div class="mini"><div class="stage" id="pcur"></div></div></div>
+   <div class="box2"><div class="top"><span class="lab">Next</span><span id="ptimer">00:00</span></div><div class="mini"><div class="stage" id="pnext"></div></div><button id="br" style="margin:12px 0 0">Reset timer</button></div>
+   <div class="box2" id="pnotes"></div>
+  </div></body></html>`);
+  pw.document.close();
+  t0=Date.now();
+  pw.document.addEventListener('keydown',onKey);
+  pw.document.getElementById('bn').onclick=()=>next();
+  pw.document.getElementById('bp').onclick=()=>prev();
+  pw.document.getElementById('br').onclick=()=>{t0=Date.now();};
+  pw.addEventListener('resize',syncPresenter);
+  syncPresenter();
+}
+function syncPresenter(){
+  if(!pw||pw.closed) return;
+  const d=pw.document; d.documentElement.dataset.theme=root.dataset.theme;
+  const put=(id,s)=>{const st=d.getElementById(id); if(!st) return; st.innerHTML=''; if(!s){st.innerHTML='<div style="padding:60px;font-size:60px">End of deck</div>';} else {const c=s.cloneNode(true);c.classList.add('active');st.appendChild(c);} const w=st.parentElement.clientWidth; st.style.transform=`scale(${w/1600})`;};
+  put('pcur',slides[cur]);
+  const nx=slides[cur+1]?slides[cur+1].cloneNode(true):null; if(nx) nx.querySelectorAll('.f').forEach(f=>f.classList.add('on'));
+  put('pnext',nx);
+  const remaining=frags(slides[cur]).filter(f=>!f.classList.contains('on')).length;
+  d.getElementById('pnum').textContent=`Slide ${cur+1} / ${slides.length}${remaining?` · ${remaining} step(s) left`:''}`;
+  const n=slides[cur].querySelector('.notes');
+  d.getElementById('pnotes').innerHTML=`<div class="lab">Speaker notes</div><b>${titleOf(slides[cur])}</b><br>${n?n.innerHTML:'(no notes)'}`;
+}
+setInterval(()=>{if(pw&&!pw.closed&&t0){const s=Math.floor((Date.now()-t0)/1000);pw.document.getElementById('ptimer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}},1000);
+
+function onKey(e){
+  const k=e.key;
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();next();}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();prev();}
+  else if(k==='Home') go(0);
+  else if(k==='End') go(slides.length-1,true);
+  else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+  else if(k==='t'||k==='T'){root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('deckTheme',root.dataset.theme);syncPresenter();}
+  else if(k==='n'||k==='N'){const p=document.getElementById('notesPanel');p.style.display=p.style.display==='block'?'none':'block';}
+  else if(k==='p'||k==='P') openPresenter();
+  else if(k==='b'||k==='B'||k==='.'){const b=document.getElementById('blank');b.style.display=b.style.display==='block'?'none':'block';}
+  else if(k==='?'){const h=document.getElementById('help');h.style.display=h.style.display==='flex'?'none':'flex';}
+  else if(k==='Escape'){document.getElementById('help').style.display='none';document.getElementById('blank').style.display='none';}
+}
+document.addEventListener('keydown',onKey);
+deck.addEventListener('click',e=>{if(e.target.closest('a,button'))return; (e.clientX<innerWidth*0.25)?prev():next();});
+let tx=null;
+addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)(dx<0?next:prev)();tx=null;});
+
+const start=parseInt(location.hash.slice(1));
+slides[0].classList.add('active');
+go(isNaN(start)?0:start-1);
+</script>
+</body>
+</html>

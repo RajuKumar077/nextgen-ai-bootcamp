@@ -1,0 +1,9 @@
+{
+  "_README": "Bootcamp settings. Change 'model' to any model you have pulled with Ollama (run: ollama list). Keep the quotes.",
+  "_examples": "llama3.2:3b (default, ~2 GB) | llama3.1:8b (better, ~5 GB) | qwen2.5:7b | gemma3:4b | mistral:7b",
+  "ollama_url": "http://localhost:11434",
+  "model": "qwen3:8b",
+  "small_model": "llama3.2:1b",
+  "num_ctx": 8192,
+  "timeout_seconds": 300
+}

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Class 2.1 · Sprint 1: Write the Spec · Prompt Engineering</title><style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--text)}
+#deck{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:center;background:var(--bg);overflow:hidden}
+.slide{position:absolute;inset:0;padding:96px 104px 92px;display:none;flex-direction:column}
+.slide.active{display:flex;animation:enter .35s ease}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.f{opacity:0;transform:translateY(12px);transition:opacity .3s,transform .3s}.f.on{opacity:1;transform:none}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center}
+.center{align-items:center;text-align:center}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:28px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+p,li{font-size:27px;line-height:1.45}
+.mono{font-family:"Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace}
+h1,h2,h3{font-family:"Segoe UI Variable Display","Segoe UI Semibold","Segoe UI",system-ui,-apple-system,sans-serif;margin:0}
+h1{font-size:84px;line-height:1.04;font-weight:700;letter-spacing:-1.5px;margin-bottom:20px}
+h2{font-size:50px;line-height:1.1;font-weight:700;letter-spacing:-.5px;margin-bottom:26px}
+h3{font-size:28px;font-weight:600;margin-bottom:8px}
+.muted{color:var(--muted)}
+.lead{font-size:30px;color:var(--muted);max-width:1240px;margin-top:18px;line-height:1.45}
+.big{font-family:"Segoe UI Variable Display","Segoe UI Semibold","Segoe UI",system-ui,-apple-system,sans-serif;font-size:68px;font-weight:700;line-height:1.1;letter-spacing:-1px;max-width:1340px}
+.big em{font-style:normal;color:var(--accent)}
+/* top bar: section label */
+.topbar{position:absolute;top:0;left:0;right:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 104px;
+border-bottom:1px solid var(--line);font:600 17px "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);background:var(--bar)}
+.topbar b{color:var(--accent)}
+.cellref{display:inline-flex;align-items:center;gap:10px;font:700 17px "Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;letter-spacing:.5px;color:var(--cellfg);background:var(--cellbg);
+padding:7px 14px;border-radius:6px;text-transform:none}
+.cellref::before{content:"▶";font-size:13px}
+/* cards */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px 26px}
+.card p{font-size:22px;margin:6px 0 0;color:var(--muted)}
+.card.acc{border-top:5px solid var(--accent)} .card.ok{border-top:5px solid var(--ok)} .card.bad{border-top:5px solid var(--bad)} .card.warn{border-top:5px solid var(--warn)}
+.ico{font-size:40px;line-height:1;margin-bottom:12px}
+.num{font:700 64px "Segoe UI Variable Display","Segoe UI Semibold","Segoe UI",system-ui,-apple-system,sans-serif;color:var(--accent);line-height:1}
+.label{font:700 15px "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+/* doc panel */
+.doc{background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
+.doc .dh{display:flex;justify-content:space-between;padding:12px 20px;background:var(--bar);border-bottom:1px solid var(--line);font:600 15px "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+.doc .db{padding:18px 22px;font-size:23px;line-height:1.5}
+.out{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:8px;padding:16px 22px;font-size:22px;line-height:1.5}
+.out .who{font:700 13px "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.out.bad{border-left-color:var(--bad)} .out.bad .who{color:var(--bad)} .out.ok{border-left-color:var(--ok)} .out.ok .who{color:var(--ok)}
+.code{background:var(--codebg);color:var(--code);border-radius:8px;padding:18px 24px;font:21px/1.55 "Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;white-space:pre-wrap;margin:0}
+.code .k{color:#79b8ff}.code .s{color:#9ecf6a}.code .x{color:#ff7b72;font-weight:700}.code .y{color:#ffd166;font-weight:700}.code .d{color:#8b949e}.code .p{color:#d2a8ff;font-weight:700}
+.call{padding:18px 24px;border-radius:8px;font-size:25px;line-height:1.45;background:var(--panel);border:1px solid var(--line)}
+.call.ok{border-left:6px solid var(--ok)} .call.bad{border-left:6px solid var(--bad)} .call.warn{border-left:6px solid var(--warn)} .call.acc{border-left:6px solid var(--accent)}
+.sap{display:inline-block;margin-top:18px;padding:10px 18px;border-radius:6px;border:1px solid var(--line);background:var(--panel);font-size:22px}
+.sap b{color:var(--accent);letter-spacing:1px}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{text-align:left;padding:13px 18px;font:700 15px "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);background:var(--bar);border-bottom:1px solid var(--line)}
+td{padding:13px 18px;font-size:23px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+.pass{color:var(--ok);font-weight:700} .fail{color:var(--bad);font-weight:700} .warnc{color:var(--warn);font-weight:700}
+.tag{display:inline-block;padding:3px 10px;border-radius:4px;font:700 15px "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:1px}
+.tag.ok{background:var(--ok-s);color:var(--ok)} .tag.bad{background:var(--bad-s);color:var(--bad)} .tag.warn{background:var(--warn-s);color:var(--warn)}
+/* bars */
+.bar{display:grid;grid-template-columns:250px 1fr 150px;align-items:center;gap:16px;font-size:24px;font-weight:600;margin:9px 0}
+.bar .tr{height:40px;border-radius:4px;background:var(--bar)}
+.bar .tr i{display:block;height:100%;border-radius:4px;background:var(--accent)}
+.bar .tr i.low{background:var(--bad)}
+.bar .v{font:700 21px "Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;color:var(--muted)}
+/* flow */
+.flow{display:flex;align-items:stretch;gap:12px}
+.flow .st{flex:1;background:var(--panel);border:1px solid var(--line);border-top:5px solid var(--accent);border-radius:10px;padding:20px}
+.flow .st h3{font-size:25px} .flow .st p{font-size:20px;margin:6px 0 0;color:var(--muted)}
+.flow .ar{align-self:center;font-size:36px;color:var(--muted)}
+/* section divider */
+.slide.div{background:var(--divbg);color:#fff}
+.slide.div .topbar{background:transparent;border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.6)}
+.divgrid{display:grid;grid-template-columns:300px 1fr;gap:56px;align-items:center;flex:1}
+.divno{font:700 220px "Segoe UI Variable Display","Segoe UI Semibold","Segoe UI",system-ui,-apple-system,sans-serif;line-height:.85;color:var(--divno)}
+.slide.div h1{color:#fff} .slide.div .lead{color:rgba(255,255,255,.75)}
+.divk{font:700 18px "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:4px;text-transform:uppercase;color:var(--divk);margin-bottom:14px}
+/* title */
+.slide.title{background:var(--titlebg)}
+.chip{display:inline-block;padding:8px 16px;border-radius:6px;border:1px solid var(--line);background:var(--panel);font-size:20px;font-weight:600;margin:6px 8px 0 0}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.kpi .card{padding:22px}
+.kpi .v{font:700 54px "Segoe UI Variable Display","Segoe UI Semibold","Segoe UI",system-ui,-apple-system,sans-serif;color:var(--accent);line-height:1}
+.kpi .l{font-size:19px;color:var(--muted);margin-top:8px}
+.ex{display:flex;gap:16px;align-items:flex-start}
+.ex .n{flex:0 0 52px;height:52px;border-radius:8px;background:var(--accent);color:#fff;font:700 26px "Segoe UI Variable Display","Segoe UI Semibold","Segoe UI",system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center}
+.ex h3{font-size:25px} .ex p{font-size:20px}
+.timer{display:inline-block;padding:6px 14px;border-radius:6px;background:var(--bar);border:1px solid var(--line);color:var(--accent);font:700 20px "Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;vertical-align:middle;margin-left:12px}
+.wall{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.wall span{padding:12px 20px;border-radius:8px;background:var(--panel);border:1px solid var(--line);font-size:24px;font-weight:600}
+/* chrome */
+#progress{position:absolute;left:0;bottom:0;height:5px;background:var(--accent);transition:width .3s;z-index:5}
+.foot{position:absolute;left:104px;right:104px;bottom:26px;display:flex;justify-content:space-between;font-size:17px;color:var(--muted);z-index:5}
+.notes{display:none}
+#notesPanel{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:rgba(14,17,23,.97);color:#e6edf3;padding:18px 28px;font:17px/1.55 "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;display:none;z-index:20;border-top:3px solid var(--accent)}
+#notesPanel b{color:#79b8ff}
+#help{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:30}
+#help div{background:#161b22;color:#e6edf3;padding:34px 44px;border-radius:12px;font:18px/2 "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;min-width:440px}
+#help kbd{background:#30363d;padding:3px 10px;border-radius:6px;font-family:"Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;margin-right:10px}
+#blank{position:fixed;inset:0;background:#000;display:none;z-index:25}
+.hint{position:absolute;bottom:70px;left:104px;font-size:18px;color:var(--muted)}
+.hint kbd{border:1px solid var(--line);border-radius:4px;padding:2px 8px;margin:0 3px;font-family:"Cascadia Mono","Cascadia Code",Consolas,"SF Mono",Menlo,monospace;font-size:16px}
+:root{--bg:#f6f8fb;--panel:#ffffff;--bar:#eef2f7;--line:#dbe2ea;--text:#0f1b2d;--muted:#5a6a80;--accent:#0a5cc2;--ok:#127a3e;--ok-s:#e3f4ea;--bad:#c4271c;--bad-s:#fbe8e6;--warn:#b26a00;--warn-s:#fdf1dc;--codebg:#0d1117;--code:#e6edf3;--shadow:0 6px 18px rgba(15,27,45,.06);--cellbg:#0a5cc2;--cellfg:#fff;--divbg:linear-gradient(120deg,#0a2a5c,#0a5cc2);--divno:rgba(255,255,255,.18);--divk:#9cc8ff;--titlebg:linear-gradient(180deg,#ffffff 0,#f6f8fb 60%)}
+html[data-theme="dark"]{--bg:#0d1117;--panel:#161b22;--bar:#11161d;--line:#2a3340;--text:#e6edf3;--muted:#9aa6b5;--accent:#58a6ff;--ok:#3fb950;--ok-s:#12261a;--bad:#ff7b72;--bad-s:#2d1515;--warn:#e3b341;--warn-s:#2d2410;--codebg:#010409;--shadow:0 6px 18px rgba(0,0,0,.4);--cellbg:#1f6feb;--cellfg:#fff;--divbg:linear-gradient(120deg,#051632,#0b3b80);--titlebg:#0d1117}</style></head><body>
+<div id="deck">
+<div id="progress"></div>
+<section class="slide title" data-section="Title"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Title</span><span>Project NOVA-AP · Sprint 1</span></div>
+<div class="body"><div class="label" style="color:var(--accent)">Day 2 · Class 2.1 · Prompt Engineering</div>
+<h1>Sprint 1:<br>Write the Spec</h1>
+<p class="lead" style="margin-top:0">A prompt is a <b>functional specification</b> for the AI. Today we write one, test it, and get it signed off.</p>
+<div><span class="chip">📐 R-T-C-F-R</span><span class="chip">🧪 Acceptance tests</span><span class="chip">🔁 Impact analysis</span><span class="chip">📚 Few-shot</span><span class="chip">👥 Stakeholder views</span><span class="chip">💻 Local model (Ollama)</span></div></div>
+<div class="hint">Press <kbd>→</kbd> next <kbd>F</kbd> fullscreen <kbd>T</kbd> theme <kbd>P</kbd> presenter <kbd>?</kbd> help</div>
+<aside class="notes">Before class: open notebooks/Class_3_Prompt_as_Functional_Spec.ipynb in VS Code or Antigravity, select the .venv kernel and run CELL S. Today's frame: a real AP automation project, NOVA-AP. Participants are the functional consultants.</aside>
+</section>
+<section class="slide " data-section="Project brief"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Project brief</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Project NOVA-AP: the business problem</h2><div class="body">
+<div class="kpi"><div class="card f"><div class="v">~300</div><div class="l">vendor emails per day to the AP shared mailbox</div></div>
+<div class="card f"><div class="v">~6 min</div><div class="l">to read, classify and act on each one</div></div>
+<div class="card f"><div class="v">30 h</div><div class="l">manual effort per day (≈ 3.75 FTE)</div></div>
+<div class="card f"><div class="v">4</div><div class="l">AP clerks, at ~75 emails each per day</div></div></div>
+<div class="call acc f" style="margin-top:28px"><b>Steering committee ask:</b> use AI to triage and summarise every email, so clerks only handle decisions and exceptions.</div></div>
+<aside class="notes">The numbers are illustrative for the scenario (calculated: 300 × 6 min = 1,800 min = 30 h ≈ 3.75 FTE at 8 h). Ask: 'Does this sound like any AP team you know?'</aside>
+</section>
+<section class="slide " data-section="Your role"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Your role</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Your role on the project</h2><div class="body"><div class="g3">
+<div class="card acc f"><div class="ico">🧑‍💼</div><h3>Functional consultant</h3><p>You own the requirement and the business rules</p></div>
+<div class="card acc f"><div class="ico">📐</div><h3>Deliverable: the spec</h3><p>For an AI, the specification <b>is the prompt</b></p></div>
+<div class="card acc f"><div class="ico">✅</div><h3>Exit criteria</h3><p>The output passes the acceptance tests on real emails</p></div></div>
+<p class="lead f">The build team has a capable model. Whether it delivers value depends on <b>your spec</b>.</p></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Prompt anatomy"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Prompt anatomy</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>What happens to your prompt</h2><div class="body"><div class="flow">
+<div class="st f"><h3>Your spec</h3><p>Role, task, rules, format, data</p></div><div class="ar f">→</div>
+<div class="st f"><h3>Tokens</h3><p>Split into pieces (Day 1)</p></div><div class="ar f">→</div>
+<div class="st f"><h3>Prediction</h3><p>The most likely next words <b>given everything you wrote</b></p></div><div class="ar f">→</div>
+<div class="st f" style="border-top-color:var(--ok)"><h3>Output</h3><p>Shaped by your spec</p></div></div>
+<div class="call acc f" style="margin-top:24px">Every word of the spec changes the probabilities. <b>More precise input → more predictable output.</b></div></div>
+<aside class="notes">Link back to Day 1: the model predicts, so the prompt is the only lever we control.</aside>
+</section>
+<section class="slide " data-section="Agenda"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Agenda</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Sprint 1 plan · 2 hours</h2><div class="body"><table>
+<tr><th>Phase</th><th>Activity</th><th>Notebook</th></tr>
+<tr><td><b>1</b> · The requirement</td><td>What a one-line requirement delivers</td><td class="mono">CELL 1</td></tr>
+<tr><td><b>2</b> · The FS template</td><td>5 sections of a good prompt: R-T-C-F-R</td><td class="mono">CELL 2–5</td></tr>
+<tr><td><b>3</b> · Impact analysis</td><td>Remove one section: what breaks?</td><td class="mono">CELL 6</td></tr>
+<tr><td><b>4</b> · Design patterns</td><td>Zero-shot · few-shot · stakeholder views</td><td class="mono">CELL 7–10</td></tr>
+<tr><td><b>5</b> · Build workshop</td><td>Write, test and review your own spec</td><td class="mono">CELL 11–14</td></tr></table></div>
+<aside class="notes">The blue NOTEBOOK · CELL tag in the top-right corner of a slide tells you which cell to run.</aside>
+</section>
+<section class="slide " data-section="Environment"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Environment</span><span class="cellref" data-cell="S">NOTEBOOK · CELL S</span></div>
+<h2>The build environment: a local model</h2><div class="body"><div class="g3">
+<div class="card f"><div class="ico">🖥️</div><h3>Runs on the laptop</h3><p>Ollama serves an open model locally: no cloud, no API key</p></div>
+<div class="card f"><div class="ico">🔒</div><h3>Data stays inside</h3><p>Emails never leave the machine, which suits sensitive AP data</p></div>
+<div class="card f"><div class="ico">⚙️</div><h3>Configurable</h3><p>The model is set in <span class="mono">bootcamp_config.json</span></p></div></div>
+<div class="call warn f" style="margin-top:24px">Small local models are less polished than large cloud models. For this sprint that's useful: the defects are <b>visible</b>, so we learn how to specify them away.</div></div>
+<aside class="notes"><b>▶ Run CELL S</b> · Run CELL S: three green checks plus 'Connection OK'. The slides quote a test run on gemma4:e2b; your model's wording will differ.</aside>
+</section>
+<section class="slide div" data-section="Phase 1 · Requirement"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 1 · Requirement</span><span>Project NOVA-AP · Sprint 1</span></div>
+<div class="divgrid"><div class="divno">01</div><div><div class="divk">Phase 1</div><h1>The requirement</h1><p class="lead" style="margin-top:0">The business user writes one line: <b>“Summarise this email.”</b></p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="Phase 1 · Requirement"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 1 · Requirement</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Sounds familiar?</h2><div class="body"><div class="g2">
+<div class="doc f"><div class="dh"><span>Requirement · REQ-014</span><span>Draft</span></div><div class="db"><b>Description:</b> "System should summarise vendor emails."<br><br><b>Business rules:</b> <i class="muted">none</i><br><b>Output layout:</b> <i class="muted">none</i><br><b>Acceptance criteria:</b> <i class="muted">none</i></div></div>
+<div class="f"><p>Every consultant has seen a requirement like this in a blueprint workshop.</p><p>The developer builds <b>something</b>. Rarely <b>the right thing</b>.</p></div></div></div>
+<aside class="notes">Set up the parallel with ordinary SAP project life.</aside>
+</section>
+<section class="slide " data-section="Phase 1 · Requirement"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 1 · Requirement</span><span class="cellref" data-cell="1">NOTEBOOK · CELL 1</span></div>
+<h2>The one-line requirement, executed</h2><div class="body"><div class="g2" style="align-items:start">
+<div class="doc"><div class="dh"><span>Input · vendor email</span><span>EMAIL_1</span></div><div class="db" style="font-size:20px">
+<b>From:</b> Rahul Verma, Bharat Logistics<br>Invoice <b>INV-77821</b> · PO <b>4500012346</b> · <b>₹7,80,000</b><br>"…your AP team says the price is wrong… 20 days overdue… we may need to put further deliveries on hold."</div></div>
+<div class="f"><div class="out "><div class="who">Model output · prompt = “Summarise this email.”</div>Rahul Verma from Bharat Logistics is urgently requesting payment for invoice INV-77821 amounting to ₹7,80,000, which is now 20 days overdue… [he] threatens to <b>halt further deliveries</b> if payment is not resolved immediately.</div>
+<p class="muted" style="font-size:19px;margin-top:10px">Test run · 82 words · 2.0 s</p></div></div></div>
+<aside class="notes"><b>▶ Run CELL 1</b> · Real output (shortened). Ask the AP team lead in the room: can you escalate, assign or close based on this?</aside>
+</section>
+<section class="slide " data-section="Phase 1 · Requirement"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 1 · Requirement</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Gap analysis: readable, not actionable</h2><div class="body"><table>
+<tr><th>What the AP lead needs</th><th>In the output?</th></tr>
+<tr class="f"><td>Invoice and PO reference</td><td><span class="tag warn">PARTIAL</span> &nbsp;invoice yes, PO number missing</td></tr>
+<tr class="f"><td>Escalation decision (per policy)</td><td><span class="tag bad">MISSING</span></td></tr>
+<tr class="f"><td>Owner / next action</td><td><span class="tag bad">MISSING</span></td></tr>
+<tr class="f"><td>A consistent structure for the work queue</td><td><span class="tag bad">MISSING</span></td></tr></table>
+<p class="lead f">The model performed well. <b>The specification was missing.</b></p></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide div" data-section="Phase 2 · FS template"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 2 · FS template</span><span>Project NOVA-AP · Sprint 1</span></div>
+<div class="divgrid"><div class="divno">02</div><div><div class="divk">Phase 2</div><h1>The FS template</h1><p class="lead" style="margin-top:0">Five sections that turn a one-liner into a specification: <b>R-T-C-F-R</b></p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="Phase 2 · FS template"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 2 · FS template</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>A prompt maps 1:1 to a functional spec</h2><div class="body"><table>
+<tr><th>FS section</th><th>Prompt section</th><th>Question it answers</th></tr>
+<tr class="f"><td>User / persona</td><td><b>R</b>ole</td><td>Who is the AI acting as?</td></tr>
+<tr class="f"><td>Requirement</td><td><b>T</b>ask</td><td>What exactly must it do?</td></tr>
+<tr class="f"><td>Business rules</td><td><b>C</b>ontext</td><td>Which policies and thresholds apply?</td></tr>
+<tr class="f"><td>Output layout</td><td><b>F</b>ormat</td><td>What structure must the result have?</td></tr>
+<tr class="f"><td>Validations</td><td><b>R</b>ules</td><td>What must it never do?</td></tr></table></div>
+<aside class="notes">Reveal row by row. Nothing here is new to them, only the medium.</aside>
+</section>
+<section class="slide " data-section="Phase 2 · FS template"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 2 · FS template</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Section by section</h2><div class="body"><div class="g5">
+<div class="card acc f"><div class="num">R</div><h3>Role</h3><p>"You are an SAP procurement analyst."</p></div>
+<div class="card acc f"><div class="num">T</div><h3>Task</h3><p>"Summarise this invoice dispute email."</p></div>
+<div class="card acc f"><div class="num">C</div><h3>Context</h3><p>"Above ₹5,00,000 → Finance Controller."</p></div>
+<div class="card acc f"><div class="num">F</div><h3>Format</h3><p>"Vendor · Invoice · PO · Amount · Issue · Escalate · Next action"</p></div>
+<div class="card acc f"><div class="num">R</div><h3>Rules</h3><p>"If a value is missing, write 'Not stated'."</p></div></div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Phase 2 · FS template"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 2 · FS template</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Why each section matters</h2><div class="body"><div class="g2">
+<div class="card f"><h3>Role → vocabulary and depth</h3><p>An "SAP procurement analyst" writes differently from a "customer service agent".</p></div>
+<div class="card f"><h3>Task → one clear verb</h3><p>Summarise · classify · extract · draft · compare. Not "look at this".</p></div>
+<div class="card f"><h3>Context → your business rules</h3><p>The model has never seen <b>your</b> policies. Only you can specify them.</p></div>
+<div class="card f"><h3>Format + Rules → testable output</h3><p>A fixed layout and explicit validations make the output checkable.</p></div></div></div>
+<aside class="notes">Context is where SAP expertise is irreplaceable.</aside>
+</section>
+<section class="slide " data-section="Phase 2 · FS template"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 2 · FS template</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>System prompt vs user prompt</h2><div class="body"><div class="g2">
+<div class="card acc f"><div class="label">System prompt · set once by the solution</div><h3>Configuration</h3><p>Role, business rules, output layout, validations. Hidden from end users, identical for every email.</p></div>
+<div class="card f"><div class="label">User prompt · changes every call</div><h3>Transaction data</h3><p>The specific email or document to process, inside <span class="mono">&lt;&lt;&lt; &gt;&gt;&gt;</span>.</p></div></div>
+<div class="sap f"><b>SAP LENS ·</b> customising (system prompt) vs the business document being posted (user prompt)</div></div>
+<aside class="notes">The notebook helpers support both: ask_ai(question, system=...). We use the system prompt seriously in Sprint 2 security.</aside>
+</section>
+<section class="slide " data-section="Phase 2 · FS template"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 2 · FS template</span><span class="cellref" data-cell="2">NOTEBOOK · CELL 2</span></div>
+<h2>The assembled specification</h2><div class="body">
+<pre class="code"><span class="k">You are an SAP procurement analyst.</span>                                     <span class="d">← Role</span>
+<span class="p">Task: Summarise this invoice dispute email.</span>                               <span class="d">← Task</span>
+<span class="y">Context (company policy): ₹5 lakh = ₹5,00,000. ABOVE ₹5,00,000 → Finance Controller. Otherwise → AP team.</span>
+<span class="s">Format: Vendor · Invoice number · PO number · Invoice amount · Issue · Escalate? (Yes/No + reason) · Next action</span>
+<span class="x">Rules: If a value is not in the email, write "Not stated". Do not guess. Max 20 words per line.</span>
+Email:
+&lt;&lt;&lt; <span class="d">…vendor email…</span> &gt;&gt;&gt;                                                    <span class="d">← data, clearly separated</span></pre>
+<p class="lead f">The <span class="mono">&lt;&lt;&lt; &gt;&gt;&gt;</span> markers separate <b>our instructions</b> from <b>external data</b>. That becomes a security control in Sprint 2.</p></div>
+<aside class="notes"><b>▶ Run CELL 2</b> · CELL 2 prints the assembled prompt. Walk through each colour.</aside>
+</section>
+<section class="slide " data-section="Phase 2 · FS template"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 2 · FS template</span><span class="cellref" data-cell="3">NOTEBOOK · CELL 3</span></div>
+<h2>Version history: same model, same email</h2><div class="body"><div class="g3" style="align-items:start">
+<div class="f"><div class="out bad"><div class="who">v0.1 · Role + Task</div>A long report: subject, sender, invoice details, urgency, an 'action required' paragraph. <b>No escalation decision.</b></div></div>
+<div class="f"><div class="out "><div class="who">v0.2 · + Output layout</div>Fixed fields ✓<br>Escalate? <b>“Yes, due to potential disruption of future deliveries”</b>: right answer, <b>wrong reason</b></div></div>
+<div class="f"><div class="out ok"><div class="who">v1.0 · + Rules + Validations</div>Escalate to Finance Controller? <b>Yes (Amount &gt; ₹5,00,000)</b><br>Next action: <b>Finance Controller review</b></div></div></div>
+<p class="muted f" style="font-size:20px">Test run · 4.1 s → 2.4 s → 1.7 s: the more precise the spec, the shorter and faster the answer</p></div>
+<aside class="notes"><b>▶ Run CELL 3</b> · Real outputs. The key moment is v0.2: with a layout but no policy, the model guessed 'Yes' for the wrong reason. Only the business rule gave the right reason.</aside>
+</section>
+<section class="slide " data-section="Phase 2 · FS template"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 2 · FS template</span><span class="cellref" data-cell="4">NOTEBOOK · CELL 4</span></div>
+<h2>Acceptance test: one-liner vs full spec</h2><div class="body"><table>
+<tr><th>Acceptance criterion</th><th>One-line requirement</th><th>Full spec v1.0</th></tr>
+<tr><td>Invoice number present</td><td class="pass">PASS</td><td class="pass">PASS</td></tr>
+<tr><td>PO number present</td><td class="fail">FAIL</td><td class="pass">PASS</td></tr>
+<tr><td>Amount present</td><td class="pass">PASS</td><td class="pass">PASS</td></tr>
+<tr><td>Escalation decision</td><td class="fail">FAIL</td><td class="pass">PASS</td></tr>
+<tr><td>Next action</td><td class="fail">FAIL</td><td class="pass">PASS</td></tr>
+<tr><td><b>Result</b></td><td class="fail">2 / 5</td><td class="pass">5 / 5</td></tr></table></div>
+<aside class="notes"><b>▶ Run CELL 4</b> · Real result. The test is simple and objective: is the required information there?</aside>
+</section>
+<section class="slide " data-section="Phase 2 · FS template"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 2 · FS template</span><span class="cellref" data-cell="5">NOTEBOOK · CELL 5</span></div>
+<h2>Business rules must be written like configuration</h2><div class="body"><div class="g2" style="align-items:start">
+<div><div class="label">Vague rule</div><pre class="code">Disputes on invoices above ₹5 lakh
+must go to the finance controller.</pre>
+<div class="f" style="margin-top:12px"><div class="out bad"><div class="who">Model output</div><b>Run A:</b> Escalate? <b>No: “price dispute is below ₹5 lakh”</b> ✗<br><b>Run B:</b> Escalate? <b>Yes: “price dispute”</b> (right answer, wrong reason)</div></div></div>
+<div><div class="label">Explicit rule</div><pre class="code">₹5 lakh = ₹5,00,000.
+If amount is ABOVE ₹5,00,000 → Finance Controller.
+Otherwise → AP team.</pre>
+<div class="f" style="margin-top:12px"><div class="out ok"><div class="who">Model output</div>Escalate to Finance Controller? <b>Yes (Amount &gt; ₹5,00,000)</b>, on every run</div></div></div></div>
+<div class="call bad f" style="margin-top:18px">₹7,80,000 <b>is</b> above ₹5 lakh. With the vague rule, the small model compared the numbers inconsistently.</div></div>
+<aside class="notes"><b>▶ Run CELL 5</b> · Both vague-rule results are real, from two runs of the same model during preparation. This is the most important finding of the morning.</aside>
+</section>
+<section class="slide " data-section="Phase 2 · FS template"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 2 · FS template</span><span>Project NOVA-AP · Sprint 1</span></div>
+<div class="body center"><div class="big">Specify business rules<br>the way you <em>configure</em> them.</div>
+<p class="lead f">Exact values · exact thresholds · an exact owner. Not a sentence from a meeting.</p>
+<div class="sap f"><b>SAP LENS ·</b> a tolerance key in customising, not a comment in an email</div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide div" data-section="Phase 3 · Impact analysis"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 3 · Impact analysis</span><span>Project NOVA-AP · Sprint 1</span></div>
+<div class="divgrid"><div class="divno">03</div><div><div class="divk">Phase 3</div><h1>Impact analysis</h1><p class="lead" style="margin-top:0">Remove one section at a time and re-run the acceptance test</p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="Phase 3 · Impact analysis"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 3 · Impact analysis</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Regression test after a change</h2><div class="body"><div class="g5">
+<div class="card f"><h3>– Role</h3><p>R̶ T C F R</p></div><div class="card f"><h3>– Task</h3><p>R T̶ C F R</p></div>
+<div class="card f"><h3>– Context</h3><p>R T C̶ F R</p></div><div class="card f"><h3>– Format</h3><p>R T C F̶ R</p></div>
+<div class="card f"><h3>– Rules</h3><p>R T C F R̶</p></div></div>
+<p class="lead f">Poll the room first: <b>which section can you least afford to lose?</b></p></div>
+<aside class="notes">Take a quick vote, then run CELL 6.</aside>
+</section>
+<section class="slide " data-section="Phase 3 · Impact analysis"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 3 · Impact analysis</span><span class="cellref" data-cell="6">NOTEBOOK · CELL 6</span></div>
+<h2>Results: acceptance criteria met (out of 5)</h2><div class="body">
+<div class="bar f"><span>Without Role</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 42 w</span></div>
+<div class="bar f"><span>Without Task</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 37 w</span></div>
+<div class="bar f"><span>Without Context</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 47 w</span></div>
+<div class="bar f"><span>Without Format</span><div class="tr"><i class="low" style="width:60%"></i></div><span class="v">3/5 · 44 w</span></div>
+<div class="bar f"><span>Without Rules</span><div class="tr"><i style="width:100%"></i></div><span class="v">5/5 · 71 w</span></div></div>
+<aside class="notes"><b>▶ Run CELL 6</b> · Real results (w = words). Format is the clear loss. Without rules the output becomes the longest.</aside>
+</section>
+<section class="slide " data-section="Phase 3 · Impact analysis"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 3 · Impact analysis</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Interpretation</h2><div class="body"><div class="g3">
+<div class="card bad f"><h3>Format drives completeness</h3><p>Without a layout, required fields drop out (3/5)</p></div>
+<div class="card warn f"><h3>Rules control scope</h3><p>Without them: 71 words instead of ~45, with content nobody asked for</p></div>
+<div class="card acc f"><h3>Context drives correctness</h3><p>All fields can be present and the <b>decision still wrong</b> (Phase 2)</p></div></div>
+<div class="call acc f" style="margin-top:22px">A test that only checks <b>presence</b> misses <b>wrong decisions</b>. Test the reasoning too.</div></div>
+<aside class="notes">An important nuance about acceptance testing.</aside>
+</section>
+<section class="slide " data-section="Phase 3 · Impact analysis"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 3 · Impact analysis</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Longer spec, faster answer?</h2><div class="body"><div class="g3">
+<div class="card f"><div class="label">v0.1 · Role + Task</div><div class="num">4.1 s</div><p>Long, unstructured report</p></div>
+<div class="card f"><div class="label">v0.2 · + Layout</div><div class="num">2.4 s</div><p>Structured, wrong reason</p></div>
+<div class="card ok f"><div class="label">v1.0 · Full spec</div><div class="num">1.7 s</div><p>Short, correct, actionable</p></div></div>
+<p class="lead f">The model spends its time on <b>output</b>. A precise spec produces less text, so it's faster and cheaper.</p></div>
+<aside class="notes">Real timings from the test run on the local model. Your timings will differ by hardware.</aside>
+</section>
+<section class="slide div" data-section="Phase 4 · Design patterns"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 4 · Design patterns</span><span>Project NOVA-AP · Sprint 1</span></div>
+<div class="divgrid"><div class="divno">04</div><div><div class="divk">Phase 4</div><h1>Design patterns</h1><p class="lead" style="margin-top:0">Zero-shot · few-shot · stakeholder view: three ways to specify</p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="Phase 4 · Design patterns"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 4 · Design patterns</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Three patterns, three purposes</h2><div class="body"><div class="g3">
+<div class="card acc f"><h3>Zero-shot</h3><p>The requirement only, with no examples</p><p style="color:var(--text)"><b>Use for:</b> simple, common tasks</p></div>
+<div class="card acc f"><h3>Few-shot</h3><p>The requirement plus 2–3 reference examples</p><p style="color:var(--text)"><b>Use for:</b> fixed categories and a consistent style</p></div>
+<div class="card acc f"><h3>Stakeholder view</h3><p>The same input written for a specific audience</p><p style="color:var(--text)"><b>Use for:</b> tone, depth, length</p></div></div></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Phase 4 · Design patterns"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 4 · Design patterns</span><span class="cellref" data-cell="7">NOTEBOOK · CELL 7</span></div>
+<h2>Zero-shot: a classification with no examples</h2><div class="body">
+<pre class="code">Classify this email: "Could you confirm the current unit price for material M-200 Copper Wire for Q4?"</pre>
+<div class="f" style="margin-top:16px"><div class="out bad"><div class="who">Model output</div>This email can be classified as <b>Informational Request</b> or <b>Business Inquiry</b>. Here's a breakdown of why… Primary classification… Secondary classifications: business inquiry, transactional (implied), operational…</div></div>
+<p class="lead f">Its own categories, several of them, plus an essay. <b>No routing rule can consume this.</b></p></div>
+<aside class="notes"><b>▶ Run CELL 7</b> · Real output (shortened).</aside>
+</section>
+<section class="slide " data-section="Phase 4 · Design patterns"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 4 · Design patterns</span><span class="cellref" data-cell="8">NOTEBOOK · CELL 8</span></div>
+<h2>Few-shot: reference examples define the contract</h2><div class="body"><div class="g2" style="align-items:center">
+<pre class="code">Categories: INVOICE_ISSUE, DELIVERY_DELAY,
+PRICE_QUERY, OTHER. Reply with the category only.
+
+"…haven't arrived yet."       → <span class="s">DELIVERY_DELAY</span>
+"…higher price than agreed."  → <span class="s">INVOICE_ISSUE</span>
+"…your price for 500 units?"  → <span class="s">PRICE_QUERY</span>
+
+"…confirm the unit price…"    →</pre>
+<div><div class="out ok f"><div class="who">Model output</div><span class="mono" style="font-size:40px;font-weight:700">PRICE_QUERY</span></div>
+<div class="sap f"><b>SAP LENS ·</b> like sample data in a spec: it removes ambiguity faster than paragraphs</div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 8</b> · Real output.</aside>
+</section>
+<section class="slide " data-section="Phase 4 · Design patterns"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 4 · Design patterns</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Writing good reference examples</h2><div class="body"><div class="g4">
+<div class="card ok f"><h3>Representative</h3><p>Real-looking emails from your own mailbox, anonymised</p></div>
+<div class="card ok f"><h3>Varied</h3><p>One per category; different wording and length</p></div>
+<div class="card ok f"><h3>Exact format</h3><p>Show the output exactly as you want it, label only</p></div>
+<div class="card warn f"><h3>Few, not many</h3><p>2–5 is usually enough; more costs tokens and time</p></div></div>
+<div class="call warn f" style="margin-top:22px">Watch out for <b>bias</b>: if most examples are DELIVERY_DELAY, the model leans towards DELIVERY_DELAY.</div></div>
+<aside class="notes">Practical guidance for building few-shot sets on real projects.</aside>
+</section>
+<section class="slide " data-section="Phase 4 · Design patterns"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 4 · Design patterns</span><span class="cellref" data-cell="9">NOTEBOOK · CELL 9</span></div>
+<h2>Unit test: 5 emails vs the expected results</h2><div class="body"><table>
+<tr><th>ID</th><th>Email (shortened)</th><th>Expected</th><th>Result</th></tr>
+<tr><td>A</td><td>Goods for PO …49 haven't arrived at Plant 2000</td><td class="mono">DELIVERY_DELAY</td><td class="pass">PASS</td></tr>
+<tr><td>B</td><td>Invoice shows ₹520/unit, PO says ₹500</td><td class="mono">INVOICE_ISSUE</td><td class="pass">PASS</td></tr>
+<tr><td>C</td><td>Confirm the unit price for M-200 for Q4</td><td class="mono">PRICE_QUERY</td><td class="pass">PASS</td></tr>
+<tr><td>D</td><td>Please update our bank details for future payments</td><td class="mono">OTHER</td><td class="pass">PASS</td></tr>
+<tr><td>E</td><td>Truck broke down, delivery 3 days late</td><td class="mono">DELIVERY_DELAY</td><td class="pass">PASS</td></tr></table>
+<p class="lead f"><b>5 / 5</b> on a small local model, from three examples.</p></div>
+<aside class="notes"><b>▶ Run CELL 9</b> · Real result.</aside>
+</section>
+<section class="slide " data-section="Phase 4 · Design patterns"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 4 · Design patterns</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Risk flag raised during testing</h2><div class="body"><div class="g2" style="align-items:center">
+<div class="doc"><div class="dh"><span>Email D</span><span>Classified: OTHER</span></div><div class="db">"Please update our bank details for future payments; new letter attached."</div></div>
+<div class="f"><div class="call bad">A bank-detail change request is one of the <b>most common payment-fraud patterns</b> in accounts payable.</div>
+<p>Classification is correct. <b>Acting on it automatically</b> would be a control failure.</p><p class="muted">Policy: written confirmation + call-back. Day 4 covers guardrails.</p></div></div></div>
+<aside class="notes">Ask the room before revealing.</aside>
+</section>
+<section class="slide " data-section="Phase 4 · Design patterns"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 4 · Design patterns</span><span class="cellref" data-cell="10">NOTEBOOK · CELL 10</span></div>
+<h2>Stakeholder view: one email, three audiences</h2><div class="body"><div class="g3" style="align-items:start">
+<div class="f"><div class="out "><div class="who">Procurement analyst · internal</div>• <b>Invoice blocked:</b> INV-55190, PO 4500012348, ₹12,00,000<br>• <b>Reason:</b> price variance, steel surcharge (August)<br>• <b>Action:</b> procurement to confirm the revised price</div></div>
+<div class="f"><div class="out "><div class="who">Vendor relations · external</div>Dear Lakshmi, thank you for reaching out regarding PO 4500012348. I will immediately check with our procurement team regarding the price variance… I will update you shortly.</div></div>
+<div class="f"><div class="out "><div class="who">CFO · one-line status</div><b>Invoice for Gearbox order is blocked pending procurement confirmation on the revised price due to steel surcharge.</b></div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 10</b> · Real outputs (shortened). Point out how length, tone and content change.</aside>
+</section>
+<section class="slide " data-section="Phase 4 · Design patterns"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 4 · Design patterns</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Pattern selection guide</h2><div class="body"><table>
+<tr><th>Requirement</th><th>Pattern</th><th>SAP example</th></tr>
+<tr><td>Quick explanation or draft</td><td>Zero-shot</td><td>Explain an error message</td></tr>
+<tr><td>Fixed categories</td><td>Few-shot</td><td>Route emails and tickets to queues</td></tr>
+<tr><td>Audience-specific output</td><td>Stakeholder view</td><td>Vendor reply vs CFO status</td></tr>
+<tr><td>Reliable business output</td><td>Full R-T-C-F-R spec</td><td>Dispute summary with escalation</td></tr></table>
+<p class="lead f">The patterns <b>combine</b>: a full spec can include a stakeholder view <i>and</i> reference examples.</p></div>
+<aside class="notes"></aside>
+</section>
+<section class="slide " data-section="Phase 4 · Design patterns"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 4 · Design patterns</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Prompt lifecycle: treat it like any other object</h2><div class="body"><div class="flow">
+<div class="st f"><h3>Draft</h3><p>R-T-C-F-R v0.1</p></div><div class="ar f">→</div>
+<div class="st f"><h3>Test</h3><p>Acceptance criteria on 10–20 real emails</p></div><div class="ar f">→</div>
+<div class="st f"><h3>Refine</h3><p>Fix the failing cases, re-test all</p></div><div class="ar f">→</div>
+<div class="st f" style="border-top-color:var(--ok)"><h3>Version &amp; transport</h3><p>Store with an ID and change log</p></div></div>
+<div class="sap f"><b>SAP LENS ·</b> develop → unit test → transport. Prompts deserve the same discipline.</div></div>
+<aside class="notes">On real projects, prompts live in config or code repositories, with versions and test sets.</aside>
+</section>
+<section class="slide div" data-section="Phase 5 · Workshop"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 5 · Workshop</span><span>Project NOVA-AP · Sprint 1</span></div>
+<div class="divgrid"><div class="divno">05</div><div><div class="divk">Phase 5</div><h1>Build workshop</h1><p class="lead" style="margin-top:0">Write, test and review your own specification</p></div></div>
+<aside class="notes">Section divider.</aside>
+</section>
+<section class="slide " data-section="Phase 5 · Workshop"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 5 · Workshop</span><span class="cellref" data-cell="11–14">NOTEBOOK · CELL 11–14</span></div>
+<h2>Workshop tasks <span class="timer">40 min</span></h2><div class="body"><div class="g2">
+<div class="card ex f"><div class="n">1</div><div><h3>Full spec for Email 3 · CELL 11</h3><p>Quantity difference: 400 invoiced, 380 accepted. Credit note?</p></div></div>
+<div class="card ex f"><div class="n">2</div><div><h3>Your categories · CELL 12</h3><p>A few-shot classifier for SAP support tickets</p></div></div>
+<div class="card ex f"><div class="n">3</div><div><h3>A stakeholder view · CELL 13</h3><p>The same email for an auditor, a buyer or a plant head</p></div></div>
+<div class="card ex f"><div class="n">4</div><div><h3>Quality gate · CELL 14</h3><p>The AI scores your spec 0–2 per section</p></div></div></div>
+<p class="lead f">Edit only the lines marked <span class="mono">← change me</span> · <b>Shift + Enter</b> to run.</p></div>
+<aside class="notes"><b>▶ Run CELL 11–14</b> · Work in pairs. Walk around and look for missing Format or Rules.</aside>
+</section>
+<section class="slide " data-section="Phase 5 · Workshop"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 5 · Workshop</span><span class="cellref" data-cell="11">NOTEBOOK · CELL 11</span></div>
+<h2>Task 1 result: right decision, wrong calculation</h2><div class="body"><div class="g2" style="align-items:start">
+<div class="out "><div class="who">Model output · test run</div>– Vendor: Delta Plastics<br>– Invoice: INV-30117<br>– Difference: <b>20 housings (approx 1.67%)</b><br>– Credit note needed: <b>Yes</b><br>– Next action: issue a credit note for 20 rejected pieces</div>
+<div class="f"><div class="card"><div class="label">Verified by Python</div><p class="mono" style="font-size:30px;color:var(--text)">20 ÷ 400 = <b>5.0%</b></p><p>5.0% &gt; 2% threshold → credit note: <b>Yes</b></p></div>
+<div class="call warn" style="margin-top:16px">The decision passed; the calculation failed. <b>Never accept AI arithmetic unverified</b> (Sprint 2).</div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 11</b> · Real output: the model wrote 1.67% where the true figure is 5%. It's a good bridge to the afternoon.</aside>
+</section>
+<section class="slide " data-section="Phase 5 · Workshop"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 5 · Workshop</span><span class="cellref" data-cell="12–13">NOTEBOOK · CELL 12–13</span></div>
+<h2>Tasks 2 and 3: sample results</h2><div class="body"><div class="g2">
+<div class="card f"><div class="label">Support ticket classifier</div><p class="mono" style="color:var(--text);font-size:21px">PERFORMANCE ← Report ZMM_STOCK takes 20 min<br>AUTHORISATION ← Need access to MIGO, plant 2000<br>MASTER_DATA ← Change bank key for vendor V300</p><p style="margin-top:10px">Spot the third one: correct category, but also a <b>fraud risk</b>.</p></div>
+<div class="card f"><div class="label">Stakeholder: internal auditor</div><p style="color:var(--text)">1. Invoice payment blockage<br>2. Unconfirmed price variance<br>3. No clear escalation path</p></div></div></div>
+<aside class="notes"><b>▶ Run CELL 12–13</b> · Real outputs.</aside>
+</section>
+<section class="slide " data-section="Phase 5 · Workshop"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 5 · Workshop</span><span class="cellref" data-cell="14">NOTEBOOK · CELL 14</span></div>
+<h2>Task 4: quality gate on "Summarise this email."</h2><div class="body"><table>
+<tr><th>Section</th><th>Score</th><th>Reviewer comment (shortened)</th></tr>
+<tr><td>Role</td><td>1</td><td>No specified role</td></tr><tr><td>Task</td><td class="pass">2</td><td>Clear: "summarise"</td></tr>
+<tr><td>Context</td><td class="fail">0</td><td>Missing context</td></tr><tr><td>Format</td><td>1</td><td>No output format</td></tr>
+<tr><td>Rules</td><td>1</td><td>No constraints</td></tr><tr><td><b>Total</b></td><td><b>5 / 10</b></td><td>Paste your own spec and compare the scores</td></tr></table></div>
+<aside class="notes"><b>▶ Run CELL 14</b> · Real output (total calculated from the scores: 1+2+0+1+1 = 5).</aside>
+</section>
+<section class="slide " data-section="Phase 5 · Workshop"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Phase 5 · Workshop</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Take-home: the prompt specification template</h2><div class="body"><pre class="code"><span class="k">ROLE:    You are a ______________________.</span>
+<span class="p">TASK:    ______________________ (one clear verb).</span>
+<span class="y">CONTEXT: Business rules with exact values: ______________________.</span>
+<span class="s">FORMAT:  – Field 1:   – Field 2:   – Field 3:</span>
+<span class="x">RULES:   If a value is missing, write "Not stated". Do not guess. Max __ words.</span>
+DATA:
+&lt;&lt;&lt;
+(paste the email / document here)
+&gt;&gt;&gt;</pre></div>
+<aside class="notes">Encourage participants to save this.</aside>
+</section>
+<section class="slide " data-section="Sprint review"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Sprint review</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Common specification defects</h2><div class="body"><div class="g5">
+<div class="card bad f"><h3>No layout</h3><p>Fields go missing; the structure varies</p></div>
+<div class="card bad f"><h3>Vague rules</h3><p>"5 lakh" vs ₹5,00,000</p></div>
+<div class="card bad f"><h3>No examples</h3><p>The model invents its own categories</p></div>
+<div class="card bad f"><h3>No validations</h3><p>Guessing and over-long output</p></div>
+<div class="card bad f"><h3>Data not separated</h3><p>No <span class="mono">&lt;&lt;&lt; &gt;&gt;&gt;</span> markers, which is a security risk</p></div></div></div>
+<aside class="notes">Each defect was shown live today.</aside>
+</section>
+<section class="slide " data-section="Sprint review"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Sprint review</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Where else this applies in SAP projects</h2><div class="body"><div class="g3">
+<div class="card f"><h3>Order-to-cash</h3><p>Customer emails → order changes, complaint triage, dunning replies</p></div>
+<div class="card f"><h3>Procure-to-pay</h3><p>Vendor queries, invoice disputes, delivery confirmations</p></div>
+<div class="card f"><h3>Record-to-report</h3><p>Month-end commentary, variance explanations</p></div>
+<div class="card f"><h3>Master data</h3><p>Request forms → validated change requests</p></div>
+<div class="card f"><h3>Support desk</h3><p>Ticket classification and first-response drafts</p></div>
+<div class="card f"><h3>Project delivery</h3><p>Meeting minutes, test cases, FS first drafts</p></div></div></div>
+<aside class="notes">Ask: which of these would save your team the most time?</aside>
+</section>
+<section class="slide " data-section="Sprint review"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Sprint review</span><span>Project NOVA-AP · Sprint 1</span></div>
+<h2>Sprint 1 review: takeaways</h2><div class="body"><div class="g3">
+<div class="card acc f"><div class="num">1</div><h3>A prompt is a spec</h3><p>Role · Task · Context · Format · Rules</p></div>
+<div class="card acc f"><div class="num">2</div><h3>Rules like configuration</h3><p>Exact values, thresholds and owners, especially for small models</p></div>
+<div class="card acc f"><div class="num">3</div><h3>Choose the pattern</h3><p>Few-shot for categories · stakeholder view for the audience</p></div></div>
+<div class="wall f" style="margin-top:30px"><span>Prompt</span><span>Role</span><span>Task</span><span>Context</span><span>Format</span><span>Rules</span><span>Zero-shot</span><span>Few-shot</span><span>Persona</span><span>Data markers</span></div></div>
+<aside class="notes">Checkpoint: ask for the five sections, and which one the impact analysis showed matters most.</aside>
+</section>
+<section class="slide title" data-section="Sprint review"><div class="topbar"><span><b>Class 2.1</b> &nbsp;·&nbsp; Sprint review</span><span>Project NOVA-AP · Sprint 1</span></div>
+<div class="body center"><div class="label" style="color:var(--accent)">Next · Sprint 2 (after lunch)</div>
+<div class="big">The spec is signed off.<br>Now <em>build, test and secure</em> it.</div>
+<p class="lead">Interface contract (JSON) · unit tests · process design · <b>security review against prompt injection</b></p></div>
+<aside class="notes">Cliffhanger into Class 2.2. Collect feedback cards.</aside>
+</section>
+<div class="foot"><span id="sec"></span><span id="num"></span></div>
+</div>
+
+<div id="notesPanel"></div>
+<div id="blank"></div>
+<div id="help"><div>
+  <b style="font-size:22px">Keyboard shortcuts</b><br>
+  <kbd>→</kbd><kbd>Space</kbd> Next step / slide<br>
+  <kbd>←</kbd> Previous<br>
+  <kbd>Home</kbd><kbd>End</kbd> First / last slide<br>
+  <kbd>F</kbd> Fullscreen<br>
+  <kbd>T</kbd> Light / dark theme<br>
+  <kbd>P</kbd> Presenter window (notes, next slide, timer)<br>
+  <kbd>N</kbd> Show notes on this screen<br>
+  <kbd>B</kbd> Black screen (pause)<br>
+  <kbd>?</kbd> Toggle this help
+</div></div>
+
+<script>
+const deck=document.getElementById('deck');
+const slides=[...document.querySelectorAll('.slide')];
+const root=document.documentElement;
+let cur=0, pw=null, t0=null;
+
+// theme
+root.dataset.theme=localStorage.getItem('deckTheme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900);deck.style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+
+const frags=s=>[...s.querySelectorAll('.f')];
+const titleOf=s=>(s.querySelector('h1,h2,.quote,.statement')||{}).textContent?.trim().replace(/\s+/g,' ')||'';
+
+function go(i,allOn=false){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  slides[cur].classList.remove('active');
+  cur=i;
+  frags(slides[cur]).forEach(f=>f.classList.toggle('on',allOn));
+  slides[cur].classList.add('active');
+  history.replaceState(null,'','#'+(cur+1));
+  render();
+}
+function next(){
+  const hidden=frags(slides[cur]).filter(f=>!f.classList.contains('on'));
+  if(hidden.length){hidden[0].classList.add('on');render();}
+  else if(cur<slides.length-1) go(cur+1);
+}
+function prev(){
+  const on=frags(slides[cur]).filter(f=>f.classList.contains('on'));
+  if(on.length){on[on.length-1].classList.remove('on');render();}
+  else if(cur>0) go(cur-1,true);
+}
+function render(){
+  document.getElementById('progress').style.width=((cur+1)/slides.length*100)+'%';
+  document.getElementById('num').textContent=`${cur+1} / ${slides.length}`;
+  document.getElementById('sec').textContent='Class 2.1 · '+(slides[cur].dataset.section||'');
+  const n=slides[cur].querySelector('.notes');
+  document.getElementById('notesPanel').innerHTML=`<b>Slide ${cur+1}: ${titleOf(slides[cur])}</b><br>${n?n.innerHTML:'(no notes)'}`;
+  syncPresenter();
+}
+
+// presenter window
+function openPresenter(){
+  pw=window.open('','deckPresenter','width=1200,height=760');
+  if(!pw){alert('Please allow pop-ups to open the presenter view.');return;}
+  const css=document.querySelector('style').textContent;
+  pw.document.open();
+  pw.document.write(`<!DOCTYPE html><html data-theme="${root.dataset.theme}"><head><title>Presenter · Class 2.1</title><style>${css}
+  html,body{overflow:auto;background:#0c0e13;color:#eef0f5}
+  .pv{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto 1fr;gap:20px;padding:20px;height:100vh;box-sizing:border-box}
+  .box2{background:#151922;border-radius:16px;padding:16px;overflow:hidden}
+  .lab{font:700 13px -apple-system,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#5aa9ff;margin-bottom:10px}
+  .mini{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:10px}
+  .mini .stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;background:var(--bg);color:var(--text)}
+  .mini .slide{display:flex!important;animation:none}
+  #pnotes{font:20px/1.6 -apple-system,sans-serif;grid-column:1/3;overflow:auto}
+  #pnotes b{color:#5aa9ff}
+  .top{display:flex;justify-content:space-between;align-items:center;font:600 22px -apple-system,sans-serif}
+  #ptimer{font:800 40px Menlo,monospace;color:#4fd1a1}
+  button{background:#2a3142;color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:16px;margin-left:8px;cursor:pointer}
+  </style></head><body><div class="pv">
+   <div class="box2"><div class="top"><span class="lab">Now · <span id="pnum"></span></span><span><button id="bp">◀ Prev</button><button id="bn">Next ▶</button></span></div><div class="mini"><div class="stage" id="pcur"></div></div></div>
+   <div class="box2"><div class="top"><span class="lab">Next</span><span id="ptimer">00:00</span></div><div class="mini"><div class="stage" id="pnext"></div></div><button id="br" style="margin:12px 0 0">Reset timer</button></div>
+   <div class="box2" id="pnotes"></div>
+  </div></body></html>`);
+  pw.document.close();
+  t0=Date.now();
+  pw.document.addEventListener('keydown',onKey);
+  pw.document.getElementById('bn').onclick=()=>next();
+  pw.document.getElementById('bp').onclick=()=>prev();
+  pw.document.getElementById('br').onclick=()=>{t0=Date.now();};
+  pw.addEventListener('resize',syncPresenter);
+  syncPresenter();
+}
+function syncPresenter(){
+  if(!pw||pw.closed) return;
+  const d=pw.document; d.documentElement.dataset.theme=root.dataset.theme;
+  const put=(id,s)=>{const st=d.getElementById(id); if(!st) return; st.innerHTML=''; if(!s){st.innerHTML='<div style="padding:60px;font-size:60px">End of deck</div>';} else {const c=s.cloneNode(true);c.classList.add('active');st.appendChild(c);} const w=st.parentElement.clientWidth; st.style.transform=`scale(${w/1600})`;};
+  put('pcur',slides[cur]);
+  const nx=slides[cur+1]?slides[cur+1].cloneNode(true):null; if(nx) nx.querySelectorAll('.f').forEach(f=>f.classList.add('on'));
+  put('pnext',nx);
+  const remaining=frags(slides[cur]).filter(f=>!f.classList.contains('on')).length;
+  d.getElementById('pnum').textContent=`Slide ${cur+1} / ${slides.length}${remaining?` · ${remaining} step(s) left`:''}`;
+  const n=slides[cur].querySelector('.notes');
+  d.getElementById('pnotes').innerHTML=`<div class="lab">Speaker notes</div><b>${titleOf(slides[cur])}</b><br>${n?n.innerHTML:'(no notes)'}`;
+}
+setInterval(()=>{if(pw&&!pw.closed&&t0){const s=Math.floor((Date.now()-t0)/1000);pw.document.getElementById('ptimer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}},1000);
+
+function onKey(e){
+  const k=e.key;
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();next();}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();prev();}
+  else if(k==='Home') go(0);
+  else if(k==='End') go(slides.length-1,true);
+  else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+  else if(k==='t'||k==='T'){root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('deckTheme',root.dataset.theme);syncPresenter();}
+  else if(k==='n'||k==='N'){const p=document.getElementById('notesPanel');p.style.display=p.style.display==='block'?'none':'block';}
+  else if(k==='p'||k==='P') openPresenter();
+  else if(k==='b'||k==='B'||k==='.'){const b=document.getElementById('blank');b.style.display=b.style.display==='block'?'none':'block';}
+  else if(k==='?'){const h=document.getElementById('help');h.style.display=h.style.display==='flex'?'none':'flex';}
+  else if(k==='Escape'){document.getElementById('help').style.display='none';document.getElementById('blank').style.display='none';}
+}
+document.addEventListener('keydown',onKey);
+deck.addEventListener('click',e=>{if(e.target.closest('a,button'))return; (e.clientX<innerWidth*0.25)?prev():next();});
+let tx=null;
+addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)(dx<0?next:prev)();tx=null;});
+
+const start=parseInt(location.hash.slice(1));
+slides[0].classList.add('active');
+go(isNaN(start)?0:start-1);
+</script>
+</body>
+</html>
