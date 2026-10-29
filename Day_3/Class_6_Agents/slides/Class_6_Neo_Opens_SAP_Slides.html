@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Class 6 · Neo Opens SAP</title><style>:root{--panel:var(--card);--bar:var(--seg);--line:var(--hair);--bg:#000;--card:#1c1c1e;--chrome:#2c2c2e;--seg:#2c2c2e;--hair:rgba(255,255,255,.08);--text:#f5f5f7;--muted:#a1a1a6;--muted2:#636366;
+--accent:#ff9f0a;--acc-s:rgba(255,159,10,.14);--grad:linear-gradient(90deg,#ffb340 0%,#ff6a3d 45%,#ff2d78 100%);
+--ok:#30d158;--ok-s:rgba(48,209,88,.14);--bad:#ff453a;--bad-s:rgba(255,69,58,.15);--warn:#ffd60a;--warn-s:rgba(255,214,10,.13);
+--codebg:#111113;--code:#f5f5f7;--shadow:0 0 0 1px rgba(255,255,255,.03),0 18px 40px rgba(0,0,0,.55);--winsh:0 0 0 1px rgba(255,255,255,.06),0 30px 80px rgba(0,0,0,.75);
+--pill:rgba(44,44,46,.72);--pillfg:#f5f5f7;--pillsh:0 8px 24px rgba(0,0,0,.45);--live:#ff9f0a;--live-s:rgba(255,159,10,.25);
+--divbg:radial-gradient(900px 600px at 82% 18%,rgba(255,106,61,.32),transparent 62%),radial-gradient(800px 520px at 8% 100%,rgba(255,45,120,.20),transparent 60%),#000;
+--titlebg:radial-gradient(1100px 600px at 85% -12%,rgba(255,106,61,.22),transparent 62%),radial-gradient(900px 520px at -5% 112%,rgba(255,45,120,.14),transparent 60%),#000}
+html[data-theme="light"]{--bg:#fbfbfd;--card:#fff;--chrome:#f5f5f7;--seg:#f0f0f3;--hair:rgba(0,0,0,.07);--text:#1d1d1f;--muted:#6e6e73;--muted2:#aeaeb2;
+--accent:#d45b00;--acc-s:rgba(255,149,0,.10);--grad:linear-gradient(90deg,#ff8a00 0%,#ff4d4d 50%,#d6246e 100%);
+--ok:#1a8f43;--ok-s:rgba(52,199,89,.12);--bad:#d70015;--bad-s:rgba(255,59,48,.09);--warn:#b25e00;--warn-s:rgba(255,149,0,.12);
+--codebg:#1d1d1f;--shadow:0 1px 2px rgba(0,0,0,.03),0 10px 30px rgba(0,0,0,.055);--winsh:0 1px 2px rgba(0,0,0,.04),0 28px 60px rgba(0,0,0,.13);
+--pill:rgba(255,255,255,.75);--pillfg:#1d1d1f;--pillsh:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.07);--live:#ff6a3d;--live-s:rgba(255,106,61,.18);
+--titlebg:radial-gradient(1100px 600px at 85% -12%,rgba(255,106,61,.12),transparent 62%),#fbfbfd}:root{--accent:#5b46e6;--acc-s:rgba(91,70,230,.10);--grad:linear-gradient(90deg,#6e56ff 0%,#0a84ff 52%,#00b3a4 100%);--live:#5b46e6;--live-s:rgba(91,70,230,.2);--divbg:radial-gradient(900px 600px at 82% 18%,rgba(110,86,255,.32),transparent 62%),radial-gradient(800px 520px at 8% 100%,rgba(0,179,164,.22),transparent 60%),#000;--titlebg:radial-gradient(1000px 560px at 100% 0%,rgba(110,86,255,.12),transparent 62%),radial-gradient(900px 520px at 0% 100%,rgba(0,179,164,.09),transparent 60%),#f6f5fc;--mesh:radial-gradient(1000px 560px at 100% 0%,rgba(110,86,255,.13),transparent 62%),radial-gradient(900px 520px at 0% 100%,rgba(0,179,164,.10),transparent 60%),#f6f5fc;--tile:linear-gradient(135deg,rgba(110,86,255,.18),rgba(0,179,164,.16));--acc-line:rgba(91,70,230,.34);--orb:linear-gradient(135deg,#8e7bff 0%,#3b9bff 55%,#35e0c4 100%);--orbsh:rgba(110,86,255,.42);--gloss:rgba(255,255,255,.85);--cardsh:rgba(40,20,90,.09)}
+html[data-theme="dark"]{--accent:#a99bff;--acc-s:rgba(169,155,255,.15);--grad:linear-gradient(90deg,#8e7bff 0%,#3b9bff 50%,#35e0c4 100%);--live:#a99bff;--live-s:rgba(169,155,255,.25);--titlebg:radial-gradient(1000px 560px at 100% 0%,rgba(110,86,255,.20),transparent 62%),radial-gradient(900px 520px at 0% 100%,rgba(0,179,164,.14),transparent 60%),#06050c;--mesh:radial-gradient(1000px 560px at 100% 0%,rgba(110,86,255,.26),transparent 62%),radial-gradient(900px 520px at 0% 100%,rgba(0,179,164,.17),transparent 60%),#06050c;--tile:linear-gradient(135deg,rgba(169,155,255,.24),rgba(0,179,164,.20));--acc-line:rgba(169,155,255,.42);--orb:linear-gradient(135deg,#8e7bff 0%,#3b9bff 55%,#35e0c4 100%);--orbsh:rgba(110,86,255,.42);--gloss:rgba(255,255,255,.07);--cardsh:rgba(0,0,0,.55)}
+
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+#deck{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:center;background:var(--bg);overflow:hidden}
+.slide{position:absolute;inset:0;padding:126px 120px 92px;display:none;flex-direction:column}
+.slide.active{display:flex;animation:enter .6s cubic-bezier(.2,.7,.2,1)}
+@keyframes enter{from{opacity:0;transform:scale(.988)}to{opacity:1;transform:none}}
+.f{opacity:0;transform:translateY(18px);transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .55s cubic-bezier(.2,.7,.2,1)}.f.on{opacity:1;transform:none}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center}
+.center{align-items:center;text-align:center}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:28px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+p,li{font-size:25px;line-height:1.5;letter-spacing:-.005em;margin:0 0 12px}
+b{font-weight:600}
+.mono{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;letter-spacing:-.01em}
+h1,h2,h3{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;color:var(--text)}
+h1{font-size:92px;line-height:1.02;font-weight:700;letter-spacing:-.04em;margin-bottom:24px}
+h2{font-size:54px;line-height:1.06;font-weight:700;letter-spacing:-.03em;margin-bottom:36px;max-width:1300px}
+h3{font-size:25px;font-weight:600;letter-spacing:-.018em;margin-bottom:8px}
+h1 .mono,.big .mono{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-weight:600;letter-spacing:-.045em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .mono{font-weight:600;color:var(--accent)}
+.muted{color:var(--muted)}
+.lead{font-size:29px;color:var(--muted);max-width:1160px;margin-top:18px;line-height:1.42;letter-spacing:-.012em;font-weight:400}
+.lead b{color:var(--text)}
+.big{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;font-size:78px;font-weight:700;line-height:1.05;letter-spacing:-.04em;max-width:1300px;color:var(--text)}
+.big em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.label{font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+/* minimal header */
+.shell{position:absolute;top:46px;left:120px;right:120px;display:flex;align-items:center;gap:12px;font:500 16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);z-index:4;letter-spacing:-.005em}
+.shell .obj{font:600 15px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--text);letter-spacing:0}
+.shell .sep{opacity:.35}
+.shell .cmd{margin-left:auto;display:flex;align-items:center}
+.shell .cmd .box{display:inline-flex;align-items:center;gap:10px;padding:10px 20px 10px 16px;border-radius:999px;background:var(--pill);color:var(--pillfg);font:600 16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;
+ -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);box-shadow:var(--pillsh);border:1px solid var(--hair)}
+.shell .cmd .box::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--live);box-shadow:0 0 0 4px var(--live-s)}
+.shell .cmd .box small{font:500 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);margin-right:2px}
+.shell .tc{font:500 14px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--muted2)}
+/* cards */
+.card{background:var(--card);border-radius:28px;padding:30px 32px;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.card p{font-size:20px;margin:8px 0 0;color:var(--muted);line-height:1.45}
+.card.acc{box-shadow:inset 0 4px 0 var(--accent),var(--shadow)} .card.ok{box-shadow:inset 0 4px 0 var(--ok),var(--shadow)}
+.card.bad{box-shadow:inset 0 4px 0 var(--bad),var(--shadow)} .card.warn{box-shadow:inset 0 4px 0 var(--warn),var(--shadow)}
+.tcode{display:inline-block;font:600 13px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--accent);background:var(--acc-s);border-radius:999px;padding:5px 12px;margin-bottom:14px;letter-spacing:.02em}
+.num{font:700 60px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.05;margin-bottom:10px}
+/* macOS-window panels */
+.se37{background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--winsh);border:1px solid var(--hair)}
+.se37 .title{display:flex;align-items:center;gap:8px;padding:15px 22px;font:500 15px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);border-bottom:1px solid var(--hair);background:var(--chrome)}
+.se37 .title::before{content:"";flex:0 0 12px;height:12px;border-radius:50%;background:#ff5f57;box-shadow:20px 0 0 #febc2e,40px 0 0 #28c840;margin-right:46px}
+.se37 .title span{font:600 15px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--text)}
+.se37 .tabs{display:inline-flex;margin:16px 22px 4px;padding:3px;border-radius:11px;background:var(--seg);gap:2px}
+.se37 .tabs div{padding:6px 13px;border-radius:8px;font:500 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted)}
+.se37 .tabs div.on{background:var(--card);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06)}
+.se37 table{border:0;box-shadow:none;background:transparent;border-radius:0}
+/* code */
+.abap{background:var(--codebg);color:var(--code);border-radius:22px;padding:28px 32px;font:19px/1.68 "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;white-space:pre-wrap;margin:0;box-shadow:var(--winsh);letter-spacing:0}
+.abap .kw{color:#fc5fa3;font-weight:600} .abap .st{color:#fdb877} .abap .cm{color:#7f8c98;font-style:italic} .abap .nu{color:#d0bf69}
+.abap .hl{background:rgba(255,255,255,.07);border-radius:6px;display:inline-block;width:100%;padding:0 6px;margin-left:-6px}
+.json .k{color:#5dd8ff} .json .s{color:#fdb877} .json .n{color:#d0bf69} .json .x{color:#ff6961;font-weight:700}
+/* output */
+.out{background:var(--card);border-radius:22px;padding:22px 26px;font-size:20px;line-height:1.55;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.out .who{display:flex;align-items:center;gap:8px;font:600 12px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.out .who::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.out.bad .who{color:var(--bad)} .out.ok .who{color:var(--ok)}
+.msg{display:flex;gap:14px;align-items:flex-start;padding:17px 22px;border-radius:18px;font-size:21px;line-height:1.45}
+.msg .i{flex:0 0 26px;height:26px;margin-top:1px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font:700 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif}
+.msg.e{background:var(--bad-s)} .msg.e .i{background:var(--bad)}
+.msg.w{background:var(--warn-s)} .msg.w .i{background:var(--warn)}
+.msg.s{background:var(--ok-s)} .msg.s .i{background:var(--ok)}
+.msg.n{background:var(--acc-s)} .msg.n .i{background:var(--accent)}
+/* tables */
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--hair)}
+th{text-align:left;padding:18px 26px 12px;font:600 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:transparent;border-bottom:1px solid var(--hair)}
+td{padding:15px 26px;font-size:21px;border-bottom:1px solid var(--hair);vertical-align:top;letter-spacing:-.006em}
+tr:last-child td{border-bottom:0}
+td.m{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-size:19px;letter-spacing:0}
+.pass{color:var(--ok);font-weight:600}.fail{color:var(--bad);font-weight:600}.warnc{color:var(--warn);font-weight:600}
+.chip{display:inline-block;padding:4px 12px;border-radius:999px;font:600 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.04em}
+.chip.ok{background:var(--ok-s);color:var(--ok)}.chip.bad{background:var(--bad-s);color:var(--bad)}.chip.warn{background:var(--warn-s);color:var(--warn)}.chip.acc{background:var(--acc-s);color:var(--accent)}
+.idoc{display:inline-flex;align-items:center;gap:9px;font:600 16px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace}
+.idoc i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.idoc.g i{background:var(--ok);box-shadow:0 0 0 4px var(--ok-s)}.idoc.r i{background:var(--bad);box-shadow:0 0 0 4px var(--bad-s)}.idoc.y i{background:var(--warn);box-shadow:0 0 0 4px var(--warn-s)}
+/* bars */
+.bar{display:grid;grid-template-columns:240px 1fr 150px;align-items:center;gap:22px;font-size:22px;font-weight:500;margin:14px 0;letter-spacing:-.01em}
+.bar .tr{height:12px;border-radius:999px;background:var(--seg)}
+.bar .tr i{display:block;height:100%;border-radius:999px;background:var(--grad)}
+.bar .tr i.low{background:var(--bad)}
+.bar .v{font:500 17px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--muted)}
+/* flow */
+.flow{display:flex;align-items:stretch;gap:12px}
+.flow .st{flex:1;background:var(--card);border-radius:24px;padding:26px 24px;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.flow .st h3{font-size:22px}.flow .st p{font-size:18px;margin:8px 0 0;color:var(--muted);line-height:1.4}
+.flow .ar{align-self:center;font-size:24px;color:var(--muted2);font-weight:300}
+.callout{padding:22px 28px;border-radius:20px;font-size:23px;line-height:1.5;background:var(--seg);letter-spacing:-.006em}
+.callout.acc{background:var(--acc-s)}.callout.ok{background:var(--ok-s)}.callout.bad{background:var(--bad-s)}.callout.warn{background:var(--warn-s)}
+/* debugger window */
+.dbg{position:relative;display:grid;grid-template-columns:1.25fr 1fr;border-radius:22px;overflow:hidden;box-shadow:var(--winsh);border:1px solid var(--hair);background:var(--codebg);padding-top:46px}
+.dbg::before{content:"";position:absolute;top:17px;left:20px;width:12px;height:12px;border-radius:50%;background:#ff5f57;box-shadow:20px 0 0 #febc2e,40px 0 0 #28c840}
+.dbg .src{color:var(--code);font:19px/1.8 "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;padding:6px 0 20px}
+.dbg .src div{padding:0 22px;white-space:pre}
+.dbg .src .cur{background:rgba(10,132,255,.22);box-shadow:inset 3px 0 0 #0a84ff}
+.dbg .src .ln{color:#5f6670;display:inline-block;width:40px}
+.dbg .vars{background:var(--card)}
+.dbg .vars table{border:0;box-shadow:none;border-radius:0}
+/* section divider */
+.slide.div{background:var(--divbg)}
+.slide.div .shell{color:rgba(255,255,255,.45)} .slide.div .shell .obj{color:#fff} .slide.div .shell .tc{color:rgba(255,255,255,.4)}
+.divgrid{display:flex;flex-direction:column;justify-content:center;flex:1;max-width:1240px}
+.divtc{align-self:flex-start;font:600 17px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 18px;margin-bottom:34px;letter-spacing:.04em}
+.divk{font:600 24px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.01em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;display:inline-block}
+.slide.div h1{color:#fff;font-size:118px;letter-spacing:-.045em}
+.slide.div .lead{color:rgba(255,255,255,.6);font-size:31px}
+.slide.div .lead .mono{color:#fff}
+.slide.title{background:var(--titlebg)}
+.pill{display:inline-block;padding:9px 18px;border-radius:999px;background:var(--seg);font-size:17px;font-weight:500;margin:6px 8px 0 0;color:var(--text);letter-spacing:-.005em}
+.ex{display:flex;gap:16px;align-items:flex-start}
+.ex .n{flex:0 0 44px;height:44px;border-radius:50%;background:var(--grad);color:#fff;font:700 20px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+.ex h3{font-size:22px}.ex p{font-size:18px}
+.timer{display:inline-block;padding:6px 16px;border-radius:999px;background:var(--acc-s);color:var(--accent);font:600 18px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;vertical-align:middle;margin-left:14px;letter-spacing:0}
+.wall{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.wall span{padding:11px 20px;border-radius:999px;background:var(--seg);font-size:19px;font-weight:500;letter-spacing:-.005em}
+#progress{position:absolute;left:0;bottom:0;height:3px;background:var(--grad);transition:width .4s cubic-bezier(.2,.7,.2,1);z-index:5}
+.foot{position:absolute;left:120px;right:120px;bottom:30px;display:flex;justify-content:space-between;font-size:14px;color:var(--muted2);z-index:5;letter-spacing:.01em}
+.notes{display:none}
+#notesPanel{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:rgba(22,22,24,.94);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);color:#f5f5f7;padding:22px 32px;font:17px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;display:none;z-index:20;border-top:1px solid rgba(255,255,255,.1)}
+#notesPanel b{color:#2997ff}
+#help{position:fixed;inset:0;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;z-index:30}
+#help div{background:rgba(28,28,30,.96);color:#f5f5f7;padding:36px 46px;border-radius:24px;font:17px/2 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;min-width:440px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+#help kbd{background:#3a3a3c;padding:3px 10px;border-radius:6px;font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;margin-right:10px}
+#blank{position:fixed;inset:0;background:#000;display:none;z-index:25}
+.hint{position:absolute;bottom:70px;left:120px;font-size:15px;color:var(--muted2)}
+.hint kbd{border:1px solid var(--hair);background:var(--seg);border-radius:6px;padding:2px 8px;margin:0 3px;font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-size:13px;color:var(--muted)}
+
+.note{position:relative;background:#fffdf3;color:#2b2b2b;border-radius:16px;padding:28px 34px 24px;box-shadow:0 2px 6px rgba(0,0,0,.05),0 24px 50px rgba(0,0,0,.10);font-size:23px;line-height:1.5;border:1px solid rgba(0,0,0,.06)}
+html[data-theme="dark"] .note{background:#26241e;color:#f1ede2;border-color:rgba(255,255,255,.06)}
+.note .hd{font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#a07a12;margin-bottom:10px}
+.note .ln{display:flex;gap:14px;padding:7px 0;border-bottom:1px dashed rgba(0,0,0,.10)} .note .ln:last-child{border-bottom:0}
+html[data-theme="dark"] .note .ln{border-color:rgba(255,255,255,.10)}
+.note .tag{flex:0 0 110px;font:700 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding-top:5px}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.side{border-radius:28px;padding:30px 32px;background:var(--card);box-shadow:var(--shadow);border:1px solid var(--hair)}
+.side .k{font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;margin-bottom:14px}
+.side.life .k{color:var(--muted)} .side.ai .k{color:var(--accent)}
+.side p{font-size:23px}
+.emoji{font-size:52px;line-height:1;margin-bottom:14px}
+.sheet{width:100%;border-collapse:collapse;background:var(--card);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.sheet th{background:var(--seg);text-align:left;padding:14px 20px;font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sheet td{padding:13px 20px;font-size:21px;border-top:1px solid var(--hair)}
+.sheet .blank{background:var(--bad-s);color:var(--bad);font-weight:600}
+.stepbig{display:flex;gap:18px;align-items:stretch}
+.stepbig .s{flex:1;border-radius:26px;padding:30px;background:var(--card);box-shadow:var(--shadow);border:1px solid var(--hair)}
+.stepbig .s .n{font:700 48px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stepbig .s h3{font-size:26px;margin-top:6px} .stepbig .s p{font-size:20px;color:var(--muted);margin-top:8px}
+/* chat (Neo) */
+.chat{display:flex;flex-direction:column;gap:16px;max-width:1220px}
+.bub{display:flex;gap:14px;align-items:flex-end}
+.bub .av{flex:0 0 46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 17px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:#fff}
+.bub .tx{padding:16px 22px;border-radius:24px;font-size:22px;line-height:1.45;max-width:1000px}
+.bub.me{flex-direction:row-reverse} .bub.me .av{background:#8e8e93} .bub.me .tx{background:var(--accent);color:#fff;border-bottom-right-radius:8px}
+.bub.neo .av{background:var(--grad)} .bub.neo .tx{background:var(--card);border:1px solid var(--hair);box-shadow:var(--shadow);border-bottom-left-radius:8px}
+.bub.neo.bad .tx{box-shadow:inset 0 0 0 2px var(--bad),var(--shadow)} .bub.neo.good .tx{box-shadow:inset 0 0 0 2px var(--ok),var(--shadow)}
+/* hero (Neo intro) */
+.hero{display:grid;grid-template-columns:1fr 1.1fr;gap:60px;align-items:center;flex:1}
+.orb{width:340px;height:340px;border-radius:50%;margin:auto;background:var(--grad);display:flex;align-items:center;justify-content:center;
+ font:700 96px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;color:#fff;letter-spacing:-.04em;box-shadow:0 40px 90px rgba(110,91,255,.35),inset 0 -20px 60px rgba(0,0,0,.18)}
+/* quiz */
+.quiz{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.quiz .q{border-radius:22px;padding:24px 26px;background:var(--card);border:1px solid var(--hair);box-shadow:var(--shadow);font-size:22px}
+.quiz .q .a{display:block;margin-top:10px;color:var(--ok);font-weight:600}
+.agenda td.t{font:600 17px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--muted);white-space:nowrap}
+.big2{font:700 120px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.05em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+
+html,body{background:var(--bg)}
+.slide{background:var(--mesh)}
+.card{border-radius:30px;padding:30px 32px;border:1px solid var(--hair);box-shadow:inset 0 1px 0 var(--gloss),0 1px 2px rgba(10,10,40,.04),0 22px 50px var(--cardsh)}
+.card.acc{background:linear-gradient(180deg,var(--acc-s),var(--card) 62%);border-color:var(--acc-line);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.card.ok{background:linear-gradient(180deg,var(--ok-s),var(--card) 62%);border-color:color-mix(in srgb,var(--ok) 38%,transparent);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.card.bad{background:linear-gradient(180deg,var(--bad-s),var(--card) 62%);border-color:color-mix(in srgb,var(--bad) 38%,transparent);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.card.warn{background:linear-gradient(180deg,var(--warn-s),var(--card) 62%);border-color:color-mix(in srgb,var(--warn) 38%,transparent);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.side,.stepbig .s,.quiz .q,.flow .st,.out,.sheet,table{box-shadow:inset 0 1px 0 var(--gloss),0 18px 44px var(--cardsh)}
+.side,.stepbig .s{border-radius:30px}
+.emoji{display:flex;align-items:center;justify-content:center;width:70px;height:70px;border-radius:22px;background:var(--tile);font-size:38px;line-height:1;margin-bottom:16px;box-shadow:inset 0 1px 0 var(--gloss)}
+.card[style*="text-align:center"] .emoji{margin-left:auto;margin-right:auto}
+.pill{background:var(--card);border:1px solid var(--hair);box-shadow:0 8px 22px var(--cardsh);padding:10px 20px;font-weight:600;font-size:18px}
+.pill.hl{background:var(--grad);color:#fff;border-color:transparent}
+.shell .obj{display:inline-flex;align-items:center;gap:10px}
+.shell .obj::before{content:"";width:22px;height:22px;border-radius:50%;background:var(--orb);box-shadow:inset 0 -3px 6px rgba(0,0,0,.18),0 4px 12px var(--orbsh)}
+.shell .cmd .box{font-weight:700}
+#progress{height:4px;box-shadow:0 0 16px var(--orbsh)}
+.label{font-size:15px}
+th{font-size:14px}
+.chip{font-size:14px}
+.foot{font-size:15px}
+/* cover */
+.slide.cover::after{content:"";position:absolute;right:90px;top:210px;width:430px;height:430px;border-radius:50%;background:radial-gradient(circle at 30% 22%,var(--gloss),transparent 38%),var(--orb);box-shadow:0 50px 110px var(--orbsh),inset 0 -26px 60px rgba(0,0,0,.20);z-index:0;pointer-events:none}
+.slide.cover .body,.slide.cover .hint{position:relative;z-index:1}
+.slide.cover .lead{max-width:880px}
+.slide.cover .body>div:last-child{max-width:900px}
+/* divider rings */
+.slide.div::after{content:"";position:absolute;right:-170px;bottom:-170px;width:640px;height:640px;border-radius:50%;border:1.5px solid rgba(255,255,255,.10);box-shadow:0 0 0 70px rgba(255,255,255,.025),0 0 0 140px rgba(255,255,255,.018);pointer-events:none}
+/* term tag on demo slides */
+.termtag{position:absolute;top:86px;left:120px;display:inline-flex;align-items:center;gap:9px;padding:6px 15px;border-radius:999px;background:var(--acc-s);color:var(--accent);border:1px solid var(--acc-line);font:700 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.05em;z-index:3}
+.termtag b{font-weight:700;opacity:.6;letter-spacing:.1em;text-transform:uppercase;font-size:12px}
+/* key-term cards */
+.terms{display:grid;gap:22px}
+.terms.c2{grid-template-columns:repeat(2,1fr)} .terms.c3{grid-template-columns:repeat(3,1fr)} .terms.c4{grid-template-columns:repeat(4,1fr);gap:18px}
+.term{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px;background:var(--card);border-radius:30px;padding:30px 30px 26px;border:1px solid var(--hair);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.term::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--grad)}
+.term .tmeta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
+.term .tno{font:700 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.term .tcell{font:600 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--accent);background:var(--acc-s);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.term .tname{font:700 40px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.03em;line-height:1.1;padding-bottom:4px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.term .tdef{font-size:21px;line-height:1.45;margin:0;color:var(--text)}
+.term .tsap{margin-top:auto;background:var(--seg);border-radius:18px;padding:14px 18px;font-size:18px;line-height:1.4;color:var(--text)}
+.term .tlab{display:block;font:700 12px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.terms.c2 .tname{font-size:46px} .terms.c2 .tdef{font-size:23px} .terms.c2 .tsap{font-size:20px}
+.terms.c4 .term{padding:26px 22px 22px} .terms.c4 .tname{font-size:30px} .terms.c4 .tdef{font-size:18px} .terms.c4 .tsap{font-size:16px;padding:12px 14px}
+/* vocabulary map */
+.vmap{display:flex;flex-direction:column;gap:12px}
+.vrow{display:grid;grid-template-columns:230px 1fr;gap:18px;align-items:center;background:var(--card);border:1px solid var(--hair);border-radius:24px;padding:14px 22px;box-shadow:inset 0 1px 0 var(--gloss),0 14px 36px var(--cardsh)}
+.vpart{font:700 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.vpart small{display:block;margin-top:3px;font:600 17px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:-.01em;text-transform:none;color:var(--text)}
+.vchips{display:flex;flex-wrap:wrap;gap:8px}
+.vchip{display:inline-flex;align-items:center;gap:8px;padding:7px 15px 7px 8px;border-radius:999px;background:var(--seg);font-size:19px;font-weight:600;letter-spacing:-.01em}
+.vchip i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--grad);color:#fff;font:700 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;display:inline-flex;align-items:center;justify-content:center}
+.wall.big span{font-size:23px;padding:13px 24px;background:var(--card);border:1px solid var(--hair);box-shadow:0 10px 26px var(--cardsh);font-weight:600}
+
+.expect{display:flex;align-items:center;gap:9px;font:600 16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);margin-top:14px}
+.expect::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px var(--ok-s)}
+.expect.warn::before{background:var(--warn);box-shadow:0 0 0 4px var(--warn-s)}
+.trace{display:flex;flex-direction:column;gap:10px}
+.trace .tr2{display:grid;grid-template-columns:128px 1fr;gap:18px;align-items:center;background:var(--card);border:1px solid var(--hair);border-radius:20px;padding:12px 20px;font-size:21px;line-height:1.38;box-shadow:inset 0 1px 0 var(--gloss),0 12px 30px var(--cardsh)}
+.lab2{font:700 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:7px 12px;text-align:center}
+.lab2.think{background:var(--acc-s);color:var(--accent)} .lab2.act{background:var(--warn-s);color:var(--warn)}
+.lab2.obs{background:var(--ok-s);color:var(--ok)} .lab2.fin{background:var(--grad);color:#fff}
+.trace .mono{font-size:18px}
+.pairs{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.say{background:var(--seg);border-radius:20px;padding:20px 26px;font-size:22px;line-height:1.45}
+.say b{color:var(--accent)}
+.do{display:flex;gap:16px;align-items:flex-start;margin:0 0 14px}
+.do .n{flex:0 0 46px;height:46px;border-radius:50%;background:var(--grad);color:#fff;font:700 21px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+.do h3{font-size:24px;margin:0 0 2px} .do p{font-size:19px;color:var(--muted);margin:0}
+.no li,.yes li{font-size:22px;margin:0 0 9px;list-style:none;padding-left:34px;position:relative} .no,.yes{padding:0;margin:0}
+.yes li::before{content:"✓";position:absolute;left:0;color:var(--ok);font-weight:700} .no li::before{content:"✕";position:absolute;left:0;color:var(--bad);font-weight:700}
+
+.tbl3{width:100%}
+.diag{display:grid;grid-template-columns:1fr 1.2fr 1fr;grid-template-rows:auto auto;gap:18px;align-items:stretch}
+.diag .top{grid-column:1/4}
+.diag .core{background:var(--grad);color:#fff;border:0}
+.diag .core h3,.diag .core p{color:#fff}
+.menu{background:var(--codebg);color:var(--code);border-radius:22px;padding:22px 28px;font:19px/1.65 "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;box-shadow:var(--winsh)}
+.menu .t{color:#5dd8ff;font-weight:600} .menu .d{color:#b9bcc4}
+.req{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.step4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.step4 .s{background:var(--card);border:1px solid var(--hair);border-radius:26px;padding:24px;box-shadow:inset 0 1px 0 var(--gloss),0 18px 40px var(--cardsh)}
+.step4 .s .n{font:700 44px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+.step4 .s h3{font-size:22px;margin-top:8px} .step4 .s p{font-size:18px;color:var(--muted);margin:6px 0 0}
+.who2{display:inline-block;font:700 12px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:5px 11px;margin-bottom:8px}
+.who2.ai{background:var(--acc-s);color:var(--accent)} .who2.prog{background:var(--ok-s);color:var(--ok)}
+.loopring{display:flex;align-items:center;justify-content:center;gap:0}
+.loopring .node{width:210px;height:210px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--card);border:1px solid var(--hair);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.loopring .node b{font:700 30px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.loopring .node span{font-size:17px;color:var(--muted);margin-top:4px;padding:0 18px}
+.loopring .arw{font-size:34px;color:var(--muted2);padding:0 8px}
+</style></head><body>
+<div id="deck">
+<div id="progress"></div>
+<section class="slide title cover" data-section="Start"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Start</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="body"><div class="label" style="color:var(--accent)">Day 3 · Class 6 · What is an AI agent?</div>
+<h1><span class="mono">Neo</span><br>opens SAP</h1>
+<p class="lead" style="margin-top:0">A chatbot <b>answers</b>. An agent <b>acts</b>. Today Neo gets a few tools and learns to <b>think, act and check its own work</b>.</p>
+<div><span class="pill hl">19 key terms</span><span class="pill">Chatbot vs agent</span><span class="pill">The 4 parts</span><span class="pill">The loop</span><span class="pill">Runs on your laptop</span></div></div><div class="hint">Press <kbd>→</kbd> next <kbd>F</kbd> fullscreen <kbd>T</kbd> theme <kbd>P</kbd> presenter <kbd>K</kbd> fit check <kbd>?</kbd> help</div>
+<aside class="notes">Before class: open Day_3/Class_6_Agents/notebooks/Class_6_Neo_Opens_SAP.ipynb, choose the .venv kernel and run CELL S. Optional: have Antigravity open on the Class_6_Agents/data folder for the live demo.</aside>
+</section>
+<section class="slide " data-section="Start"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Start</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>This morning in 30 seconds</h2><div class="body"><div class="g3"><div class="card  f"><div class="emoji">📖</div><h3>RAG = open-book exam</h3><p>Find the right page, then answer from it.</p></div><div class="card  f"><div class="emoji">📎</div><h3>Citations</h3><p>Every answer names its clause.</p></div><div class="card  f"><div class="emoji">🚫</div><h3>Refuse when missing</h3><p>"Not in the documents" is a correct answer.</p></div></div><p class="lead f">Neo can now <b>answer from documents</b>. Documents don't change by the minute, though. <b>SAP does.</b></p></div>
+<aside class="notes">Quick recap of Class 5.</aside>
+</section>
+<section class="slide " data-section="Start"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Start</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>The manager's question</h2><div class="body"><div class="chat"><div class="bub me f"><div class="av">You</div><div class="tx">Why is PO 4500012345 delayed, and who should I contact?</div></div><div class="bub neo bad f"><div class="av">N</div><div class="tx">…</div></div></div><p class="lead f">The answer is <b>not in any document</b>. It is in SAP, right now.</p></div>
+<aside class="notes">Set the scene. The same question appears in the notebook (CELL 1).</aside>
+</section>
+<section class="slide " data-section="Start"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Start</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>What would YOU do?</h2><div class="body"><div class="g2" style="align-items:center"><div><div class="do f"><div class="n">1</div><div><h3>Check the PO status</h3><p>In SAP</p></div></div><div class="do f"><div class="n">2</div><div><h3>Find the block reason</h3><p>Why is it stuck?</p></div></div><div class="do f"><div class="n">3</div><div><h3>Look up the vendor</h3><p>Name, contact, email</p></div></div><div class="do f"><div class="n">4</div><div><h3>Check the policy</h3><p>What happens next?</p></div></div><div class="do f"><div class="n">5</div><div><h3>Write the answer</h3><p>For the manager</p></div></div></div><div class="card acc f"><div class="emoji">🧭</div><h3>Five steps</h3><p>Different information at <b>each</b> step, and each step depends on the one before.<br><br>A chatbot can't do that. <b>An agent can.</b></p></div></div></div>
+<aside class="notes">Collect the steps on the board before revealing this list. Ask the room for the order.</aside>
+</section>
+<section class="slide " data-section="Start"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Start</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="hero"><div class="orb">Neo</div><div><div class="label" style="color:var(--accent)">Neo, upgraded</div><h2 style="margin-bottom:18px">Now with hands</h2>
+<p class="f">🧠 Same brain, same careful notes</p><p class="f">🛠️ Plus <b>three tools</b> it may ask for</p><p class="f">🔁 Plus a <b>loop</b> to check its own work</p><p class="f">🔒 And <b>only</b> the tools we allow</p></div></div>
+<aside class="notes">Neo is still the same character. What changes is that Neo can now request tools.</aside>
+</section>
+<section class="slide " data-section="Start"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Start</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="body center"><div class="big">The AI <em>decides</em>.<br>The system <em>executes</em>.</div>
+<p class="lead f">And only the tools <b>we</b> allow. Keep this sentence for tomorrow's guardrails.</p></div>
+<aside class="notes">The one idea for the afternoon. Pause here.</aside>
+</section>
+<section class="slide " data-section="Start"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Start</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>Today's plan · 2 hours</h2><div class="body"><table class="agenda">
+<tr><th>Time</th><th>Topic</th><th>Question</th><th>Cells</th></tr>
+<tr><td class="t">0:00</td><td>A · Chatbot vs agent</td><td>What is the difference?</td><td class="m">S, 1</td></tr>
+<tr><td class="t">0:15</td><td>B · The 4 parts of an agent</td><td>What is inside one?</td><td class="m">2–3</td></tr>
+<tr><td class="t">0:30</td><td>C · How tools really work</td><td>Who runs the tool?</td><td class="m">4</td></tr>
+<tr><td class="t">0:40</td><td>D · The loop</td><td>How does it decide?</td><td class="m">5–7</td></tr>
+<tr><td class="t">1:20</td><td>E · Your turn</td><td>Ask, break and extend it</td><td class="m">8–11</td></tr></table></div>
+<aside class="notes">Part D is the heart of the class.</aside>
+</section>
+<section class="slide " data-section="Start"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Start</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2 style="margin-bottom:26px">Today's 19 key terms</h2><div class="body"><div class="vmap"><div class="vrow f"><div class="vpart">Part A<small>Chatbot vs agent</small></div><div class="vchips"><span class="vchip"><i>1</i>Chatbot</span><span class="vchip"><i>2</i>AI agent</span><span class="vchip"><i>3</i>Goal</span></div></div><div class="vrow f"><div class="vpart">Part B<small>The 4 parts</small></div><div class="vchips"><span class="vchip"><i>4</i>Brain (LLM)</span><span class="vchip"><i>5</i>Tool</span><span class="vchip"><i>6</i>Tool menu</span><span class="vchip"><i>7</i>Instructions</span><span class="vchip"><i>8</i>Memory</span><span class="vchip"><i>9</i>Hallucination</span></div></div><div class="vrow f"><div class="vpart">Part C<small>How tools work</small></div><div class="vchips"><span class="vchip"><i>10</i>Tool call</span><span class="vchip"><i>11</i>Executor</span><span class="vchip"><i>12</i>Allow-list</span></div></div><div class="vrow f"><div class="vpart">Part D<small>The loop</small></div><div class="vchips"><span class="vchip"><i>13</i>Think–Act–Observe loop</span><span class="vchip"><i>14</i>Observation</span><span class="vchip"><i>15</i>Step limit</span><span class="vchip"><i>16</i>Trace</span></div></div><div class="vrow f"><div class="vpart">Part E<small>Your turn</small></div><div class="vchips"><span class="vchip"><i>17</i>Human approval</span><span class="vchip"><i>18</i>Tool description</span><span class="vchip"><i>19</i>Multi-agent</span></div></div></div></div>
+<aside class="notes">Preview the vocabulary map. Read each row, then say: <b>before we go deep, each part starts with a one-minute key-terms slide</b>. By the end the room should be able to use all 19 words in a sentence.</aside>
+</section>
+<section class="slide " data-section="Start"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Start</span><span class="cmd"><span class="box" data-cell="S"><small>Notebook</small>Cell S</span></span></div>
+<div class="termtag"><b>Key term</b>Brain (LLM)</div><h2>Neo runs on this laptop</h2><div class="body"><div class="g2" style="align-items:center"><div class="card  f"><div class="emoji">💻</div><h3>Same set-up as this morning</h3><p>The agent uses the <b>chat model</b> only. The tools are plain Python reading two CSV files: <span class="mono">orders.csv</span> and <span class="mono">vendors.csv</span>.</p></div><div class="f"><div class="msg s"><span class="i">✓</span><span>Ollama is running · main model found</span></div><div style="height:12px"></div><div class="msg s"><span class="i">✓</span><span>Neo replies <b>Connection OK</b></span></div></div></div></div>
+<aside class="notes"><b>▶ Run CELL S</b> · Run CELL S.</aside>
+</section>
+<section class="slide div" data-section="A · Chatbot vs agent"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · A · Chatbot vs agent</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="divgrid"><div class="divtc">Part A</div><div><div class="divk">Chatbot vs agent</div><h1>Answers or acts?</h1><p class="lead" style="margin-top:0">Same brain. A very different job.</p></div></div>
+<aside class="notes">Section divider. Next comes a key-terms slide: say the names first, then run the demos. Part A has one demo: a chatbot with no tools.</aside>
+</section>
+<section class="slide " data-section="A · Chatbot vs agent"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · A · Chatbot vs agent</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2 style="margin-bottom:28px">Key terms: chatbot or agent?</h2><div class="body"><div class="terms c3"><div class="term f"><div class="tmeta"><span class="tno">Term 01</span><span class="tcell">Notebook · Cell 1</span></div><div class="tname">Chatbot</div><p class="tdef">Replies to one message using only what it was given. One step, no fetching.</p><div class="tsap"><span class="tlab">In your world</span>A helpdesk FAQ.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 02</span><span class="tcell">Notebook · Cell 5</span></div><div class="tname">AI agent</div><p class="tdef">An AI that works towards a goal: it picks tools, takes several steps and checks each result before the next.</p><div class="tsap"><span class="tlab">In your world</span>A junior consultant investigating an issue.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 03</span><span class="tcell">Notebook · Cell 5</span></div><div class="tname">Goal</div><p class="tdef">What the agent is trying to achieve. A goal needs many steps; a question needs one.</p><div class="tsap"><span class="tlab">In your world</span>The task assignment.</div></div></div></div>
+<aside class="notes"><b>Teach the names first (about 2 minutes).</b> Say each term aloud and ask the room to repeat it. Give the plain meaning, then the example from the card. Don't go deeper yet: the demos come next and each one carries a term tag in the top-left corner. Terms on this slide: Chatbot, AI agent, Goal.</aside>
+</section>
+<section class="slide " data-section="A · Chatbot vs agent"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · A · Chatbot vs agent</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>A chatbot answers. An agent acts.</h2><div class="body"><table class="sheet f"><tr><th></th><th>Chatbot</th><th>Agent</th></tr><tr><td>Goal</td><td>Answer a message</td><td>Achieve a goal</td></tr><tr><td>Steps</td><td>One</td><td>Many</td></tr><tr><td>Information</td><td>Only what you give it</td><td><b>Fetches</b> it with tools</td></tr><tr><td>Who decides the steps</td><td>You</td><td><b>The agent</b></td></tr><tr><td>SAP comparison</td><td>A helpdesk FAQ</td><td>A junior consultant investigating an issue</td></tr></table></div>
+<aside class="notes">Walk the table row by row.</aside>
+</section>
+<section class="slide " data-section="A · Chatbot vs agent"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · A · Chatbot vs agent</span><span class="cmd"><span class="box" data-cell="1"><small>Notebook</small>Cell 1</span></span></div>
+<div class="termtag"><b>Key term</b>Chatbot</div><h2>Cell 1: a chatbot with no tools</h2><div class="body"><div class="chat"><div class="bub me f"><div class="av">You</div><div class="tx">Why is PO 4500012345 delayed, and who should I contact?</div></div><div class="bub neo bad f"><div class="av">N</div><div class="tx">Either <i>"I don't have access to your purchasing system…"</i> (honest), or a plausible <b>invention</b> such as <i>"It is probably a customs delay. Contact the vendor's logistics team."</i></div></div></div><p class="expect warn f">Typical answer pattern · your model's wording will differ</p></div>
+<aside class="notes"><b>▶ Run CELL 1</b> · Run CELL 1. A chatbot cannot fetch the status. A small model may invent something: that is a hallucination.</aside>
+</section>
+<section class="slide " data-section="A · Chatbot vs agent"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · A · Chatbot vs agent</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>What the chatbot is missing</h2><div class="body"><div class="g3"><div class="card bad f"><div class="emoji">📦</div><h3>The status</h3><p>Blocked? Delayed? Delivered?</p></div><div class="card bad f"><div class="emoji">📇</div><h3>The vendor</h3><p>Who is the contact?</p></div><div class="card bad f"><div class="emoji">📖</div><h3>The policy</h3><p>Who must act next?</p></div></div><p class="lead f">Three facts, three different places. <b>It needs to go and get them.</b></p></div>
+<aside class="notes">Set up Part B.</aside>
+</section>
+<section class="slide " data-section="A · Chatbot vs agent"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · A · Chatbot vs agent</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="body center"><div class="big">A chatbot talks about work.<br>An agent <em>does the steps</em>.</div></div>
+<aside class="notes">Pause.</aside>
+</section>
+<section class="slide div" data-section="B · The 4 parts"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · B · The 4 parts</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="divgrid"><div class="divtc">Part B</div><div><div class="divk">The 4 parts</div><h1>Inside an agent</h1><p class="lead" style="margin-top:0">Brain · Tools · Memory · Instructions.</p></div></div>
+<aside class="notes">Section divider. Next comes a key-terms slide: say the names first, then run the demos. Two demos: the tools, and the tool menu.</aside>
+</section>
+<section class="slide " data-section="B · The 4 parts"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · B · The 4 parts</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2 style="margin-bottom:28px">Key terms: the 4 parts (1 of 2)</h2><div class="body"><div class="terms c3"><div class="term f"><div class="tmeta"><span class="tno">Term 04</span><span class="tcell">Notebook · Cell 5</span></div><div class="tname">Brain (LLM)</div><p class="tdef">The language model. It decides what to do next. It does not run anything itself.</p><div class="tsap"><span class="tlab">In your world</span>The consultant's judgement.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 05</span><span class="tcell">Notebook · Cell 2</span></div><div class="tname">Tool</div><p class="tdef">An ordinary function the agent may ask for: look up a PO, find a vendor, check a policy. No AI inside.</p><div class="tsap"><span class="tlab">In your world</span>A BAPI or function module.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 06</span><span class="tcell">Notebook · Cell 3</span></div><div class="tname">Tool menu</div><p class="tdef">The list of tools and what each one does, written into the agent's instructions. The agent only knows tools from this menu.</p><div class="tsap"><span class="tlab">In your world</span>The list of authorised transactions.</div></div></div></div>
+<aside class="notes"><b>Teach the names first (about 2 minutes).</b> Say each term aloud and ask the room to repeat it. Give the plain meaning, then the example from the card. Don't go deeper yet: the demos come next and each one carries a term tag in the top-left corner. Terms on this slide: Brain (LLM), Tool, Tool menu.</aside>
+</section>
+<section class="slide " data-section="B · The 4 parts"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · B · The 4 parts</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2 style="margin-bottom:28px">Key terms: the 4 parts (2 of 2)</h2><div class="body"><div class="terms c3"><div class="term f"><div class="tmeta"><span class="tno">Term 07</span><span class="tcell">Notebook · Cell 3</span></div><div class="tname">Instructions</div><p class="tdef">The goal and the rules, sent to the model before every step (the system prompt).</p><div class="tsap"><span class="tlab">In your world</span>Task assignment plus authorisations.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 08</span><span class="tcell">Notebook · Cell 5</span></div><div class="tname">Memory</div><p class="tdef">What the agent has done and found so far. It is the conversation list the program keeps adding to.</p><div class="tsap"><span class="tlab">In your world</span>Your investigation notes.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 09</span><span class="tcell">Notebook · Cell 1</span></div><div class="tname">Hallucination</div><p class="tdef">A confident answer that is invented. A tool result is a fact; a guess is not.</p><div class="tsap"><span class="tlab">In your world</span>"I'm sure it's blocked." Check SAP.</div></div></div></div>
+<aside class="notes"><b>Teach the names first (about 2 minutes).</b> Say each term aloud and ask the room to repeat it. Give the plain meaning, then the example from the card. Don't go deeper yet: the demos come next and each one carries a term tag in the top-left corner. Terms on this slide: Instructions, Memory, Hallucination.</aside>
+</section>
+<section class="slide " data-section="B · The 4 parts"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · B · The 4 parts</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>An agent has four parts</h2><div class="body"><div class="diag"><div class="card acc top f"><h3>📋 Instructions</h3><p>The goal and the rules. "Answer using only facts returned by your tools."</p></div><div class="card f"><h3>📝 Memory</h3><p>What it has done and found so far.</p></div><div class="card core f"><h3>🧠 Brain (the LLM)</h3><p>Decides what to do next.</p></div><div class="card f"><h3>🛠️ Tools</h3><p>Actions and data it may ask for.</p></div></div></div>
+<aside class="notes">Draw the diagram. Ask for the SAP comparison: Brain = judgement, Tools = BAPIs, Memory = investigation notes, Instructions = task assignment plus authorisations.</aside>
+</section>
+<section class="slide " data-section="B · The 4 parts"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · B · The 4 parts</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>The SAP comparison</h2><div class="body"><table class="sheet f"><tr><th>Part</th><th>Say this</th><th>SAP comparison</th></tr><tr><td>🧠 Brain</td><td>The LLM decides what to do next.</td><td>The consultant's judgement</td></tr><tr><td>🛠️ Tools</td><td>Actions or data it can use.</td><td>BAPIs · function modules · transactions</td></tr><tr><td>📝 Memory</td><td>What it has done and found so far.</td><td>Your investigation notes</td></tr><tr><td>📋 Instructions</td><td>Its goal and its rules.</td><td>Task assignment + authorisations</td></tr></table></div>
+<aside class="notes">Each row links an agent part to something SAP people already know.</aside>
+</section>
+<section class="slide " data-section="B · The 4 parts"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · B · The 4 parts</span><span class="cmd"><span class="box" data-cell="2"><small>Notebook</small>Cell 2</span></span></div>
+<div class="termtag"><b>Key term</b>Tool</div><h2>Tools are ordinary functions</h2><div class="body"><div class="g3"><div class="card acc f"><div class="emoji">📦</div><h3>check_order_status</h3><p>Status, block reason, value, delivery date, vendor id</p></div><div class="card acc f"><div class="emoji">📇</div><h3>get_vendor_details</h3><p>Vendor name, contact, email, rating</p></div><div class="card acc f"><div class="emoji">📖</div><h3>check_policy</h3><p>Who must approve a PO of this value</p></div></div><p class="lead f">They read our mock data. <b>There is no AI inside a tool</b>: same input, same output.</p></div>
+<aside class="notes"><b>▶ Run CELL 2</b> · Name the three tools. The 4th arrives in Cell 10.</aside>
+</section>
+<section class="slide " data-section="B · The 4 parts"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · B · The 4 parts</span><span class="cmd"><span class="box" data-cell="2"><small>Notebook</small>Cell 2</span></span></div>
+<div class="termtag"><b>Key term</b>Tool</div><h2>Cell 2: the tools in action</h2><div class="body"><div class="out f"><div class="who">Notebook output · exact</div><span class="mono">check_order_status('4500012345')</span><br>→ {'status': 'Blocked', 'block_reason': 'Credit check', 'value': '₹50,000', 'vendor_id': 'V100'}<br><br><span class="mono">get_vendor_details('4500012345')</span><br>→ {'vendor': 'Alpha Supplies', 'contact': 'Priya Sharma', 'email': 'priya@alpha.example'}<br><br><span class="mono">check_policy(85000)</span> → Line Manager (policy 3.1) &nbsp;·&nbsp; <span class="mono">check_policy(1200000)</span> → Director (policy 3.3)</div><p class="expect f">Exact output of the notebook cell · no AI involved</p></div>
+<aside class="notes"><b>▶ Run CELL 2</b> · Run CELL 2. These lines are computed from orders.csv and vendors.csv by the same logic as the notebook, so they match your screen.</aside>
+</section>
+<section class="slide " data-section="B · The 4 parts"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · B · The 4 parts</span><span class="cmd"><span class="box" data-cell="3"><small>Notebook</small>Cell 3</span></span></div>
+<div class="termtag"><b>Key term</b>Tool menu</div><h2>The tool menu</h2><div class="body"><div class="g2" style="align-items:start"><div class="menu f"><span class="t">check_order_status</span>(po_number)<br><span class="d">Status, block reason, value, delivery date, vendor id.</span><br><br><span class="t">get_vendor_details</span>(po_number)<br><span class="d">Vendor, contact, email, rating.</span><br><br><span class="t">check_policy</span>(value_inr)<br><span class="d">Who must approve a PO of this value.</span></div><div class="card warn f"><div class="emoji">📋</div><h3>The agent only knows its tools from this menu</h3><p>Clear names and one-line descriptions matter, just like a good prompt. A vague description means the wrong tool gets chosen.</p></div></div></div>
+<aside class="notes"><b>▶ Run CELL 3</b> · Run CELL 3 and read the printed instructions aloud.</aside>
+</section>
+<section class="slide " data-section="B · The 4 parts"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · B · The 4 parts</span><span class="cmd"><span class="box" data-cell="3"><small>Notebook</small>Cell 3</span></span></div>
+<div class="termtag"><b>Key term</b>Instructions</div><h2>The instructions (system prompt)</h2><div class="body"><div class="g2" style="align-items:start"><pre class="abap f">You are Neo, an SAP procurement assistant.
+GOAL: answer using ONLY facts returned by
+your tools. Never guess a status, a contact
+<span class="kw">or</span> an approver.
+
+TOOLS (the only ones you may use):
+- check_order_status(po_number): ...
+- get_vendor_details(po_number): ...
+- check_policy(value_inr): ...
+
+Reply <span class="kw">with</span> ONE JSON object <span class="kw">and</span> nothing <span class="kw">else</span>.
+To use a tool: {<span class="st">"thought"</span>:..,<span class="st">"tool"</span>:..,<span class="st">"args"</span>:{..}}
+To finish:     {<span class="st">"thought"</span>:..,<span class="st">"answer"</span>:<span class="st">".."</span>}</pre><div><div class="card acc f"><div class="num">1</div><h3>Goal</h3><p>What to achieve.</p></div><div style="height:12px"></div><div class="card acc f"><div class="num">2</div><h3>Rule</h3><p>Facts from tools only. No guessing.</p></div><div style="height:12px"></div><div class="card acc f"><div class="num">3</div><h3>Reply format</h3><p>Two shapes: use a tool, or finish.</p></div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 3</b> · These instructions are the same R-T-C-F-R idea from Day 2: a role, a task, context (the tools), a format and rules.</aside>
+</section>
+<section class="slide div" data-section="C · How tools work"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · C · How tools work</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="divgrid"><div class="divtc">Part C</div><div><div class="divk">How tools work</div><h1>Who runs the tool?</h1><p class="lead" style="margin-top:0">The AI asks. The program runs.</p></div></div>
+<aside class="notes">Section divider. Next comes a key-terms slide: say the names first, then run the demos. One demo, one idea: the request form.</aside>
+</section>
+<section class="slide " data-section="C · How tools work"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · C · How tools work</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2 style="margin-bottom:28px">Key terms: how tools really work</h2><div class="body"><div class="terms c3"><div class="term f"><div class="tmeta"><span class="tno">Term 10</span><span class="tcell">Notebook · Cell 4</span></div><div class="tname">Tool call</div><p class="tdef">A request written by the AI in a fixed format, such as {"tool": "check_policy", "args": {...}}. It is only text.</p><div class="tsap"><span class="tlab">In your world</span>Filling in a request form.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 11</span><span class="tcell">Notebook · Cell 4</span></div><div class="tname">Executor</div><p class="tdef">The program that reads the request, runs the real function and returns the result. It is the control point.</p><div class="tsap"><span class="tlab">In your world</span>The system processing the form.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 12</span><span class="tcell">Notebook · Cell 7</span></div><div class="tname">Allow-list</div><p class="tdef">Only tools on the menu can run. An unknown tool is refused by the program.</p><div class="tsap"><span class="tlab">In your world</span>Authorisation objects: no access, no run.</div></div></div></div>
+<aside class="notes"><b>Teach the names first (about 2 minutes).</b> Say each term aloud and ask the room to repeat it. Give the plain meaning, then the example from the card. Don't go deeper yet: the demos come next and each one carries a term tag in the top-left corner. Terms on this slide: Tool call, Executor, Allow-list.</aside>
+</section>
+<section class="slide " data-section="C · How tools work"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · C · How tools work</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="vs"><div class="side life f"><div class="k">In real life</div><div class='emoji'>📝</div><p>A consultant fills in a <b>request form</b>.</p><p>The system processes it and returns the result.</p></div><div class="side ai f"><div class="k">With Neo</div><div class='emoji'>🤖</div><p>Neo writes a <b>tool request</b> as text.</p><p>The program runs the function and returns the result.</p></div></div>
+<aside class="notes">The AI itself can only produce text.</aside>
+</section>
+<section class="slide " data-section="C · How tools work"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · C · How tools work</span><span class="cmd"><span class="box" data-cell="4"><small>Notebook</small>Cell 4</span></span></div>
+<div class="termtag"><b>Key term</b>Executor</div><h2>Four steps, two actors</h2><div class="body"><div class="step4"><div class="s f"><span class="who2 ai">AI</span><div class="n">1</div><h3>Writes a request</h3><p>{"tool": "check_order_status", "args": {…}}</p></div><div class="s f"><span class="who2 prog">Program</span><div class="n">2</div><h3>Runs the function</h3><p>Only if it is on the menu</p></div><div class="s f"><span class="who2 prog">Program</span><div class="n">3</div><h3>Returns the result</h3><p>Added to the conversation</p></div><div class="s f"><span class="who2 ai">AI</span><div class="n">4</div><h3>Carries on thinking</h3><p>Next step, or the final answer</p></div></div></div>
+<aside class="notes"><b>▶ Run CELL 4</b> · This is the most important slide of the class.</aside>
+</section>
+<section class="slide " data-section="C · How tools work"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · C · How tools work</span><span class="cmd"><span class="box" data-cell="4"><small>Notebook</small>Cell 4</span></span></div>
+<div class="termtag"><b>Key term</b>Tool call</div><h2>Cell 4: one request, by hand</h2><div class="body"><div class="req"><div class="out f"><div class="who">1 · The AI wrote a request</div><span class="mono">{"thought": "I need the PO status", "tool": "check_order_status", "args": {"po_number": "4500012345"}}</span></div><div class="out ok f"><div class="who">2 · The program ran it</div><span class="mono">{'status': 'Blocked', 'block_reason': 'Credit check', 'value': '₹50,000', 'vendor_id': 'V100'}</span></div></div><p class="lead f">The AI wrote <b>text</b>. The program did the <b>work</b>. The thought wording will differ; the tool result is exact.</p><p class="expect warn f">Request wording varies · the tool result is exact</p></div>
+<aside class="notes"><b>▶ Run CELL 4</b> · Run CELL 4. If the model answers without a tool, run it again and say that is exactly why we test.</aside>
+</section>
+<section class="slide " data-section="C · How tools work"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · C · How tools work</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="termtag"><b>Key term</b>Allow-list</div><h2>This is our control point</h2><div class="body"><div class="g3"><div class="card ok f"><div class="emoji">🔒</div><h3>Only the menu runs</h3><p>An unknown tool name is refused.</p></div><div class="card ok f"><div class="emoji">🧪</div><h3>The program checks arguments</h3><p>Wrong or missing arguments become an error, not an action.</p></div><div class="card ok f"><div class="emoji">🎛️</div><h3>We decide what is on the menu</h3><p>No tool for payments? Then it cannot pay.</p></div></div><p class="lead f">This is where <b>guardrails</b> live. We use it heavily tomorrow.</p></div>
+<aside class="notes">Link to Day 4.</aside>
+</section>
+<section class="slide div" data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="divgrid"><div class="divtc">Part D</div><div><div class="divk">The loop</div><h1>How does it decide?</h1><p class="lead" style="margin-top:0">Think. Act. Observe. Repeat.</p></div></div>
+<aside class="notes">Section divider. Next comes a key-terms slide: say the names first, then run the demos. Three demos: the full agent, three questions, the safety checks.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2 style="margin-bottom:28px">Key terms: the loop</h2><div class="body"><div class="terms c4"><div class="term f"><div class="tmeta"><span class="tno">Term 13</span><span class="tcell">Notebook · Cell 5</span></div><div class="tname">Think–Act–Observe loop</div><p class="tdef">Think: decide the next step. Act: request a tool. Observe: read the result. Repeat until the goal is reached. (Also called ReAct.)</p><div class="tsap"><span class="tlab">In your world</span>Check, read the result, decide the next check.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 14</span><span class="tcell">Notebook · Cell 5</span></div><div class="tname">Observation</div><p class="tdef">The result a tool returns to the agent. It becomes the next input to think about.</p><div class="tsap"><span class="tlab">In your world</span>The answer in SE16.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 15</span><span class="tcell">Notebook · Cell 7</span></div><div class="tname">Step limit</div><p class="tdef">A maximum number of passes through the loop, so an agent cannot run forever.</p><div class="tsap"><span class="tlab">In your world</span>A timeout on a background job.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 16</span><span class="tcell">Notebook · Cell 5</span></div><div class="tname">Trace</div><p class="tdef">The printed record of every think, act and observe line. It lets you check the agent's work.</p><div class="tsap"><span class="tlab">In your world</span>A debugger log.</div></div></div></div>
+<aside class="notes"><b>Teach the names first (about 2 minutes).</b> Say each term aloud and ask the room to repeat it. Give the plain meaning, then the example from the card. Don't go deeper yet: the demos come next and each one carries a term tag in the top-left corner. Terms on this slide: Think–Act–Observe loop, Observation, Step limit, Trace.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="termtag"><b>Key term</b>Think–Act–Observe loop</div><h2>Think. Act. Observe. Repeat.</h2><div class="body"><div class="loopring f"><div class="node"><b>Think</b><span>What do I need next?</span></div><div class="arw">→</div><div class="node"><b>Act</b><span>Ask for a tool</span></div><div class="arw">→</div><div class="node"><b>Observe</b><span>Read the result</span></div><div class="arw">→</div><div class="node"><b>Repeat</b><span>Or give the answer</span></div></div><p class="lead f" style="text-align:center;max-width:none">Just how you investigate an issue: check something, read the result, decide the next check.</p></div>
+<aside class="notes">Also called ReAct (reason plus act) in the literature.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="box" data-cell="5"><small>Notebook</small>Cell 5</span></span></div>
+<div class="termtag"><b>Key term</b>Trace</div><h2>A real trace</h2><div class="body"><div class="trace"><div class="tr2 f"><span class="lab2 think">Think</span><span>I need the PO status.</span></div><div class="tr2 f"><span class="lab2 act">Act</span><span><span class="mono">check_order_status({'po_number': '4500012345'})</span></span></div><div class="tr2 f"><span class="lab2 obs">Observe</span><span><span class="mono">{'status': 'Blocked', 'block_reason': 'Credit check', 'value': '₹50,000', 'vendor_id': 'V100'}</span></span></div><div class="tr2 f"><span class="lab2 think">Think</span><span>Now I need the vendor contact.</span></div><div class="tr2 f"><span class="lab2 act">Act</span><span><span class="mono">get_vendor_details({'po_number': '4500012345'})</span></span></div><div class="tr2 f"><span class="lab2 obs">Observe</span><span><span class="mono">{'vendor': 'Alpha Supplies', 'contact': 'Priya Sharma', 'email': 'priya@alpha.example'}</span></span></div><div class="tr2 f"><span class="lab2 fin">Answer</span><span>PO 4500012345 is <b>blocked</b> (credit check). Contact <b>Priya Sharma</b> at Alpha Supplies, priya@alpha.example.</span></div></div><p class="expect warn f">Observe lines are exact (from the data) · Think lines and the final wording will differ</p></div>
+<aside class="notes"><b>▶ Run CELL 5</b> · Target trace for the manager's question. The OBSERVE lines are computed from the data files.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="box" data-cell="5"><small>Notebook</small>Cell 5</span></span></div>
+<div class="termtag"><b>Key term</b>AI agent</div><h2>Who decided the order?</h2><div class="body"><div class="g3"><div class="card acc f"><div class="num">2</div><h3>Tools used</h3><p><b>2</b> of the 3</p></div><div class="card acc f"><div class="num">🧠</div><h3>Order chosen by</h3><p><b>The agent</b>, not us</p></div><div class="card acc f"><div class="num">3</div><h3>Steps</h3><p><b>3</b> passes through the loop</p></div></div><p class="lead f">Nobody told Neo the order. Neo read the question and chose.</p></div>
+<aside class="notes"><b>▶ Run CELL 5</b> · Ask the room: how many tools did it use, and who decided the order?</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="box" data-cell="5"><small>Notebook</small>Cell 5</span></span></div>
+<div class="termtag"><b>Key term</b>Think–Act–Observe loop</div><h2>Cell 5: the whole loop fits on one screen</h2><div class="body"><div class="g2" style="align-items:start"><pre class="abap f"><span class="kw">for</span> step <span class="kw">in</span> range(1, max_steps + 1):
+<span class="hl">    reply = chat_json(messages)              <span class="cm"># THINK</span></span>
+    <span class="kw">if</span> <span class="st">"answer"</span> <span class="kw">in</span> reply:
+        <span class="kw">return</span> reply[<span class="st">"answer"</span>]               <span class="cm"># FINISH</span>
+<span class="hl">    result = execute(reply)                  <span class="cm"># ACT</span></span>
+<span class="hl">    messages += [                            <span class="cm"># OBSERVE</span></span>
+      {<span class="st">"role"</span>: <span class="st">"assistant"</span>, <span class="st">"content"</span>: reply},
+      {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"Tool result: "</span> + result}]
+<span class="cm"># step limit reached → stop</span></pre><div class="card f"><h3>Read it in four lines</h3><p><b>Think:</b> the model replies with a tool request or an answer.<br><b>Act:</b> the program runs the tool.<br><b>Observe:</b> the result is added to the conversation.<br><b>Repeat</b> until it can answer, or the step limit hits.</p></div></div></div>
+<aside class="notes"><b>▶ Run CELL 5</b> · Do not explain the Python. Point at the three comments: THINK, ACT, OBSERVE. This code is a simplified excerpt of the notebook cell.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="box" data-cell="5"><small>Notebook</small>Cell 5</span></span></div>
+<div class="termtag"><b>Key term</b>Memory</div><h2>Memory is just the growing list</h2><div class="body"><div class="chat"><div class="bub me f"><div class="av">You</div><div class="tx">Why is PO 4500012345 delayed…</div></div><div class="bub neo  f"><div class="av">N</div><div class="tx"><span class="mono">{tool: check_order_status…}</span></div></div><div class="bub me f"><div class="av">You</div><div class="tx"><span class="mono">Tool result: {status: Blocked…}</span></div></div><div class="bub neo  f"><div class="av">N</div><div class="tx"><span class="mono">{tool: get_vendor_details…}</span></div></div></div><p class="lead f">Each pass, the program <b>re-sends the whole list</b>. Same trick as chat memory this morning.</p></div>
+<aside class="notes"><b>▶ Run CELL 5</b> · Link back to Cell 3 of Class 5: the app re-sends the history.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="box" data-cell="6"><small>Notebook</small>Cell 6</span></span></div>
+<div class="termtag"><b>Key term</b>Tool</div><h2>Cell 6: three questions, three tool choices</h2><div class="body"><table class="sheet f"><tr><th>Question</th><th>Tools we expect</th><th>Answer should contain</th></tr><tr><td>What is the status of PO 4500012345?</td><td><span class="mono">check_order_status</span></td><td>Blocked · Credit check</td></tr><tr><td>Who is the vendor for PO 4500012346 and how do I contact them?</td><td><span class="mono">get_vendor_details</span></td><td>Rahul Verma · rahul@bharat.example</td></tr><tr><td>Can PO 4500012347 be approved by a line manager?</td><td><span class="mono">check_order_status</span> + <span class="mono">check_policy</span></td><td>Yes · ₹85,000 ≤ ₹1,00,000 → Line Manager</td></tr></table><p class="expect warn f">Expected values are exact (from the data) · the notebook prints ✅ or ⚠️ for each</p></div>
+<aside class="notes"><b>▶ Run CELL 6</b> · Run CELL 6. The notebook checks both the tools used and a keyword in the answer. A ⚠️ is part of the lesson.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="box" data-cell="6"><small>Notebook</small>Cell 6</span></span></div>
+<div class="termtag"><b>Key term</b>Trace</div><h2>Worksheet: tools and steps</h2><div class="body"><table class="sheet f"><tr><th>Question</th><th>Tools used (in order)</th><th>Steps</th><th>Correct?</th></tr><tr><td>1</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td></tr><tr><td>2</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td></tr><tr><td>3</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td><td class="blank">&nbsp;</td></tr></table><p class="lead f">Fill it in while the notebook runs. <b>Compare answers</b> with your neighbour.</p></div>
+<aside class="notes"><b>▶ Run CELL 6</b> · Hand out or copy. They write the tools in the order the trace shows.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>A ⚠️ is a lesson, not a failure</h2><div class="body"><div class="g2"><div class="card warn f"><div class="emoji">🔧</div><h3>It can choose the wrong tool</h3><p>Or call the right tool with the wrong argument.</p></div><div class="card warn f"><div class="emoji">👀</div><h3>It can misread a result</h3><p>Or stop too early, or loop.</p></div></div><p class="lead f">Agents are <b>tested</b>, and risky steps get a <b>person's approval</b>.</p></div>
+<aside class="notes">If a small model produces bad JSON live, say: that is why production agents need validation and step limits.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="box" data-cell="7"><small>Notebook</small>Cell 7</span></span></div>
+<div class="termtag"><b>Key term</b>Allow-list</div><h2>Cell 7: the safety checks</h2><div class="body"><div class="out f"><div class="who">Notebook output · exact</div>1) Tool not on the menu → <span class="mono">{'error': "Unknown tool 'delete_purchase_order'. Allowed tools: ['check_order_status', 'get_vendor_details', 'check_policy']"}</span><br>2) Wrong arguments → <span class="mono">{'error': "Bad arguments for check_order_status: … unexpected keyword argument 'order'"}</span><br>3) PO that doesn't exist → <span class="mono">{'error': 'PO 4500099999 not found'}</span><br>4) Step limit of 1 → <span class="mono">⛔ Stopped: step limit reached</span></div><p class="expect f">Exact output of the notebook cell · no AI involved</p></div>
+<aside class="notes"><b>▶ Run CELL 7</b> · Run CELL 7. Errors are returned to the agent as observations, so it can recover. The step limit is a guardrail.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="box" data-cell="7"><small>Notebook</small>Cell 7</span></span></div>
+<div class="termtag"><b>Key term</b>Allow-list</div><h2>Four guardrails already built in</h2><div class="body"><div class="g4"><div class="card ok f"><div class="num">1</div><h3>Allow-list</h3><p>Unknown tool → refused</p></div><div class="card ok f"><div class="num">2</div><h3>Argument check</h3><p>Bad arguments → error</p></div><div class="card ok f"><div class="num">3</div><h3>Not found</h3><p>Missing PO → clear error</p></div><div class="card ok f"><div class="num">4</div><h3>Step limit</h3><p>Cannot loop forever</p></div></div><p class="lead f">Tomorrow: more guardrails, and a <b>standard way</b> to connect tools (MCP).</p></div>
+<aside class="notes"><b>▶ Run CELL 7</b> · Forward reference to Day 4.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="termtag"><b>Key term</b>AI agent</div><h2>Antigravity: an agent you can watch</h2><div class="body"><div class="g2" style="align-items:start"><div><div class="do f"><div class="n">1</div><div><h3>Open the folder</h3><p><span class="mono">Class_6_Agents/data</span> in Antigravity</p></div></div><div class="do f"><div class="n">2</div><div><h3>Give it the task</h3><p>Copy it from <span class="mono">antigravity/TASK.md</span></p></div></div><div class="do f"><div class="n">3</div><div><h3>Narrate each step</h3><p>Plan → Think · reads file → Act · checks → Observe</p></div></div></div><div class="card warn f"><div class="emoji">🎬</div><h3>Check before class</h3><p>Antigravity changes quickly. Run the task once beforehand and use the <b>names you actually see</b> on screen for its plan, task list and steps. Have a backup recording.</p></div></div></div>
+<aside class="notes">Live demo, about 15 minutes. If Antigravity asks for approval to run a command, point it out: that is a guardrail.</aside>
+</section>
+<section class="slide " data-section="D · The loop"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · D · The loop</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="termtag"><b>Key term</b>AI agent</div><h2>Check the Antigravity result</h2><div class="body"><table class="sheet f"><tr><th>Vendor</th><th>Delayed POs</th><th>Total value</th></tr><tr><td>Bharat Logistics</td><td class="mono">2</td><td class="mono">₹12,00,000</td></tr><tr><td>Chennai Components</td><td class="mono">2</td><td class="mono">₹15,00,000</td></tr></table><p class="lead f">Expected report grouped by vendor. We gave it only the <b>goal</b>. It worked out the steps, and we can check every one.</p><p class="expect warn f">exact · computed from orders.csv</p></div>
+<aside class="notes">The expected report is also saved as antigravity/expected_delayed_report.md.</aside>
+</section>
+<section class="slide div" data-section="E · Your turn"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · E · Your turn</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="divgrid"><div class="divtc">Part E</div><div><div class="divk">Your turn</div><h1>Ask, break, extend</h1><p class="lead" style="margin-top:0">Change only the lines marked ← change me.</p></div></div>
+<aside class="notes">Section divider. Next comes a key-terms slide: say the names first, then run the demos. 40 minutes. Cells 8 to 11.</aside>
+</section>
+<section class="slide " data-section="E · Your turn"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · E · Your turn</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2 style="margin-bottom:28px">Key terms: using agents safely</h2><div class="body"><div class="terms c3"><div class="term f"><div class="tmeta"><span class="tno">Term 17</span><span class="tcell">Concept</span></div><div class="tname">Human approval</div><p class="tdef">A person confirms before any risky step: payments, postings, master-data changes, external emails.</p><div class="tsap"><span class="tlab">In your world</span>Release strategy.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 18</span><span class="tcell">Notebook · Cell 10</span></div><div class="tname">Tool description</div><p class="tdef">The one-line text that tells the agent when to use a tool. Clear descriptions give better tool choices.</p><div class="tsap"><span class="tlab">In your world</span>A good transaction short text.</div></div><div class="term f"><div class="tmeta"><span class="tno">Term 19</span><span class="tcell">Concept</span></div><div class="tname">Multi-agent</div><p class="tdef">Several agents that each do one part of a job and hand over to each other.</p><div class="tsap"><span class="tlab">In your world</span>A team of consultants.</div></div></div></div>
+<aside class="notes"><b>Teach the names first (about 2 minutes).</b> Say each term aloud and ask the room to repeat it. Give the plain meaning, then the example from the card. Don't go deeper yet: the demos come next and each one carries a term tag in the top-left corner. Terms on this slide: Human approval, Tool description, Multi-agent.</aside>
+</section>
+<section class="slide " data-section="E · Your turn"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · E · Your turn</span><span class="cmd"><span class="box" data-cell="8–11"><small>Notebook</small>Cell 8–11</span></span></div>
+<h2>Four tasks · 40 min</h2><div class="body"><div class="g2"><div><div class="do f"><div class="n">1</div><div><h3>Ask your own question</h3><p>Cell 8</p></div></div><div class="do f"><div class="n">2</div><div><h3>Remove a tool</h3><p>Cell 9: what happens without <span class="mono">check_policy</span>?</p></div></div></div><div><div class="do f"><div class="n">3</div><div><h3>Add a tool</h3><p>Cell 10: a fourth tool, one summary function</p></div></div><div class="do f"><div class="n">4</div><div><h3>Score the agent</h3><p>Cell 11: four questions checked in code</p></div></div></div></div></div>
+<aside class="notes"><b>▶ Run CELL 8–11</b> · Pairs. Remind them to change only the lines marked ← change me.</aside>
+</section>
+<section class="slide " data-section="E · Your turn"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · E · Your turn</span><span class="cmd"><span class="box" data-cell="8"><small>Notebook</small>Cell 8</span></span></div>
+<div class="termtag"><b>Key term</b>AI agent</div><h2>Cell 8: ask your own question</h2><div class="body"><div class="g2" style="align-items:start"><pre class="abap f"><span class="hl">MY_QUESTION = "Who must approve PO 4500012348,</span>
+<span class="hl">               <span class="kw">and</span> why is it blocked?"      <span class="cm"># ← change me</span></span>
+<span class="hl">run_agent(MY_QUESTION)</span></pre><div class="card f"><h3>Try these</h3><p>• Who is the vendor for PO 4500012350?<br>• What is the delivery date of PO 4500012354?<br>• Is PO 4500012355 blocked, and who is the contact?</p></div></div><p class="lead f">Target for the first: <b>Director</b> (₹12,00,000 &gt; ₹10,00,000, policy 3.3), blocked for <b>price variance</b>.</p><p class="expect warn f">Target answer, taken from the document · your model's wording will differ</p></div>
+<aside class="notes"><b>▶ Run CELL 8</b> · Run CELL 8. The target answer comes from the data and the policy limits.</aside>
+</section>
+<section class="slide " data-section="E · Your turn"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · E · Your turn</span><span class="cmd"><span class="box" data-cell="9"><small>Notebook</small>Cell 9</span></span></div>
+<div class="termtag"><b>Key term</b>Tool description</div><h2>Cell 9: take a tool away</h2><div class="body"><div class="g2" style="align-items:center"><pre class="abap f"><span class="hl">removed = TOOLS.pop(<span class="st">"check_policy"</span>)</span>
+run_agent(<span class="st">"Who must approve PO 4500012348?"</span>)
+TOOLS[<span class="st">"check_policy"</span>] = removed</pre><div class="card warn f"><div class="emoji">🧪</div><h3>What do you expect?</h3><p>Without the policy tool the agent either says it <b>cannot tell</b>, or it <b>guesses</b>.<br><br>Correct answer: <b>Director</b>.</p></div></div><p class="lead f">Tools are what make an agent <b>reliable</b>.</p><p class="expect warn f">Behaviour varies by model</p></div>
+<aside class="notes"><b>▶ Run CELL 9</b> · Run CELL 9. The tool is put back automatically afterwards.</aside>
+</section>
+<section class="slide " data-section="E · Your turn"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · E · Your turn</span><span class="cmd"><span class="box" data-cell="10"><small>Notebook</small>Cell 10</span></span></div>
+<div class="termtag"><b>Key term</b>Tool description</div><h2>Cell 10: add a fourth tool</h2><div class="body"><div class="g2" style="align-items:start"><pre class="abap f"><span class="kw">def</span> delayed_summary():
+    <span class="st">""</span><span class="st">"Delayed POs per vendor: count and total value."</span><span class="st">""</span>
+    ...
+
+TOOLS[<span class="st">"delayed_summary"</span>] = {
+    <span class="st">"fn"</span>: delayed_summary, <span class="st">"args"</span>: <span class="st">"(none)"</span>,
+<span class="hl">    <span class="st">"does"</span>: "Number <span class="kw">and</span> total value (INR) of Delayed</span>
+             purchase orders <span class="kw">for</span> every vendor."}</pre><div><table class="sheet f"><tr><th>Vendor</th><th>Delayed</th><th>Value</th></tr><tr><td>Bharat Logistics</td><td class="mono">2</td><td class="mono">₹12,00,000</td></tr><tr><td>Chennai Components</td><td class="mono">2</td><td class="mono">₹15,00,000</td></tr></table><p class="lead f">Question: <i>which vendor has the most delayed value?</i> Target: <b>Chennai Components</b>, ₹15,00,000.</p></div></div><p class="expect warn f">exact data · the agent's wording will differ</p></div>
+<aside class="notes"><b>▶ Run CELL 10</b> · Run CELL 10. We add one function and one menu entry, and the agent can use it straight away.</aside>
+</section>
+<section class="slide " data-section="E · Your turn"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · E · Your turn</span><span class="cmd"><span class="box" data-cell="11"><small>Notebook</small>Cell 11</span></span></div>
+<div class="termtag"><b>Key term</b>Trace</div><h2>Cell 11: the scoreboard</h2><div class="body"><table class="sheet f"><tr><th>#</th><th>Question</th><th>Tools that must be used</th><th>Answer must contain</th></tr><tr><td>1</td><td>What is the status of PO 4500012345?</td><td class="mono">check_order_status</td><td class="mono">block</td></tr><tr><td>2</td><td>Who is the vendor for PO 4500012346 …?</td><td class="mono">get_vendor_details</td><td class="mono">rahul</td></tr><tr><td>3</td><td>Can PO 4500012347 be approved by a line manager?</td><td class="mono">check_order_status + check_policy</td><td class="mono">yes</td></tr><tr><td>4</td><td>Who must approve PO 4500012348?</td><td class="mono">check_policy</td><td class="mono">director</td></tr></table><p class="expect warn f">exact · the notebook prints ✅ or ❌ and a score out of 4</p></div>
+<aside class="notes"><b>▶ Run CELL 11</b> · Run CELL 11. The code scores the tools used and a keyword in each answer. Fast finishers can add their own rows.</aside>
+</section>
+<section class="slide " data-section="E · Your turn"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · E · Your turn</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>What must never run without a person?</h2><div class="body"><div class="pairs"><div><div class="label">An agent may do alone</div><ul class="yes f"><li>Look up a status</li><li>Find a vendor contact</li><li>Check a policy</li><li>Summarise delayed orders</li></ul></div><div><div class="label">Never without approval</div><ul class="no f"><li>Post documents (MIGO, MIRO)</li><li>Release payments</li><li>Change master data, especially bank details</li><li>Email vendors or customers</li><li>Delete anything</li></ul></div></div><p class="lead f">Keep this list. <b>Tomorrow we build it into the system.</b></p></div>
+<aside class="notes">Collect this list from the room before showing it. Save it for Class 7.</aside>
+</section>
+<section class="slide " data-section="E · Your turn"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · E · Your turn</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>Which SAP tasks suit an agent?</h2><div class="body"><div class="g3"><div class="card ok f"><div class="emoji">✅</div><h3>Good fit</h3><p>Multi-step investigations where the next step depends on what you find.</p></div><div class="card ok f"><div class="emoji">📋</div><h3>Good examples</h3><p>PO follow-ups · IDoc error investigation · invoice exceptions · month-end checks</p></div><div class="card warn f"><div class="emoji">⚠️</div><h3>Poor fit</h3><p>A simple question with one answer. A prompt or RAG is cheaper and faster.</p></div></div></div>
+<aside class="notes">Ask the room for their own examples.</aside>
+</section>
+<section class="slide " data-section="E · Your turn"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · E · Your turn</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>Common myths</h2><div class="body"><table class="sheet f"><tr><th>They might think…</th><th>Better to say…</th></tr><tr><td>Agents are fully autonomous robots</td><td>They act within the tools and rules we give them.</td></tr><tr><td>The AI logs into SAP and runs transactions</td><td>The AI <b>requests</b> a tool. The program runs it.</td></tr><tr><td>Agents are always better than chatbots</td><td>For simple Q&amp;A, a prompt or RAG is simpler and cheaper.</td></tr><tr><td>If it's an agent, it's always right</td><td>It can pick the wrong tool or misread a result. Test it.</td></tr></table></div>
+<aside class="notes">Use as a quick correction list.</aside>
+</section>
+<section class="slide " data-section="E · Your turn"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · E · Your turn</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>Agents in one page</h2><div class="body"><div class="g2"><div class="card f"><h3>Chatbot vs agent</h3><p>Chatbot: answers a message.<br>Agent: achieves a goal, in many steps, using tools.</p></div><div class="card f"><h3>The loop</h3><p><b>Think → Act → Observe → Repeat</b><br>until it can answer, or the step limit is reached.</p></div></div><p class="lead f">The AI <b>asks</b>. The program <b>runs</b>. Only the tools we <b>allow</b>.</p></div>
+<aside class="notes">This is the participant handout.</aside>
+</section>
+<section class="slide " data-section="Wrap-up"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Wrap-up</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>Word wall: say each one in a sentence</h2><div class="body"><div class="wall big f"><span>Chatbot</span><span>AI agent</span><span>Goal</span><span>Brain (LLM)</span><span>Tool</span><span>Tool menu</span><span>Instructions</span><span>Memory</span><span>Hallucination</span><span>Tool call</span><span>Executor</span><span>Allow-list</span><span>Think–Act–Observe loop</span><span>Observation</span><span>Step limit</span><span>Trace</span><span>Human approval</span><span>Tool description</span><span>Multi-agent</span></div><p class="lead f" style="text-align:center;max-width:none">Point at a word. Someone explains it <b>in plain language</b> and gives an example.</p></div>
+<aside class="notes">Word wall (5 minutes). Point at a word, pick a person, and get a one-sentence definition plus one example from today. Praise plain language over jargon.</aside>
+</section>
+<section class="slide " data-section="Wrap-up"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Wrap-up</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>Quick quiz</h2><div class="body"><div class="quiz">
+<div class="q f">Describe the agent loop in four words.<span class="a">Think, act, observe, repeat.</span></div>
+<div class="q f">What are the 4 parts of an agent?<span class="a">Brain, tools, memory, instructions.</span></div>
+<div class="q f">Does the AI run the tool itself?<span class="a">No. It requests it; the program runs it.</span></div>
+<div class="q f">When is an agent the right choice?<span class="a">Multi-step tasks where the next step depends on what is found.</span></div>
+<div class="q f">Name one thing an agent must never do without approval.<span class="a">Payments, postings, master-data changes, external emails.</span></div>
+<div class="q f">What stops an agent looping forever?<span class="a">A step limit.</span></div></div></div>
+<aside class="notes">Ask each question aloud before revealing the answer.</aside>
+</section>
+<section class="slide " data-section="Wrap-up"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Wrap-up</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<h2>Remember three things</h2><div class="body"><div class="g3"><div class="card acc f"><div class="num">1</div><h3>4 parts</h3><p>Brain · Tools · Memory · Instructions.</p></div><div class="card acc f"><div class="num">2</div><h3>The loop</h3><p>Think → Act → Observe → Repeat.</p></div><div class="card acc f"><div class="num">3</div><h3>AI decides, system executes</h3><p>Only the tools we allow.</p></div></div></div>
+<aside class="notes">Three takeaways.</aside>
+</section>
+<section class="slide title" data-section="Wrap-up"><div class="shell"><span class="obj">Neo</span><span class="sep">›</span><span class="sec">Class 6 · Wrap-up</span><span class="cmd"><span class="tc">Day 3 · Afternoon</span></span></div>
+<div class="body center"><div class="label" style="color:var(--accent)">Tomorrow · Day 4</div><div class="big">Our tools were <em>hand-built</em>.<br>What about twenty systems?</div>
+<p class="lead">Day 4: a <b>standard way</b> to connect agents to systems (MCP), and the <b>guardrails</b> that keep them safe. Tonight, think of <b>one SAP process</b> where an assistant would help you.</p></div>
+<aside class="notes">Bridge to Day 4, and the capstone preparation.</aside>
+</section>
+<div class="foot"><span id="sec"></span><span id="num"></span></div>
+</div>
+
+<div id="notesPanel"></div>
+<div id="blank"></div>
+<div id="help"><div>
+  <b style="font-size:22px">Keyboard shortcuts</b><br>
+  <kbd>→</kbd><kbd>Space</kbd> Next step / slide<br>
+  <kbd>←</kbd> Previous<br>
+  <kbd>Home</kbd><kbd>End</kbd> First / last slide<br>
+  <kbd>F</kbd> Fullscreen<br>
+  <kbd>T</kbd> Light / dark theme<br>
+  <kbd>P</kbd> Presenter window (notes, next slide, timer)<br>
+  <kbd>N</kbd> Show notes on this screen<br>
+  <kbd>B</kbd> Black screen (pause)<br>
+  <kbd>K</kbd> Check that every slide fits the screen<br>
+  <kbd>?</kbd> Toggle this help
+</div></div>
+
+<script>
+const deck=document.getElementById('deck');
+const slides=[...document.querySelectorAll('.slide')];
+const root=document.documentElement;
+let cur=0, pw=null, t0=null;
+
+// theme
+root.dataset.theme=localStorage.getItem('d3Class6Theme')||'dark';
+
+function fit(){const s=Math.min(innerWidth/1600,innerHeight/900);deck.style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+
+const frags=s=>[...s.querySelectorAll('.f')];
+const titleOf=s=>(s.querySelector('h1,h2,.quote,.statement')||{}).textContent?.trim().replace(/\s+/g,' ')||'';
+
+function go(i,allOn=false){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  slides[cur].classList.remove('active');
+  cur=i;
+  frags(slides[cur]).forEach(f=>f.classList.toggle('on',allOn));
+  slides[cur].classList.add('active');
+  history.replaceState(null,'','#'+(cur+1));
+  render();
+}
+function next(){
+  const hidden=frags(slides[cur]).filter(f=>!f.classList.contains('on'));
+  if(hidden.length){hidden[0].classList.add('on');render();}
+  else if(cur<slides.length-1) go(cur+1);
+}
+function prev(){
+  const on=frags(slides[cur]).filter(f=>f.classList.contains('on'));
+  if(on.length){on[on.length-1].classList.remove('on');render();}
+  else if(cur>0) go(cur-1,true);
+}
+function render(){
+  document.getElementById('progress').style.width=((cur+1)/slides.length*100)+'%';
+  document.getElementById('num').textContent=`${cur+1} / ${slides.length}`;
+  document.getElementById('sec').textContent='Class 6 · '+(slides[cur].dataset.section||'');
+  const n=slides[cur].querySelector('.notes');
+  document.getElementById('notesPanel').innerHTML=`<b>Slide ${cur+1}: ${titleOf(slides[cur])}</b><br>${n?n.innerHTML:'(no notes)'}`;
+  syncPresenter();
+}
+
+// presenter window
+function openPresenter(){
+  pw=window.open('','deckPresenter','width=1200,height=760');
+  if(!pw){alert('Please allow pop-ups to open the presenter view.');return;}
+  const css=document.querySelector('style').textContent;
+  pw.document.open();
+  pw.document.write(`<!DOCTYPE html><html data-theme="${root.dataset.theme}"><head><title>Presenter · Class 6</title><style>${css}
+  html,body{overflow:auto;background:#0c0e13;color:#eef0f5}
+  .pv{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto 1fr;gap:20px;padding:20px;height:100vh;box-sizing:border-box}
+  .box2{background:#151922;border-radius:16px;padding:16px;overflow:hidden}
+  .lab{font:700 13px -apple-system,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#5aa9ff;margin-bottom:10px}
+  .mini{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:10px}
+  .mini .stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;background:var(--bg);color:var(--text)}
+  .mini .slide{display:flex!important;animation:none}
+  #pnotes{font:20px/1.6 -apple-system,sans-serif;grid-column:1/3;overflow:auto}
+  #pnotes b{color:#5aa9ff}
+  .top{display:flex;justify-content:space-between;align-items:center;font:600 22px -apple-system,sans-serif}
+  #ptimer{font:800 40px Menlo,monospace;color:#4fd1a1}
+  button{background:#2a3142;color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:16px;margin-left:8px;cursor:pointer}
+  </style></head><body><div class="pv">
+   <div class="box2"><div class="top"><span class="lab">Now · <span id="pnum"></span></span><span><button id="bp">◀ Prev</button><button id="bn">Next ▶</button></span></div><div class="mini"><div class="stage" id="pcur"></div></div></div>
+   <div class="box2"><div class="top"><span class="lab">Next</span><span id="ptimer">00:00</span></div><div class="mini"><div class="stage" id="pnext"></div></div><button id="br" style="margin:12px 0 0">Reset timer</button></div>
+   <div class="box2" id="pnotes"></div>
+  </div></body></html>`);
+  pw.document.close();
+  t0=Date.now();
+  pw.document.addEventListener('keydown',onKey);
+  pw.document.getElementById('bn').onclick=()=>next();
+  pw.document.getElementById('bp').onclick=()=>prev();
+  pw.document.getElementById('br').onclick=()=>{t0=Date.now();};
+  pw.addEventListener('resize',syncPresenter);
+  syncPresenter();
+}
+function syncPresenter(){
+  if(!pw||pw.closed) return;
+  const d=pw.document; d.documentElement.dataset.theme=root.dataset.theme;
+  const put=(id,s)=>{const st=d.getElementById(id); if(!st) return; st.innerHTML=''; if(!s){st.innerHTML='<div style="padding:60px;font-size:60px">End of deck</div>';} else {const c=s.cloneNode(true);c.classList.add('active');st.appendChild(c);} const w=st.parentElement.clientWidth; st.style.transform=`scale(${w/1600})`;};
+  put('pcur',slides[cur]);
+  const nx=slides[cur+1]?slides[cur+1].cloneNode(true):null; if(nx) nx.querySelectorAll('.f').forEach(f=>f.classList.add('on'));
+  put('pnext',nx);
+  const remaining=frags(slides[cur]).filter(f=>!f.classList.contains('on')).length;
+  d.getElementById('pnum').textContent=`Slide ${cur+1} / ${slides.length}${remaining?` · ${remaining} step(s) left`:''}`;
+  const n=slides[cur].querySelector('.notes');
+  d.getElementById('pnotes').innerHTML=`<div class="lab">Speaker notes</div><b>${titleOf(slides[cur])}</b><br>${n?n.innerHTML:'(no notes)'}`;
+}
+setInterval(()=>{if(pw&&!pw.closed&&t0){const s=Math.floor((Date.now()-t0)/1000);pw.document.getElementById('ptimer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}},1000);
+
+function onKey(e){
+  const k=e.key;
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();next();}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();prev();}
+  else if(k==='Home') go(0);
+  else if(k==='End') go(slides.length-1,true);
+  else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+  else if(k==='t'||k==='T'){root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('d3Class6Theme',root.dataset.theme);syncPresenter();}
+  else if(k==='n'||k==='N'){const p=document.getElementById('notesPanel');p.style.display=p.style.display==='block'?'none':'block';}
+  else if(k==='p'||k==='P') openPresenter();
+  else if(k==='b'||k==='B'||k==='.'){const b=document.getElementById('blank');b.style.display=b.style.display==='block'?'none':'block';}
+  else if(k==='k'||k==='K') checkFit();
+  else if(k==='?'){const h=document.getElementById('help');h.style.display=h.style.display==='flex'?'none':'flex';}
+  else if(k==='Escape'){document.getElementById('help').style.display='none';document.getElementById('blank').style.display='none';}
+}
+document.addEventListener('keydown',onKey);
+deck.addEventListener('click',e=>{if(e.target.closest('a,button'))return; (e.clientX<innerWidth*0.25)?prev():next();});
+let tx=null;
+addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)(dx<0?next:prev)();tx=null;});
+
+
+function checkFit(){
+  const keep=cur, rep=[]; const dr=deck.getBoundingClientRect(), sc=dr.width/1600;
+  slides.forEach((s,i)=>{
+    slides.forEach(x=>x.classList.remove('active'));
+    s.style.animation='none'; s.classList.add('active');
+    frags(s).forEach(f=>{f.style.transition='none';f.classList.add('on');});
+    let mb=0, mr=0;
+    s.querySelectorAll('*').forEach(e=>{
+      if(e.closest('.notes,.shell,.hint,.termtag')||getComputedStyle(e).position==='absolute') return;
+      const r=e.getBoundingClientRect(); if(!r.width||!r.height) return;
+      mb=Math.max(mb,(r.bottom-dr.top)/sc); mr=Math.max(mr,(r.right-dr.left)/sc);
+    });
+    if(mb>835||mr>1500) rep.push('Slide '+(i+1)+': bottom '+Math.round(mb)+'px, right '+Math.round(mr)+'px');
+    s.style.animation=''; frags(s).forEach(f=>{f.style.transition='';});
+  });
+  go(keep);
+  alert(rep.length?('These slides run past the safe area (limit: bottom 835, right 1500):\n\n'+rep.join('\n')):'All '+slides.length+' slides fit.');
+}
+
+const start=parseInt(location.hash.slice(1));
+slides[0].classList.add('active');
+go(isNaN(start)?0:start-1);
+</script>
+</body>
+</html>
