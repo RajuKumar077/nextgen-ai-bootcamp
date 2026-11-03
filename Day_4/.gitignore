@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.vscode/mcp.json
+Class_7_MCP_Guardrails/antigravity/mcp_config.json
+Class_7_MCP_Guardrails/mcp_server/tickets.jsonl

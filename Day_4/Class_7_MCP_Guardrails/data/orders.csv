@@ -1,0 +1,13 @@
+po_number,vendor_id,vendor_name,plant,material,qty,value_inr,delivery_date,status,block_reason
+4500012345,V100,Alpha Supplies,1000,M-100 Steel Sheet,100,50000,2026-10-01,Blocked,Credit check
+4500012346,V200,Bharat Logistics,1000,M-200 Copper Wire,500,750000,2026-09-25,Delayed,
+4500012347,V100,Alpha Supplies,2000,M-300 Bearings,200,85000,2026-10-20,Open,
+4500012348,V300,Chennai Components,1000,M-400 Gearbox,10,1200000,2026-09-30,Blocked,Price variance
+4500012349,V200,Bharat Logistics,2000,M-200 Copper Wire,300,450000,2026-09-28,Delayed,
+4500012350,V400,Delta Plastics,1000,M-500 Plastic Housing,1000,300000,2026-10-05,Delivered,
+4500012351,V300,Chennai Components,2000,M-400 Gearbox,5,600000,2026-10-02,Delayed,
+4500012352,V100,Alpha Supplies,1000,M-100 Steel Sheet,250,125000,2026-10-03,Blocked,Missing goods receipt
+4500012353,V400,Delta Plastics,2000,M-500 Plastic Housing,400,120000,2026-10-25,Open,
+4500012354,V300,Chennai Components,1000,M-600 Motor,20,900000,2026-09-20,Delayed,
+4500012355,V200,Bharat Logistics,1000,M-700 Cable Tray,150,95000,2026-10-04,Blocked,Credit check
+4500012356,V400,Delta Plastics,2000,M-800 Packaging,2000,40000,2026-10-01,Delivered,

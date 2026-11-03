@@ -1,0 +1,264 @@
+
+
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+#deck{position:fixed;left:50%;top:50%;width:1600px;height:900px;transform-origin:center;background:var(--bg);overflow:hidden}
+.slide{position:absolute;inset:0;padding:126px 120px 92px;display:none;flex-direction:column}
+.slide.active{display:flex;animation:enter .6s cubic-bezier(.2,.7,.2,1)}
+@keyframes enter{from{opacity:0;transform:scale(.988)}to{opacity:1;transform:none}}
+.f{opacity:0;transform:translateY(18px);transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .55s cubic-bezier(.2,.7,.2,1)}.f.on{opacity:1;transform:none}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center}
+.center{align-items:center;text-align:center}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:28px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+p,li{font-size:25px;line-height:1.5;letter-spacing:-.005em;margin:0 0 12px}
+b{font-weight:600}
+.mono{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;letter-spacing:-.01em}
+h1,h2,h3{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;color:var(--text)}
+h1{font-size:92px;line-height:1.02;font-weight:700;letter-spacing:-.04em;margin-bottom:24px}
+h2{font-size:54px;line-height:1.06;font-weight:700;letter-spacing:-.03em;margin-bottom:36px;max-width:1300px}
+h3{font-size:25px;font-weight:600;letter-spacing:-.018em;margin-bottom:8px}
+h1 .mono,.big .mono{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-weight:600;letter-spacing:-.045em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .mono{font-weight:600;color:var(--accent)}
+.muted{color:var(--muted)}
+.lead{font-size:29px;color:var(--muted);max-width:1160px;margin-top:18px;line-height:1.42;letter-spacing:-.012em;font-weight:400}
+.lead b{color:var(--text)}
+.big{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;font-size:78px;font-weight:700;line-height:1.05;letter-spacing:-.04em;max-width:1300px;color:var(--text)}
+.big em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.label{font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+/* minimal header */
+.shell{position:absolute;top:46px;left:120px;right:120px;display:flex;align-items:center;gap:12px;font:500 16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);z-index:4;letter-spacing:-.005em}
+.shell .obj{font:600 15px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--text);letter-spacing:0}
+.shell .sep{opacity:.35}
+.shell .cmd{margin-left:auto;display:flex;align-items:center}
+.shell .cmd .box{display:inline-flex;align-items:center;gap:10px;padding:10px 20px 10px 16px;border-radius:999px;background:var(--pill);color:var(--pillfg);font:600 16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;
+ -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);box-shadow:var(--pillsh);border:1px solid var(--hair)}
+.shell .cmd .box::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--live);box-shadow:0 0 0 4px var(--live-s)}
+.shell .cmd .box small{font:500 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);margin-right:2px}
+.shell .tc{font:500 14px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--muted2)}
+/* cards */
+.card{background:var(--card);border-radius:28px;padding:30px 32px;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.card p{font-size:20px;margin:8px 0 0;color:var(--muted);line-height:1.45}
+.card.acc{box-shadow:inset 0 4px 0 var(--accent),var(--shadow)} .card.ok{box-shadow:inset 0 4px 0 var(--ok),var(--shadow)}
+.card.bad{box-shadow:inset 0 4px 0 var(--bad),var(--shadow)} .card.warn{box-shadow:inset 0 4px 0 var(--warn),var(--shadow)}
+.tcode{display:inline-block;font:600 13px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--accent);background:var(--acc-s);border-radius:999px;padding:5px 12px;margin-bottom:14px;letter-spacing:.02em}
+.num{font:700 60px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.05;margin-bottom:10px}
+/* macOS-window panels */
+.se37{background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--winsh);border:1px solid var(--hair)}
+.se37 .title{display:flex;align-items:center;gap:8px;padding:15px 22px;font:500 15px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);border-bottom:1px solid var(--hair);background:var(--chrome)}
+.se37 .title::before{content:"";flex:0 0 12px;height:12px;border-radius:50%;background:#ff5f57;box-shadow:20px 0 0 #febc2e,40px 0 0 #28c840;margin-right:46px}
+.se37 .title span{font:600 15px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--text)}
+.se37 .tabs{display:inline-flex;margin:16px 22px 4px;padding:3px;border-radius:11px;background:var(--seg);gap:2px}
+.se37 .tabs div{padding:6px 13px;border-radius:8px;font:500 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted)}
+.se37 .tabs div.on{background:var(--card);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.06)}
+.se37 table{border:0;box-shadow:none;background:transparent;border-radius:0}
+/* code */
+.abap{background:var(--codebg);color:var(--code);border-radius:22px;padding:28px 32px;font:19px/1.68 "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;white-space:pre-wrap;margin:0;box-shadow:var(--winsh);letter-spacing:0}
+.abap .kw{color:#fc5fa3;font-weight:600} .abap .st{color:#fdb877} .abap .cm{color:#7f8c98;font-style:italic} .abap .nu{color:#d0bf69}
+.abap .hl{background:rgba(255,255,255,.07);border-radius:6px;display:inline-block;width:100%;padding:0 6px;margin-left:-6px}
+.json .k{color:#5dd8ff} .json .s{color:#fdb877} .json .n{color:#d0bf69} .json .x{color:#ff6961;font-weight:700}
+/* output */
+.out{background:var(--card);border-radius:22px;padding:22px 26px;font-size:20px;line-height:1.55;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.out .who{display:flex;align-items:center;gap:8px;font:600 12px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.out .who::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.out.bad .who{color:var(--bad)} .out.ok .who{color:var(--ok)}
+.msg{display:flex;gap:14px;align-items:flex-start;padding:17px 22px;border-radius:18px;font-size:21px;line-height:1.45}
+.msg .i{flex:0 0 26px;height:26px;margin-top:1px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font:700 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif}
+.msg.e{background:var(--bad-s)} .msg.e .i{background:var(--bad)}
+.msg.w{background:var(--warn-s)} .msg.w .i{background:var(--warn)}
+.msg.s{background:var(--ok-s)} .msg.s .i{background:var(--ok)}
+.msg.n{background:var(--acc-s)} .msg.n .i{background:var(--accent)}
+/* tables */
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--hair)}
+th{text-align:left;padding:18px 26px 12px;font:600 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:transparent;border-bottom:1px solid var(--hair)}
+td{padding:15px 26px;font-size:21px;border-bottom:1px solid var(--hair);vertical-align:top;letter-spacing:-.006em}
+tr:last-child td{border-bottom:0}
+td.m{font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-size:19px;letter-spacing:0}
+.pass{color:var(--ok);font-weight:600}.fail{color:var(--bad);font-weight:600}.warnc{color:var(--warn);font-weight:600}
+.chip{display:inline-block;padding:4px 12px;border-radius:999px;font:600 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.04em}
+.chip.ok{background:var(--ok-s);color:var(--ok)}.chip.bad{background:var(--bad-s);color:var(--bad)}.chip.warn{background:var(--warn-s);color:var(--warn)}.chip.acc{background:var(--acc-s);color:var(--accent)}
+.idoc{display:inline-flex;align-items:center;gap:9px;font:600 16px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace}
+.idoc i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.idoc.g i{background:var(--ok);box-shadow:0 0 0 4px var(--ok-s)}.idoc.r i{background:var(--bad);box-shadow:0 0 0 4px var(--bad-s)}.idoc.y i{background:var(--warn);box-shadow:0 0 0 4px var(--warn-s)}
+/* bars */
+.bar{display:grid;grid-template-columns:240px 1fr 150px;align-items:center;gap:22px;font-size:22px;font-weight:500;margin:14px 0;letter-spacing:-.01em}
+.bar .tr{height:12px;border-radius:999px;background:var(--seg)}
+.bar .tr i{display:block;height:100%;border-radius:999px;background:var(--grad)}
+.bar .tr i.low{background:var(--bad)}
+.bar .v{font:500 17px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--muted)}
+/* flow */
+.flow{display:flex;align-items:stretch;gap:12px}
+.flow .st{flex:1;background:var(--card);border-radius:24px;padding:26px 24px;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.flow .st h3{font-size:22px}.flow .st p{font-size:18px;margin:8px 0 0;color:var(--muted);line-height:1.4}
+.flow .ar{align-self:center;font-size:24px;color:var(--muted2);font-weight:300}
+.callout{padding:22px 28px;border-radius:20px;font-size:23px;line-height:1.5;background:var(--seg);letter-spacing:-.006em}
+.callout.acc{background:var(--acc-s)}.callout.ok{background:var(--ok-s)}.callout.bad{background:var(--bad-s)}.callout.warn{background:var(--warn-s)}
+/* debugger window */
+.dbg{position:relative;display:grid;grid-template-columns:1.25fr 1fr;border-radius:22px;overflow:hidden;box-shadow:var(--winsh);border:1px solid var(--hair);background:var(--codebg);padding-top:46px}
+.dbg::before{content:"";position:absolute;top:17px;left:20px;width:12px;height:12px;border-radius:50%;background:#ff5f57;box-shadow:20px 0 0 #febc2e,40px 0 0 #28c840}
+.dbg .src{color:var(--code);font:19px/1.8 "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;padding:6px 0 20px}
+.dbg .src div{padding:0 22px;white-space:pre}
+.dbg .src .cur{background:rgba(10,132,255,.22);box-shadow:inset 3px 0 0 #0a84ff}
+.dbg .src .ln{color:#5f6670;display:inline-block;width:40px}
+.dbg .vars{background:var(--card)}
+.dbg .vars table{border:0;box-shadow:none;border-radius:0}
+/* section divider */
+.slide.div{background:var(--divbg)}
+.slide.div .shell{color:rgba(255,255,255,.45)} .slide.div .shell .obj{color:#fff} .slide.div .shell .tc{color:rgba(255,255,255,.4)}
+.divgrid{display:flex;flex-direction:column;justify-content:center;flex:1;max-width:1240px}
+.divtc{align-self:flex-start;font:600 17px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 18px;margin-bottom:34px;letter-spacing:.04em}
+.divk{font:600 24px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.01em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:14px;display:inline-block}
+.slide.div h1{color:#fff;font-size:118px;letter-spacing:-.045em}
+.slide.div .lead{color:rgba(255,255,255,.6);font-size:31px}
+.slide.div .lead .mono{color:#fff}
+.slide.title{background:var(--titlebg)}
+.pill{display:inline-block;padding:9px 18px;border-radius:999px;background:var(--seg);font-size:17px;font-weight:500;margin:6px 8px 0 0;color:var(--text);letter-spacing:-.005em}
+.ex{display:flex;gap:16px;align-items:flex-start}
+.ex .n{flex:0 0 44px;height:44px;border-radius:50%;background:var(--grad);color:#fff;font:700 20px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+.ex h3{font-size:22px}.ex p{font-size:18px}
+.timer{display:inline-block;padding:6px 16px;border-radius:999px;background:var(--acc-s);color:var(--accent);font:600 18px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;vertical-align:middle;margin-left:14px;letter-spacing:0}
+.wall{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.wall span{padding:11px 20px;border-radius:999px;background:var(--seg);font-size:19px;font-weight:500;letter-spacing:-.005em}
+#progress{position:absolute;left:0;bottom:0;height:3px;background:var(--grad);transition:width .4s cubic-bezier(.2,.7,.2,1);z-index:5}
+.foot{position:absolute;left:120px;right:120px;bottom:30px;display:flex;justify-content:space-between;font-size:14px;color:var(--muted2);z-index:5;letter-spacing:.01em}
+.notes{display:none}
+#notesPanel{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:rgba(22,22,24,.94);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);color:#f5f5f7;padding:22px 32px;font:17px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;display:none;z-index:20;border-top:1px solid rgba(255,255,255,.1)}
+#notesPanel b{color:#2997ff}
+#help{position:fixed;inset:0;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;z-index:30}
+#help div{background:rgba(28,28,30,.96);color:#f5f5f7;padding:36px 46px;border-radius:24px;font:17px/2 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;min-width:440px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+#help kbd{background:#3a3a3c;padding:3px 10px;border-radius:6px;font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;margin-right:10px}
+#blank{position:fixed;inset:0;background:#000;display:none;z-index:25}
+.hint{position:absolute;bottom:70px;left:120px;font-size:15px;color:var(--muted2)}
+.hint kbd{border:1px solid var(--hair);background:var(--seg);border-radius:6px;padding:2px 8px;margin:0 3px;font-family:"SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;font-size:13px;color:var(--muted)}
+
+.note{position:relative;background:#fffdf3;color:#2b2b2b;border-radius:16px;padding:28px 34px 24px;box-shadow:0 2px 6px rgba(0,0,0,.05),0 24px 50px rgba(0,0,0,.10);font-size:23px;line-height:1.5;border:1px solid rgba(0,0,0,.06)}
+html[data-theme="dark"] .note{background:#26241e;color:#f1ede2;border-color:rgba(255,255,255,.06)}
+.note .hd{font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#a07a12;margin-bottom:10px}
+.note .ln{display:flex;gap:14px;padding:7px 0;border-bottom:1px dashed rgba(0,0,0,.10)} .note .ln:last-child{border-bottom:0}
+html[data-theme="dark"] .note .ln{border-color:rgba(255,255,255,.10)}
+.note .tag{flex:0 0 110px;font:700 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding-top:5px}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.side{border-radius:28px;padding:30px 32px;background:var(--card);box-shadow:var(--shadow);border:1px solid var(--hair)}
+.side .k{font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.09em;text-transform:uppercase;margin-bottom:14px}
+.side.life .k{color:var(--muted)} .side.ai .k{color:var(--accent)}
+.side p{font-size:23px}
+.emoji{font-size:52px;line-height:1;margin-bottom:14px}
+.sheet{width:100%;border-collapse:collapse;background:var(--card);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.sheet th{background:var(--seg);text-align:left;padding:14px 20px;font:600 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sheet td{padding:13px 20px;font-size:21px;border-top:1px solid var(--hair)}
+.sheet .blank{background:var(--bad-s);color:var(--bad);font-weight:600}
+.stepbig{display:flex;gap:18px;align-items:stretch}
+.stepbig .s{flex:1;border-radius:26px;padding:30px;background:var(--card);box-shadow:var(--shadow);border:1px solid var(--hair)}
+.stepbig .s .n{font:700 48px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stepbig .s h3{font-size:26px;margin-top:6px} .stepbig .s p{font-size:20px;color:var(--muted);margin-top:8px}
+/* chat (Neo) */
+.chat{display:flex;flex-direction:column;gap:16px;max-width:1220px}
+.bub{display:flex;gap:14px;align-items:flex-end}
+.bub .av{flex:0 0 46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 17px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:#fff}
+.bub .tx{padding:16px 22px;border-radius:24px;font-size:22px;line-height:1.45;max-width:1000px}
+.bub.me{flex-direction:row-reverse} .bub.me .av{background:#8e8e93} .bub.me .tx{background:var(--accent);color:#fff;border-bottom-right-radius:8px}
+.bub.neo .av{background:var(--grad)} .bub.neo .tx{background:var(--card);border:1px solid var(--hair);box-shadow:var(--shadow);border-bottom-left-radius:8px}
+.bub.neo.bad .tx{box-shadow:inset 0 0 0 2px var(--bad),var(--shadow)} .bub.neo.good .tx{box-shadow:inset 0 0 0 2px var(--ok),var(--shadow)}
+/* hero (Neo intro) */
+.hero{display:grid;grid-template-columns:1fr 1.1fr;gap:60px;align-items:center;flex:1}
+.orb{width:340px;height:340px;border-radius:50%;margin:auto;background:var(--grad);display:flex;align-items:center;justify-content:center;
+ font:700 96px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;color:#fff;letter-spacing:-.04em;box-shadow:0 40px 90px rgba(110,91,255,.35),inset 0 -20px 60px rgba(0,0,0,.18)}
+/* quiz */
+.quiz{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.quiz .q{border-radius:22px;padding:24px 26px;background:var(--card);border:1px solid var(--hair);box-shadow:var(--shadow);font-size:22px}
+.quiz .q .a{display:block;margin-top:10px;color:var(--ok);font-weight:600}
+.agenda td.t{font:600 17px "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;color:var(--muted);white-space:nowrap}
+.big2{font:700 120px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.05em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+
+html,body{background:var(--bg)}
+.slide{background:var(--mesh)}
+.card{border-radius:30px;padding:30px 32px;border:1px solid var(--hair);box-shadow:inset 0 1px 0 var(--gloss),0 1px 2px rgba(10,10,40,.04),0 22px 50px var(--cardsh)}
+.card.acc{background:linear-gradient(180deg,var(--acc-s),var(--card) 62%);border-color:var(--acc-line);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.card.ok{background:linear-gradient(180deg,var(--ok-s),var(--card) 62%);border-color:color-mix(in srgb,var(--ok) 38%,transparent);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.card.bad{background:linear-gradient(180deg,var(--bad-s),var(--card) 62%);border-color:color-mix(in srgb,var(--bad) 38%,transparent);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.card.warn{background:linear-gradient(180deg,var(--warn-s),var(--card) 62%);border-color:color-mix(in srgb,var(--warn) 38%,transparent);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.side,.stepbig .s,.quiz .q,.flow .st,.out,.sheet,table{box-shadow:inset 0 1px 0 var(--gloss),0 18px 44px var(--cardsh)}
+.side,.stepbig .s{border-radius:30px}
+.emoji{display:flex;align-items:center;justify-content:center;width:70px;height:70px;border-radius:22px;background:var(--tile);font-size:38px;line-height:1;margin-bottom:16px;box-shadow:inset 0 1px 0 var(--gloss)}
+.card[style*="text-align:center"] .emoji{margin-left:auto;margin-right:auto}
+.pill{background:var(--card);border:1px solid var(--hair);box-shadow:0 8px 22px var(--cardsh);padding:10px 20px;font-weight:600;font-size:18px}
+.pill.hl{background:var(--grad);color:#fff;border-color:transparent}
+.shell .obj{display:inline-flex;align-items:center;gap:10px}
+.shell .obj::before{content:"";width:22px;height:22px;border-radius:50%;background:var(--orb);box-shadow:inset 0 -3px 6px rgba(0,0,0,.18),0 4px 12px var(--orbsh)}
+.shell .cmd .box{font-weight:700}
+#progress{height:4px;box-shadow:0 0 16px var(--orbsh)}
+.label{font-size:15px}
+th{font-size:14px}
+.chip{font-size:14px}
+.foot{font-size:15px}
+/* cover */
+.slide.cover::after{content:"";position:absolute;right:90px;top:210px;width:430px;height:430px;border-radius:50%;background:radial-gradient(circle at 30% 22%,var(--gloss),transparent 38%),var(--orb);box-shadow:0 50px 110px var(--orbsh),inset 0 -26px 60px rgba(0,0,0,.20);z-index:0;pointer-events:none}
+.slide.cover .body,.slide.cover .hint{position:relative;z-index:1}
+.slide.cover .lead{max-width:880px}
+.slide.cover .body>div:last-child{max-width:900px}
+/* divider rings */
+.slide.div::after{content:"";position:absolute;right:-170px;bottom:-170px;width:640px;height:640px;border-radius:50%;border:1.5px solid rgba(255,255,255,.10);box-shadow:0 0 0 70px rgba(255,255,255,.025),0 0 0 140px rgba(255,255,255,.018);pointer-events:none}
+/* term tag on demo slides */
+.termtag{position:absolute;top:86px;left:120px;display:inline-flex;align-items:center;gap:9px;padding:6px 15px;border-radius:999px;background:var(--acc-s);color:var(--accent);border:1px solid var(--acc-line);font:700 14px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.05em;z-index:3}
+.termtag b{font-weight:700;opacity:.6;letter-spacing:.1em;text-transform:uppercase;font-size:12px}
+/* key-term cards */
+.terms{display:grid;gap:22px}
+.terms.c2{grid-template-columns:repeat(2,1fr)} .terms.c3{grid-template-columns:repeat(3,1fr)} .terms.c4{grid-template-columns:repeat(4,1fr);gap:18px}
+.term{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px;background:var(--card);border-radius:30px;padding:30px 30px 26px;border:1px solid var(--hair);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.term::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--grad)}
+.term .tmeta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
+.term .tno{font:700 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.term .tcell{font:600 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--accent);background:var(--acc-s);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.term .tname{font:700 40px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.03em;line-height:1.1;padding-bottom:4px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.term .tdef{font-size:21px;line-height:1.45;margin:0;color:var(--text)}
+.term .tsap{margin-top:auto;background:var(--seg);border-radius:18px;padding:14px 18px;font-size:18px;line-height:1.4;color:var(--text)}
+.term .tlab{display:block;font:700 12px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.terms.c2 .tname{font-size:46px} .terms.c2 .tdef{font-size:23px} .terms.c2 .tsap{font-size:20px}
+.terms.c4 .term{padding:26px 22px 22px} .terms.c4 .tname{font-size:30px} .terms.c4 .tdef{font-size:18px} .terms.c4 .tsap{font-size:16px;padding:12px 14px}
+/* vocabulary map */
+.vmap{display:flex;flex-direction:column;gap:12px}
+.vrow{display:grid;grid-template-columns:230px 1fr;gap:18px;align-items:center;background:var(--card);border:1px solid var(--hair);border-radius:24px;padding:14px 22px;box-shadow:inset 0 1px 0 var(--gloss),0 14px 36px var(--cardsh)}
+.vpart{font:700 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.vpart small{display:block;margin-top:3px;font:600 17px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:-.01em;text-transform:none;color:var(--text)}
+.vchips{display:flex;flex-wrap:wrap;gap:8px}
+.vchip{display:inline-flex;align-items:center;gap:8px;padding:7px 15px 7px 8px;border-radius:999px;background:var(--seg);font-size:19px;font-weight:600;letter-spacing:-.01em}
+.vchip i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--grad);color:#fff;font:700 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;display:inline-flex;align-items:center;justify-content:center}
+.wall.big span{font-size:23px;padding:13px 24px;background:var(--card);border:1px solid var(--hair);box-shadow:0 10px 26px var(--cardsh);font-weight:600}
+
+.expect{display:flex;align-items:center;gap:9px;font:600 16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;color:var(--muted);margin-top:14px}
+.expect::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px var(--ok-s)}
+.expect.warn::before{background:var(--warn);box-shadow:0 0 0 4px var(--warn-s)}
+.trace{display:flex;flex-direction:column;gap:10px}
+.trace .tr2{display:grid;grid-template-columns:128px 1fr;gap:18px;align-items:center;background:var(--card);border:1px solid var(--hair);border-radius:20px;padding:12px 20px;font-size:21px;line-height:1.38;box-shadow:inset 0 1px 0 var(--gloss),0 12px 30px var(--cardsh)}
+.lab2{font:700 13px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:7px 12px;text-align:center}
+.lab2.think{background:var(--acc-s);color:var(--accent)} .lab2.act{background:var(--warn-s);color:var(--warn)}
+.lab2.obs{background:var(--ok-s);color:var(--ok)} .lab2.fin{background:var(--grad);color:#fff}
+.trace .mono{font-size:18px}
+.pairs{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.say{background:var(--seg);border-radius:20px;padding:20px 26px;font-size:22px;line-height:1.45}
+.say b{color:var(--accent)}
+.do{display:flex;gap:16px;align-items:flex-start;margin:0 0 14px}
+.do .n{flex:0 0 46px;height:46px;border-radius:50%;background:var(--grad);color:#fff;font:700 21px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+.do h3{font-size:24px;margin:0 0 2px} .do p{font-size:19px;color:var(--muted);margin:0}
+.no li,.yes li{font-size:22px;margin:0 0 9px;list-style:none;padding-left:34px;position:relative} .no,.yes{padding:0;margin:0}
+.yes li::before{content:"✓";position:absolute;left:0;color:var(--ok);font-weight:700} .no li::before{content:"✕";position:absolute;left:0;color:var(--bad);font-weight:700}
+
+.tbl3{width:100%}
+.diag{display:grid;grid-template-columns:1fr 1.2fr 1fr;grid-template-rows:auto auto;gap:18px;align-items:stretch}
+.diag .top{grid-column:1/4}
+.diag .core{background:var(--grad);color:#fff;border:0}
+.diag .core h3,.diag .core p{color:#fff}
+.menu{background:var(--codebg);color:var(--code);border-radius:22px;padding:22px 28px;font:19px/1.65 "SF Mono",ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace;box-shadow:var(--winsh)}
+.menu .t{color:#5dd8ff;font-weight:600} .menu .d{color:#b9bcc4}
+.req{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.step4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.step4 .s{background:var(--card);border:1px solid var(--hair);border-radius:26px;padding:24px;box-shadow:inset 0 1px 0 var(--gloss),0 18px 40px var(--cardsh)}
+.step4 .s .n{font:700 44px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+.step4 .s h3{font-size:22px;margin-top:8px} .step4 .s p{font-size:18px;color:var(--muted);margin:6px 0 0}
+.who2{display:inline-block;font:700 12px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,"Helvetica Neue",Arial,"Segoe UI Emoji","Apple Color Emoji",sans-serif;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:5px 11px;margin-bottom:8px}
+.who2.ai{background:var(--acc-s);color:var(--accent)} .who2.prog{background:var(--ok-s);color:var(--ok)}
+.loopring{display:flex;align-items:center;justify-content:center;gap:0}
+.loopring .node{width:210px;height:210px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--card);border:1px solid var(--hair);box-shadow:inset 0 1px 0 var(--gloss),0 22px 50px var(--cardsh)}
+.loopring .node b{font:700 30px -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.loopring .node span{font-size:17px;color:var(--muted);margin-top:4px;padding:0 18px}
+.loopring .arw{font-size:34px;color:var(--muted2);padding:0 8px}
